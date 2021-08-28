@@ -1,21 +1,26 @@
+from tinydb import TinyDB, Query
 from discord import Member, Role, Embed
-from discord.ext import commands
-from discord.ext.commands import Cog, Context
+from tinydb.operations import increment
+from discord.ext.commands import Cog, Context, Bot, command
+from tinydb.table import Document
 
-from config.embed import no_perms_config
+from config.embed import *
+
+db = TinyDB('database/db.json')
+Users = Query()
 
 
 class ModerationCog(Cog):
 
-    def __init__(self, bot):
+    def __init__(self, bot: Bot):
         self.bot = bot
 
     # ban kick warn
 
-    @commands.command(
+    @command(
         name="ban",
         usage="<username> reason",
-        description="Ban a user")
+        description="Ban a user for a specific reason.")
     async def ban(self, ctx: Context, member: Member = None, reason: str = None):
 
         sender_max_role: Role = ctx.message.author.top_role
@@ -46,22 +51,28 @@ class ModerationCog(Cog):
             await ctx.send(embed=embed)
 
         else:
-
             if member is None or member == ctx.message.author:
                 await ctx.channel.send("No user provided 🙄 / You cannot ban yourself ⚓")
-
-            elif reason is None:
-                await ctx.guild.ban(member, reason=reason)
-                await ctx.send("Banned without a reason, okay whatever...😑")
-
             else:
-                await ctx.guild.ban(member, reason=reason)
-                await ctx.send(f'User > <@{member.id}> has been banned with reason: {reason} 🔨')
+                if db.contains((Users.id == member.id)):
+                    db.remove(Users.id == member.id)
 
-    @commands.command(
+                    await member.send(
+                        embed=self._createEmbed(
+                            config=ban_config,
+                            action='**BAN**',
+                            reason=reason if reason else 'Nothing'
+                        )
+                    )
+
+                    await ctx.guild.ban(member, reason=reason if reason else 'Nothing')
+
+                    await ctx.send(f"User <@{member.id}> has been banned for {reason if reason else 'Nothing'} 🔨")
+
+    @command(
         name="kick",
         usage="<username> reason",
-        description="Kick a user")
+        description="Kick a user with a given reason.")
     async def kick(self, ctx: Context, member: Member = None, reason: str = None):
 
         sender_max_role: Role = ctx.message.author.top_role
@@ -104,11 +115,11 @@ class ModerationCog(Cog):
                 await ctx.guild.kick(member, reason=reason)
                 await ctx.send(f'User > <@{member.id}> has been kicked with reason: {reason} :kick: ')
 
-    @commands.command(
-        name="warn",
-        usage="<username>",
-        description="warns a user")
-    async def warn(self, ctx: Context, member: Member = None):
+    @command(
+        name="strike",
+        usage="<username> reason",
+        description="Give a strike to a naughty user")
+    async def strike(self, ctx: Context, member: Member = None, reason: str = None):
 
         sender_max_role: Role = ctx.message.author.top_role
 
@@ -140,10 +151,85 @@ class ModerationCog(Cog):
         else:
 
             if member is None or member == ctx.message.author:
-                await ctx.channel.send("Why would you warn yourself 🙄 ?")
+                await ctx.channel.send("Why would you strike yourself 🙄 ?")
+
             else:
-                await ctx.send("The naughty user has been warned, hope he got the message 😑")
+                found = db.search(Users.id == member.id)
+
+                if not found:
+                    db.insert({'id': member.id, 'strikeCount': 1})
+                    await member.send(
+                        embed=self._createEmbed(
+                            config=strike_config(2),
+                            action='**STRIKE**',
+                            reason=reason if reason else '3 Strikes'
+                        )
+                    )
+
+                else:
+                    if db.contains((Users.id == member.id) & (Users.strikeCount == 2)):
+                        db.remove(Users.id == member.id)
+
+                        await member.send(
+                            embed=self._createEmbed(
+                                config=ban_config,
+                                action='**BAN**',
+                                reason=reason if reason else '3 Strikes'
+                            )
+                        )
+                        await ctx.send(f"User <@{member.id}> has been banned for {reason if reason else '3 Strikes'} 🔨")
+                        await ctx.guild.ban(member, reason=reason if reason else '3 Strikes')
+                    else:
+                        res = db.update(
+                            increment('strikeCount'),
+                            Users.id == member.id
+                        )[0]
+
+                        target: Document = None
+
+                        target = db.get(doc_id=res)
+
+                        await member.send(
+                            embed=self._createEmbed(
+                                config=strike_config(target['strikeCount']-1),
+                                action='***STRIKE***',
+                                reason=reason if reason else "Nothing"
+                            )
+                        )
+                        await ctx.send("The naughty user has been warned, hope he gets the message 😑")
+
+    def _createEmbed(self, reason, config, action):
+        embed = Embed(
+            title=config['title'],
+            url=config['url'],
+            description=config['description'],
+            color=config['color']
+        )
+
+        embed.set_author(
+            name=config['author']['name'],
+            icon_url=config['author']['icon_url']
+        )
+
+        embed.add_field(
+            name="Action",
+            value=action,
+            inline=True
+        )
+
+        embed.add_field(
+            name="Reason",
+            value=reason if reason else "No reason given",
+            inline=True
+        )
+
+        embed.set_footer(
+            text=config['footer']['text'],
+            icon_url=config['footer']['url']
+        )
+
+        return embed
 
 
-def setup(bot):
+def setup(bot: Bot):
     bot.add_cog(ModerationCog(bot))

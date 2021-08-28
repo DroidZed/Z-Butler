@@ -1,2 +1,4 @@
 ## ENV VARS
 .env
+
+database/

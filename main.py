@@ -2,7 +2,6 @@ import os
 import discord
 from decouple import config
 from discord.ext import commands
-from discord.partial_emoji import PartialEmoji
 
 # Get configuration from env.
 
