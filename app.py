@@ -1,13 +1,12 @@
 import os
 import discord
-from decouple import config
 from discord.ext import commands
 
-# Get configuration from env.
-
-token = config('API_TOKEN')
-prefix = config('PREFIX')
-owner_id = config('OWNER_ID')
+from config.main import (
+    token,
+    prefix,
+    owner_id
+)
 
 # Intents
 intents = discord.Intents.all()

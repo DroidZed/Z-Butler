@@ -1,2 +1,7 @@
 ## ENV VARS
 .env
+
+# Byte-compiled / optimized / DLL files
+config/__pycache__/
+
+Cogs/__pycache__/
