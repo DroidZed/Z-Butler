@@ -13,8 +13,8 @@ from config.embed import (
 
 from config.main import crown_role_id
 
-db = TinyDB('database/db.json')
-Users = Query()
+users = TinyDB('database/db.json').table("users")
+UsersQuery = Query()
 
 
 class ModerationCog(Cog):
@@ -45,20 +45,19 @@ class ModerationCog(Cog):
             if member is None or member == ctx.message.author:
                 await ctx.channel.send("No user provided 🙄 / You cannot ban yourself ⚓")
             else:
-                if db.contains((Users.id == member.id)):
-                    db.remove(Users.id == member.id)
+                if users.contains((UsersQuery.id == member.id)):
+                    users.remove(UsersQuery.id == member.id)
 
-                    await member.send(
-                        embed=createEmbed(
-                            config=ban_config,
-                            action='**BAN**',
-                            reason=reason if reason else 'Nothing'
-                        )
+                await member.send(
+                    embed=createEmbed(
+                        config=ban_config,
+                        action='**BAN**',
+                        reason=reason if reason else 'Nothing'
                     )
+                )
 
-                    await ctx.guild.ban(member, reason=reason if reason else 'Nothing')
-
-                    await ctx.send(f"User <@{member.id}> has been banned for {reason if reason else 'Nothing'} 🔨")
+                await ctx.guild.ban(member, reason=reason if reason else 'Nothing')
+                await ctx.send(f"User <@{member.id}> has been banned for {reason if reason else 'Nothing'} 🔨")
 
     @command(
         name="kick",
@@ -113,10 +112,10 @@ class ModerationCog(Cog):
                 await ctx.channel.send("Why would you strike yourself 🙄 ?")
 
             else:
-                found = db.search(Users.id == member.id)
+                found = users.search(UsersQuery.id == member.id)
 
                 if not found:
-                    db.insert({'id': member.id, 'strikeCount': 1})
+                    users.insert({'id': member.id, 'strikeCount': 1})
                     await member.send(
                         embed=createEmbed(
                             config=strike_config(2),
@@ -126,8 +125,8 @@ class ModerationCog(Cog):
                     )
 
                 else:
-                    if db.contains((Users.id == member.id) & (Users.strikeCount == 2)):
-                        db.remove(Users.id == member.id)
+                    if users.contains((UsersQuery.id == member.id) & (UsersQuery.strikeCount == 2)):
+                        users.remove(UsersQuery.id == member.id)
 
                         await member.send(
                             embed=createEmbed(
@@ -139,14 +138,14 @@ class ModerationCog(Cog):
                         await ctx.send(f"User <@{member.id}> has been banned for {reason if reason else '3 Strikes'} 🔨")
                         await ctx.guild.ban(member, reason=reason if reason else '3 Strikes')
                     else:
-                        res = db.update(
+                        res = users.update(
                             increment('strikeCount'),
-                            Users.id == member.id
+                            UsersQuery.id == member.id
                         )[0]
 
                         target: Document = None
 
-                        target = db.get(doc_id=res)
+                        target = users.get(doc_id=res)
 
                         await member.send(
                             embed=createEmbed(

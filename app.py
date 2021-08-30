@@ -4,14 +4,14 @@ from discord.ext import commands
 
 from config.main import (
     token,
-    prefix,
+    bot_prefix,
     owner_id
 )
 
 # Intents
 intents = discord.Intents.all()
 # The bot
-bot = commands.Bot(prefix, intents=intents, owner_id=owner_id)
+bot = commands.Bot(bot_prefix, intents=intents, owner_id=owner_id)
 
 # Load cogs
 if __name__ == '__main__':

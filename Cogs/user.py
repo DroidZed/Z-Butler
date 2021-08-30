@@ -6,7 +6,7 @@ from config.embed import createEmbed, pfp_config
 
 class UserCog(Cog):
 
-    def __init__(self, bot):
+    def __init__(self, bot: Bot):
         self.bot = bot
 
     @command(
@@ -17,8 +17,17 @@ class UserCog(Cog):
 
         if not member:
             member = ctx.message.author
-        await ctx.send(embed=createEmbed(config=pfp_config(member.avatar_url, f'{member.name}#{member.discriminator}')))
+
+        await ctx.send(
+            embed=createEmbed(
+                config=pfp_config(
+                    member.avatar_url,
+                    f'{member.name}#{member.discriminator}',
+                    f'{ctx.message.author}'
+                )
+            )
+        )
 
 
-def setup(bot):
+def setup(bot: Bot):
     bot.add_cog(UserCog(Cog))
