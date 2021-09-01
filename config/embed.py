@@ -38,14 +38,11 @@ ban_config = {
     "image_url": "https://media1.tenor.com/images/0dcb84c900e10b6272152cd759eb1eab/tenor.gif",
     "author": {
         "name": "The Z Butler",
-        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg"
-    },
+        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg"},
     "thumbnail_url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif",
     "footer": {
         "text": "Next time think twice before making trouble in a server 😶",
-        "url": "https://emoji.gg/assets/emoji/3886_BAN.gif"
-    }
-}
+        "url": "https://emoji.gg/assets/emoji/3886_BAN.gif"}}
 
 
 def strike_config(number_of_strikes_left: int):
@@ -57,52 +54,49 @@ def strike_config(number_of_strikes_left: int):
         "image_url": "https://c.tenor.com/ep6ztNAdFMcAAAAC/hank-schrider-sussy-baka.gif",
         "author": {
             "name": "The Z Butler",
-            "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg"
-        },
+            "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg"},
         "thumbnail_url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif",
         "footer": {
             "text": f"{number_of_strikes_left} Strikes and you're banned.",
-            "url": "https://emojis.slackmojis.com/emojis/images/1542340473/4982/watching-you.gif?1542340473"
-        }
-    }
+            "url": "https://emojis.slackmojis.com/emojis/images/1542340473/4982/watching-you.gif?1542340473"}}
 
 
-def pfp_config(url: str, tag: str, issuer: str) -> dict:
+def pfp_config(url: str, tag: str, issuer: str, avatar_url: str) -> dict:
     return {
         "title": f"**{tag}**'s Profile Picture",
         "color": color,
         "image_url": f'{url}',
         "author": {
             "name": "The Z Butler",
-            "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg"
-        },
+            "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg"},
         "thumbnail_url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif",
         "footer": {
             "text": f"Requested by {issuer} 💙",
-            "url": "https://cdn.discordapp.com/emojis/765999349008039936.png?v=1"
-        }
-    }
+            "url": f"{avatar_url}"}}
 
 
-def createEmbed(config: dict, reason: str = None, action: str = None, no_perms_type: str = None) -> Embed:
+def gif_config(url: str, issuer: str, avatar_url: str, gif_name: str, tenor_link: str) -> dict:
+    return {
+        "title": f"**{gif_name}**",
+        "color": color,
+        "description": f"Original image link: [here]({tenor_link})",
+        "image_url": f'{url}',
+        "author": {
+            "name": "The Z Butler",
+            "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg"},
+        "thumbnail_url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif",
+        "footer": {
+            "text": f"Requested by {issuer} 💙",
+            "url": f"{avatar_url}"}}
 
-    if ('url' in config) & ('description' in config):
-        embed = Embed(
-            title=config['title'],
-            url=config['url'],
-            description=config['description'],
-            color=config['color']
-        )
-    else:
-        embed = Embed(
-            title=config['title'],
-            color=config['color']
-        )
 
-    embed.set_author(
-        name=config['author']['name'],
-        icon_url=config['author']['icon_url']
-    )
+def create_embed(
+        config: dict,
+        reason: str = None,
+        action: str = None,
+        no_perms_type: str = None) -> Embed:
+
+    embed = init_embed(config)
 
     if action is not None:
         embed.add_field(
@@ -117,10 +111,7 @@ def createEmbed(config: dict, reason: str = None, action: str = None, no_perms_t
 
     if reason is not None:
         embed.add_field(
-            name="Reason",
-            value=reason if reason else "No reason given",
-            inline=True
-        )
+            name="Reason", value=reason or "No reason given", inline=True)
 
     if 'image_url' in config:
         embed.set_image(url=config["image_url"])
@@ -138,3 +129,34 @@ def createEmbed(config: dict, reason: str = None, action: str = None, no_perms_t
         )
 
     return embed
+
+
+def init_embed(config):
+
+    if ('url' not in config) & ('description' not in config):
+
+        return Embed(
+            title=config['title'],
+            color=config['color'])
+
+    elif 'url' in config:
+
+        return Embed(
+            title=config['title'],
+            url=config['url'],
+            color=config['color'])
+
+    elif 'description' in config:
+
+        return Embed(
+            title=config['title'],
+            description=config['description'],
+            color=config['color'])
+
+    else:
+
+        return Embed(
+            title=config['title'],
+            url=config['url'],
+            description=config['description'],
+            color=config['color'])

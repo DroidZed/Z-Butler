@@ -4,7 +4,7 @@ from discord.ext.commands import Cog, Context, Bot, command
 from config.embed import create_embed, pfp_config
 
 
-class UserCog(Cog):
+class UserCog(Cog, name="User-related Commands", description="User commands for everyone"):
 
     def __init__(self, bot: Bot):
         self.bot = bot
@@ -12,9 +12,9 @@ class UserCog(Cog):
     @command(
         name="pfp",
         usage="<username>",
-        description="Ban a user for a specific reason.")
+        description="Display the requested user's profile picture.")
     async def pfp(self, ctx: Context, member: Member = None):
-
+        """Display the requested user's profile picture."""
         if not member:
             member = ctx.message.author
 
@@ -28,6 +28,22 @@ class UserCog(Cog):
                 )
             )
         )
+
+    @command(
+        name="greet",
+        usage="<username>",
+        description="Greet a given user",
+        aliases=['grt']
+    )
+    async def hello(self, ctx: Context, *, member: Member = None):
+        """Greet a given user"""
+        member = member or ctx.author
+        await ctx.message.delete()
+        if self._last_member is None or self._last_member.id != member.id:
+            await ctx.send(f'Hello <@{member.id}>~')
+        else:
+            await ctx.send(f'Hello <@{member.id}>... This feels familiar.')
+        self._last_member = member
 
 
 def setup(bot: Bot):

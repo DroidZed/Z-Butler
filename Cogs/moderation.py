@@ -18,7 +18,7 @@ users = TinyDB('database/db.json').table("users")
 UsersQuery = Query()
 
 
-class ModerationCog(Cog):
+class ModerationCog(Cog, name="Moderation Commands", description="Mod commands for the admin only."):
 
     def __init__(self, bot: Bot):
         self.bot = bot
@@ -30,7 +30,7 @@ class ModerationCog(Cog):
         usage="<username> reason",
         description="Ban a user for a specific reason.")
     async def ban(self, ctx: Context, member: Member = None, reason: str = None):
-
+        """Ban a user for a specific reason."""
         sender_max_role: Role = ctx.message.author.top_role
 
         if sender_max_role.id != crown_role_id:
@@ -49,14 +49,14 @@ class ModerationCog(Cog):
             if users.contains((UsersQuery.id == member.id)):
                 users.remove(UsersQuery.id == member.id)
 
-            await self.ban_user(ctx, member, reason)
+            await self._ban_user(ctx, member, reason)
 
     @command(
         name="kick",
         usage="<username> reason",
         description="Kick a user with a given reason.")
     async def kick(self, ctx: Context, member: Member = None, reason: str = None):
-
+        """Kick a user with a given reason."""
         sender_max_role: Role = ctx.message.author.top_role
 
         if sender_max_role.id != crown_role_id:
@@ -84,7 +84,7 @@ class ModerationCog(Cog):
         usage="<username> reason",
         description="Give a strike to a naughty user.")
     async def strike(self, ctx: Context, member: Member = None, reason: str = None):
-
+        """Give a strike to a naughty user."""
         sender_max_role: Role = ctx.message.author.top_role
 
         if sender_max_role.id != crown_role_id:
@@ -100,9 +100,9 @@ class ModerationCog(Cog):
             await ctx.channel.send("Why would you strike yourself 🙄 ?")
 
         else:
-            await self.warn_ban_user(ctx, member, reason)
+            await self._warn_ban_user(ctx, member, reason)
 
-    async def warn_ban_user(self, ctx: Context, member: Member, reason: str = None):
+    async def _warn_ban_user(self, ctx: Context, member: Member, reason: str = None):
         found = self.check_member_in_db(member)
 
         if not found:
@@ -118,11 +118,11 @@ class ModerationCog(Cog):
         elif users.contains((UsersQuery.id == member.id) & (UsersQuery.strikeCount == 2)):
             users.remove(UsersQuery.id == member.id)
 
-            await self.ban_user(ctx, member, reason)
+            await self._ban_user(ctx, member, reason)
         else:
-            await self.warn_user_for_reason(ctx, member, reason)
+            await self._warn_user_for_reason(ctx, member, reason)
 
-    async def ban_user(self, ctx: Context, member: Member, reason: str = None):
+    async def _ban_user(self, ctx: Context, member: Member, reason: str = None):
         await member.send(
             embed=create_embed(
                 config=ban_config,
@@ -134,7 +134,7 @@ class ModerationCog(Cog):
         await ctx.send(f"User <@{member.id}> has been banned for {reason if reason else '3 Strikes'} 🔨")
         await ctx.guild.ban(member, reason=reason if reason else '3 Strikes')
 
-    async def warn_user_for_reason(self, ctx: Context, member: Member, reason: str = None):
+    async def _warn_user_for_reason(self, ctx: Context, member: Member, reason: str = None):
         res = users.update(
             increment('strikeCount'),
             UsersQuery.id == member.id)[0]

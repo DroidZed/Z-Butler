@@ -1,5 +1,11 @@
 ## ENV VARS
 .env
 
-# Byte-compiled / optimized / DLL files
+# Compiled python files
 */__pycache__/
+
+welcome_images/
+
+database/
+
+json_dump.py
