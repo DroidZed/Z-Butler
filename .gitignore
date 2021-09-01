@@ -4,8 +4,6 @@
 # Compiled python files
 */__pycache__/
 
-welcome_images/
-
 database/
 
 json_dump.py

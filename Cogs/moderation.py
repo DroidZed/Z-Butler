@@ -77,7 +77,7 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
 
         else:
             await ctx.guild.kick(member, reason=reason)
-        await ctx.send(f"User > <@{member.id}> has been kicked for: {reason if reason else 'Nothing'} :kick: ")
+        await ctx.send(f"User > <@{member.id}> has been kicked for: {reason if reason else 'Nothing'} <a:kick:880995293179555852> ")
 
     @command(
         name="strike",
