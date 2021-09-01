@@ -1,6 +1,8 @@
-import discord
+from discord import Embed
 from discord.ext.commands import (BucketType, cooldown, Bot, Cog, command)
 from config.main import color
+
+# TODO : rewrite this for a better look.
 
 
 class HelpCog(Cog, name="help command"):
@@ -28,14 +30,16 @@ class HelpCog(Cog, name="help command"):
                             commandName2 = i
                             stop = True
                             break
-                        if stop is True:
+                        if stop:
                             break
 
             if commandName2 is None:
                 await ctx.channel.send("No command found!")
             else:
-                embed = discord.Embed(
-                    title=f"{commandName2.name.upper()} Command", description=f"{commandName2.description}", color=color)
+                embed = Embed(
+                    title=f"{commandName2.name.upper()} Command",
+                    description=f"{commandName2.description}",
+                    color=color)
                 embed.set_thumbnail(url=f'{self.bot.user.avatar_url}')
                 embed.add_field(
                     name=f"Name", value=f"{commandName2.name}", inline=False)
@@ -54,12 +58,16 @@ class HelpCog(Cog, name="help command"):
                     embed.add_field(name=f"Usage", value=f"None", inline=False)
                 else:
                     embed.add_field(
-                        name=f"Usage", value=f"{self.bot.command_prefix}{commandName2.name} {commandName2.usage}", inline=False)
+                        name=f"Usage",
+                        value=f"{self.bot.command_prefix}{commandName2.name} {commandName2.usage}",
+                        inline=False)
 
                 await ctx.channel.send(embed=embed)
         else:
-            embed = discord.Embed(
-                title=f"Help page", description=f"{self.bot.command_prefix}help (commandName), display the help list or the help data for a specific command.", color=color)
+            embed = Embed(
+                title=f"Help page",
+                description=f"{self.bot.command_prefix}help (commandName), display the help list or the help data for a specific command.",
+                color=color)
             embed.set_thumbnail(url=f'{self.bot.user.avatar_url}')
             for i in self.bot.commands:
                 embed.add_field(name=i.name, value=i.description, inline=False)

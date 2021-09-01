@@ -1,7 +1,7 @@
 from discord import Member
 from discord.ext.commands import Cog, Context, Bot, command
 
-from config.embed import createEmbed, pfp_config
+from config.embed import create_embed, pfp_config
 
 
 class UserCog(Cog):
@@ -19,11 +19,12 @@ class UserCog(Cog):
             member = ctx.message.author
 
         await ctx.send(
-            embed=createEmbed(
+            embed=create_embed(
                 config=pfp_config(
-                    member.avatar_url,
-                    f'{member.name}#{member.discriminator}',
-                    f'{ctx.message.author}'
+                    url=member.avatar_url,
+                    tag=f'{member.name}#{member.discriminator}',
+                    issuer=f'{ctx.message.author}',
+                    avatar_url=member.avatar_url
                 )
             )
         )
