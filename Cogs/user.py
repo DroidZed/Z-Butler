@@ -8,6 +8,7 @@ class UserCog(Cog, name="User-related Commands", description="User commands for 
 
     def __init__(self, bot: Bot):
         self.bot = bot
+        self._last_member = None
 
     @command(
         name="pfp",
