@@ -1,11 +1,13 @@
 from io import BytesIO
+
+from discord.ext.commands.errors import CommandOnCooldown, MemberNotFound
 from functions.create_welcome_image import create_picture
 from discord import Member, Guild, File
 from discord.abc import GuildChannel
-from discord.ext.commands import Cog
+from discord.ext.commands import Cog, Context
 
 
-class JoinsOrLeavesCog(Cog, name="Join / Leave Events", description="Events fired when a user joins or leaves the server."):
+class EventHandlers(Cog, name="Event handlers", description="Events fired when somethings kicks in the server."):
 
     def __init__(self, bot):
         self.bot = bot
@@ -40,6 +42,15 @@ class JoinsOrLeavesCog(Cog, name="Join / Leave Events", description="Events fire
         else:
             print('channel is none or missing perms')
 
+    @Cog.listener()
+    async def on_command_error(self, ctx: Context, error):
+
+        if isinstance(error, MemberNotFound):
+            await ctx.send('¯\\_(ツ)_/¯ The user provided could not be found, try again...')
+
+        if isinstance(error, CommandOnCooldown):
+            await ctx.send(f'⏳ Hold your horses, this command is on hold, you can use it in {round(error.retry_after, 2)} secs.')
+
 
 def setup(bot):
-    bot.add_cog(JoinsOrLeavesCog(bot))
+    bot.add_cog(EventHandlers(bot))

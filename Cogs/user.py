@@ -1,7 +1,10 @@
 from discord import Member
-from discord.ext.commands import Cog, Context, Bot, command
+from discord.ext.commands import Cog, Context, Bot, command, BucketType
+from discord.ext.commands.core import cooldown
 
-from config.embed import create_embed, pfp_config
+from config.embed import pfp_config
+
+from functions.embed_factory import create_embed
 
 
 class UserCog(Cog, name="User-related Commands", description="User commands for everyone"):
@@ -14,6 +17,7 @@ class UserCog(Cog, name="User-related Commands", description="User commands for 
         name="pfp",
         usage="<username>",
         description="Display the requested user's profile picture.")
+    @cooldown(1, 5, BucketType.user)
     async def pfp(self, ctx: Context, member: Member = None):
         """Display the requested user's profile picture."""
         if not member:
@@ -36,6 +40,7 @@ class UserCog(Cog, name="User-related Commands", description="User commands for 
         description="Greet a given user",
         aliases=['grt']
     )
+    @cooldown(1, 3, BucketType.user)
     async def hello(self, ctx: Context, *, member: Member = None):
         """Greet a given user"""
         member = member or ctx.author

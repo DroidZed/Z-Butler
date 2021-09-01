@@ -12,7 +12,8 @@ from random import choice
 from requests import get
 from config.main import tenor_key
 from json import loads
-from config.embed import create_embed, gif_config
+from config.embed import gif_config
+from functions.embed_factory import create_embed
 
 
 class FunCog(Cog, name="Fun Commands", description="Fun commands from your trusty Z Butler 💙"):
@@ -24,6 +25,7 @@ class FunCog(Cog, name="Fun Commands", description="Fun commands from your trust
              usage="<username>",
              description="I think we got an imposter among us...",
              aliases=['sus', 'amogus', 'imposter'])
+    @cooldown(1, 5, BucketType.user)
     async def SUS(self, ctx: Context, member: Member = None):
         """I think we got an imposter among us..."""
         if not member:
@@ -41,13 +43,16 @@ class FunCog(Cog, name="Fun Commands", description="Fun commands from your trust
         await ctx.send(final)
 
     @command(name="gif_search",
-             usage="topic",
+             usage="query",
              description="Look for a gif about a certain topic",
              aliases=['gif?']
              )
-    async def look_for_gif(self, ctx: Context, topic: str):
+    @cooldown(1, 15, BucketType.user)
+    async def look_for_gif(self, ctx: Context, *query: str):
         """Look for a gif about a certain topic"""
         limit = 100
+
+        topic = " ".join(query)
 
         r = get(
             "https://g.tenor.com/v1/search?q=%s&key=%s&limit=%s" %

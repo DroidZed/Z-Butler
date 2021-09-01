@@ -1,5 +1,3 @@
-from discord import Embed
-
 from config.main import color
 
 no_perms_config = {
@@ -62,7 +60,7 @@ def strike_config(number_of_strikes_left: int):
 
 
 def pfp_config(url: str, tag: str, issuer: str, avatar_url: str) -> dict:
-    return {
+    res = {
         "title": f"**{tag}**'s Profile Picture",
         "color": color,
         "image_url": f'{url}',
@@ -72,7 +70,11 @@ def pfp_config(url: str, tag: str, issuer: str, avatar_url: str) -> dict:
         "thumbnail_url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif",
         "footer": {
             "text": f"Requested by {issuer} 💙",
-            "url": f"{avatar_url}"}}
+            "url": f"{avatar_url}"}
+    }
+    if tag.split('#')[0] == 'DroidZed':
+        res['title'] = f"Lord 👑 **𝕯𝖗𝖔𝖎𝖉𝖅𝖊𝖉** 👑"
+    return res
 
 
 def gif_config(url: str, issuer: str, avatar_url: str, gif_name: str, tenor_link: str) -> dict:
@@ -90,73 +92,16 @@ def gif_config(url: str, issuer: str, avatar_url: str, gif_name: str, tenor_link
             "url": f"{avatar_url}"}}
 
 
-def create_embed(
-        config: dict,
-        reason: str = None,
-        action: str = None,
-        no_perms_type: str = None) -> Embed:
-
-    embed = init_embed(config)
-
-    if action is not None:
-        embed.add_field(
-            name="Action",
-            value=action,
-            inline=True
-        )
-
-    embed.set_thumbnail(
-        url=config["thumbnail_url"]
-    )
-
-    if reason is not None:
-        embed.add_field(
-            name="Reason", value=reason or "No reason given", inline=True)
-
-    if 'image_url' in config:
-        embed.set_image(url=config["image_url"])
-
-    if config is no_perms_config and no_perms_type is not None:
-
-        embed.set_footer(
-            text=config['footer'][no_perms_type]['text'],
-            icon_url=config['footer'][no_perms_type]['url']
-        )
-    else:
-        embed.set_footer(
-            text=config['footer']['text'],
-            icon_url=config['footer']['url']
-        )
-
-    return embed
-
-
-def init_embed(config):
-
-    if ('url' not in config) & ('description' not in config):
-
-        return Embed(
-            title=config['title'],
-            color=config['color'])
-
-    elif 'url' in config:
-
-        return Embed(
-            title=config['title'],
-            url=config['url'],
-            color=config['color'])
-
-    elif 'description' in config:
-
-        return Embed(
-            title=config['title'],
-            description=config['description'],
-            color=config['color'])
-
-    else:
-
-        return Embed(
-            title=config['title'],
-            url=config['url'],
-            description=config['description'],
-            color=config['color'])
+def leave_config(username: str, id: int) -> dict:
+    return {
+        "title": f"{username} Left us.",
+        "color": color,
+        "description": f"<@{id}> got sucked into a blackhole <a:black_hole:796434656605765632>, long forgotten.",
+        "author": {
+            "name": "The Z Butler",
+            "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg"},
+        "thumbnail_url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif",
+        "footer": {
+            "text": f"We shall never remember those who left our cause.",
+            "url": f"https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg"}
+    }
