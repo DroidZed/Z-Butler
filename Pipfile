@@ -9,7 +9,6 @@ python-decouple = "*"
 tinydb = "*"
 pillow = "*"
 requests = "*"
-discord-pretty-help = "*"
 
 [dev-packages]
 autopep8 = "*"
