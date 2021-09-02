@@ -34,7 +34,6 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
         description="Ban a user for a specific reason.")
     @has_role(crown_role_id)
     async def ban(self, ctx: Context, member: Member = None, *reason: str):
-        """Ban a user for a specific reason."""
         if member is None or member == ctx.message.author:
             await ctx.channel.send("No user provided 🙄 / You cannot ban yourself ⚓")
             return
@@ -51,7 +50,6 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
         description="Kick a user with a given reason.")
     @has_role(crown_role_id)
     async def kick(self, ctx: Context, member: Member = None, *reason: str):
-        """Kick a user with a given reason."""
         if member is None or member == ctx.message.author:
             await ctx.channel.send("You cannot kick yourself ⚓ you stupid...")
             return
@@ -71,7 +69,6 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
         description="Give a strike to a naughty user.")
     @has_role(crown_role_id)
     async def strike(self, ctx: Context, member: Member = None, *reason: str):
-        """Give a strike to a naughty user."""
         if member is None or member == ctx.message.author:
             await ctx.channel.send("Why would you strike yourself 🙄 ?")
             return
@@ -85,7 +82,6 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
         description="Clears a certain amount of messages, can't delete those older than 14 days tho.")
     @has_role(crown_role_id)
     async def purge(self, ctx: Context, amount: int):
-        """ Clears a certain amount of messages, can't delete those older than 14 days tho. """
         await ctx.channel.purge(limit=amount)
 
     async def _strike_ban_user(self, ctx: Context, member: Member, *reason: str):

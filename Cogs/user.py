@@ -19,7 +19,6 @@ class UserCog(Cog, name="User-related Commands", description="User commands for 
         description="Display the requested user's profile picture.")
     @cooldown(1, 5, BucketType.user)
     async def pfp(self, ctx: Context, member: Member = None):
-        """Display the requested user's profile picture."""
         if not member:
             member = ctx.message.author
 
@@ -29,7 +28,7 @@ class UserCog(Cog, name="User-related Commands", description="User commands for 
                     url=member.avatar_url,
                     tag=f'{member.name}#{member.discriminator}',
                     issuer=f'{ctx.message.author}',
-                    avatar_url=member.avatar_url
+                    avatar_url=f'{ctx.message.author.avatar_url}'
                 )
             )
         )
@@ -42,7 +41,6 @@ class UserCog(Cog, name="User-related Commands", description="User commands for 
     )
     @cooldown(1, 3, BucketType.user)
     async def hello(self, ctx: Context, *, member: Member = None):
-        """Greet a given user"""
         member = member or ctx.author
         await ctx.message.delete()
         if self._last_member is None or self._last_member.id != member.id:

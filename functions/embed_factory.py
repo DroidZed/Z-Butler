@@ -10,21 +10,26 @@ def create_embed(
     embed = init_embed(config)
 
     if action is not None:
+
         embed.add_field(
             name="Action",
             value=action,
             inline=True
         )
 
-    embed.set_thumbnail(
-        url=config["thumbnail_url"]
-    )
+    if 'thumbnail_url' in config:
+
+        embed.set_thumbnail(
+            url=config["thumbnail_url"]
+        )
 
     if reason is not None:
+
         embed.add_field(
             name="Reason", value=reason or "No reason given", inline=True)
 
     if 'image_url' in config:
+
         embed.set_image(url=config["image_url"])
 
     if no_perms_type is not None:
@@ -33,7 +38,8 @@ def create_embed(
             text=config['footer'][no_perms_type]['text'],
             icon_url=config['footer'][no_perms_type]['url']
         )
-    else:
+
+    if 'footer' in config:
         embed.set_footer(
             text=config['footer']['text'],
             icon_url=config['footer']['url']
