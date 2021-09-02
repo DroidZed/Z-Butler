@@ -8,7 +8,6 @@ name = "pypi"
 python-decouple = "*"
 tinydb = "*"
 pillow = "*"
-httpx = "*"
 requests = "*"
 discord-pretty-help = "*"
 
