@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from discord.ext.commands.errors import CommandOnCooldown, MemberNotFound
+from discord.ext.commands.errors import CommandError, CommandOnCooldown, MemberNotFound, MissingPermissions
 from functions.create_welcome_image import create_picture
 from discord import Member, Guild, File
 from discord.abc import GuildChannel
@@ -43,7 +43,7 @@ class EventHandlers(Cog, name="Event handlers", description="Events fired when s
             print('channel is none or missing perms')
 
     @Cog.listener()
-    async def on_command_error(self, ctx: Context, error):
+    async def on_command_error(self, ctx: Context, error: CommandError):
 
         if isinstance(error, MemberNotFound):
             await ctx.send('¯\\_(ツ)_/¯ The user provided could not be found, try again...')

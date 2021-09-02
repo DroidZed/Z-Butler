@@ -18,11 +18,15 @@ no_perms_config = {
         },
         "strike": {
             "text": "Next time make sure you have enough permissions, what a shame 🤐",
-            "url": "https://emojis.slackmojis.com/emojis/images/1542340473/4982/watching-you.gif?1542340473"
+            "url": "https://emojis.slackmojis.com/emojis/images/1542340473/4982/watching-you.gif"
         },
         "kick": {
             "text": "You are not cool enough for this 🥱",
             "url": "https://emojis.slackmojis.com/emojis/images/1620894162/38676/kicking.gif"
+        },
+        "purge": {
+            "text": "Cleaning behind you mess ? What a dog...🤮",
+            "url": "https://emojis.slackmojis.com/emojis/images/1472329131/1120/nuclear-bomb.gif"
         }
 
     }
@@ -73,7 +77,7 @@ def pfp_config(url: str, tag: str, issuer: str, avatar_url: str) -> dict:
             "url": f"{avatar_url}"}
     }
     if tag.split('#')[0] == 'DroidZed':
-        res['title'] = f"Lord 👑 **𝕯𝖗𝖔𝖎𝖉𝖅𝖊𝖉** 👑"
+        res['title'] = f"Lord\t👑 **𝕯𝖗𝖔𝖎𝖉𝖅𝖊𝖉** 👑"
     return res
 
 

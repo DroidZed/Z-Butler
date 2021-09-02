@@ -1,14 +1,17 @@
+from discord.ext.commands.core import has_role
+from discord.ext.commands.errors import CommandError
 from tinydb import TinyDB, Query
-from discord import Member, Role
+from discord import Member
 from tinydb.table import Document
 from tinydb.operations import increment
 from discord.ext.commands import Cog, Context, Bot, command
 
 from config.embed import (
-    no_perms_config,
     ban_config,
     strike_config
 )
+
+from config.embed import no_perms_config
 
 from functions.embed_factory import create_embed
 
@@ -29,21 +32,12 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
         name="ban",
         usage="<username> reason",
         description="Ban a user for a specific reason.")
+    @has_role(crown_role_id)
     async def ban(self, ctx: Context, member: Member = None, *reason: str):
         """Ban a user for a specific reason."""
-        sender_max_role: Role = ctx.message.author.top_role
-
-        if sender_max_role.id != crown_role_id:
-
-            await ctx.send(
-                embed=create_embed(
-                    config=no_perms_config,
-                    no_perms_type='ban'
-                )
-            )
-
-        elif member is None or member == ctx.message.author:
+        if member is None or member == ctx.message.author:
             await ctx.channel.send("No user provided 🙄 / You cannot ban yourself ⚓")
+            return
 
         else:
             if users.contains((UsersQuery.id == member.id)):
@@ -55,21 +49,12 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
         name="kick",
         usage="<username> reason",
         description="Kick a user with a given reason.")
+    @has_role(crown_role_id)
     async def kick(self, ctx: Context, member: Member = None, *reason: str):
         """Kick a user with a given reason."""
-        sender_max_role: Role = ctx.message.author.top_role
-
-        if sender_max_role.id != crown_role_id:
-
-            await ctx.send(
-                embed=create_embed(
-                    config=no_perms_config,
-                    no_perms_type='kick'
-                )
-            )
-
-        elif member is None or member == ctx.message.author:
+        if member is None or member == ctx.message.author:
             await ctx.channel.send("You cannot kick yourself ⚓ you stupid...")
+            return
 
         elif reason is None:
             await ctx.guild.kick(member, reason='Nothing')
@@ -84,21 +69,12 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
         name="strike",
         usage="<username> reason",
         description="Give a strike to a naughty user.")
+    @has_role(crown_role_id)
     async def strike(self, ctx: Context, member: Member = None, *reason: str):
         """Give a strike to a naughty user."""
-        sender_max_role: Role = ctx.message.author.top_role
-
-        if sender_max_role.id != crown_role_id:
-
-            await ctx.send(
-                embed=create_embed(
-                    config=no_perms_config,
-                    no_perms_type='strike'
-                )
-            )
-
-        elif member is None or member == ctx.message.author:
+        if member is None or member == ctx.message.author:
             await ctx.channel.send("Why would you strike yourself 🙄 ?")
+            return
 
         else:
             await self._strike_ban_user(ctx, member, reason)
@@ -106,24 +82,14 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
     @command(
         name="purge",
         usage="amount",
-        description="Clears a certain amount of users, can't delete those older than 14 days tho.")
+        description="Clears a certain amount of messages, can't delete those older than 14 days tho.")
+    @has_role(crown_role_id)
     async def purge(self, ctx: Context, amount: int):
-        """ Clears a certain amount of users, can't delete those older than 14 days tho. """
-        sender_max_role: Role = ctx.message.author.top_role
-
-        if sender_max_role.id != crown_role_id:
-
-            await ctx.send(
-                embed=create_embed(
-                    config=no_perms_config,
-                    no_perms_type='strike'
-                )
-            )
-        else:
-            await ctx.channel.purge(limit=amount)
+        """ Clears a certain amount of messages, can't delete those older than 14 days tho. """
+        await ctx.channel.purge(limit=amount)
 
     async def _strike_ban_user(self, ctx: Context, member: Member, *reason: str):
-        found = self.check_member_in_db(member)
+        found = self._check_member_in_db(member)
 
         if not found:
             users.insert({'id': member.id, 'strikeCount': 1})
@@ -176,8 +142,32 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
 
         await ctx.send("The naughty user has been warned, hope he gets the message 😑")
 
-    def check_member_in_db(self, member):
+    def _check_member_in_db(self, member):
         return users.search(UsersQuery.id == member.id)
+
+    @purge.error
+    async def purge_handler(self, ctx: Context, error: CommandError) -> None:
+        await self.invalid_perms_embed(ctx, 'purge')
+
+    @ban.error
+    async def ban_handler(self, ctx: Context, error: CommandError) -> None:
+        await self.invalid_perms_embed(ctx, 'ban')
+
+    @kick.error
+    async def kick_handler(self, ctx: Context, error: CommandError) -> None:
+        await self.invalid_perms_embed(ctx, 'kick')
+
+    @strike.error
+    async def strike_handler(self, ctx: Context, error: CommandError) -> None:
+        await self.invalid_perms_embed(ctx, 'strike')
+
+    async def invalid_perms_embed(self, ctx: Context, action: str) -> None:
+        await ctx.send(
+            embed=create_embed(
+                config=no_perms_config,
+                no_perms_type=action
+            )
+        )
 
 
 def setup(bot: Bot):

@@ -9,11 +9,11 @@ from discord.ext.commands import (
 )
 import time
 from random import choice
-from requests import get
 from config.main import tenor_key
 from json import loads
 from config.embed import gif_config
 from functions.embed_factory import create_embed
+from requests import get
 
 
 class FunCog(Cog, name="Fun Commands", description="Fun commands from your trusty Z Butler 💙"):
@@ -54,9 +54,11 @@ class FunCog(Cog, name="Fun Commands", description="Fun commands from your trust
 
         topic = " ".join(query)
 
-        r = get(
-            "https://g.tenor.com/v1/search?q=%s&key=%s&limit=%s" %
-            (topic, tenor_key, limit))
+        r = get("https://g.tenor.com/v1/search", {
+                'q': topic,
+                'key': tenor_key,
+                'limit': limit
+                })
 
         if r.status_code == 200:
             data = loads(r.content)
