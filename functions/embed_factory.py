@@ -4,17 +4,20 @@ from discord import Embed
 def create_embed(
         config: dict,
         reason: str = None,
-        action: str = None,
-        no_perms_type: str = None) -> Embed:
+        no_perms_type: str = None,
+        **fields: str) -> Embed:
 
     embed = init_embed(config)
 
-    if action is not None:
+    embed.set_author(name=config['author']['name'],
+                     icon_url=config['author']['icon_url'])
+
+    for f, v in fields.items():
 
         embed.add_field(
-            name="Action",
-            value=action,
-            inline=True
+            name=f,
+            value=v,
+            inline=False
         )
 
     if 'thumbnail_url' in config:
@@ -23,7 +26,7 @@ def create_embed(
             url=config["thumbnail_url"]
         )
 
-    if reason is not None:
+    if reason:
 
         embed.add_field(
             name="Reason", value=reason or "No reason given", inline=True)
@@ -32,14 +35,14 @@ def create_embed(
 
         embed.set_image(url=config["image_url"])
 
-    if no_perms_type is not None:
+    if no_perms_type:
 
         embed.set_footer(
             text=config['footer'][no_perms_type]['text'],
             icon_url=config['footer'][no_perms_type]['url']
         )
 
-    if 'footer' in config:
+    if not no_perms_type and 'footer' in config:
         embed.set_footer(
             text=config['footer']['text'],
             icon_url=config['footer']['url']

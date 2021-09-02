@@ -1,10 +1,15 @@
 from io import BytesIO
 
-from discord.ext.commands.errors import CommandError, CommandOnCooldown, MemberNotFound
-from functions.create_welcome_image import create_picture
-from discord import Member, Guild, File
+from discord import File, Guild, Member
 from discord.abc import GuildChannel
 from discord.ext.commands import Cog, Context
+from discord.ext.commands.errors import (CommandError, CommandOnCooldown,
+                                         MemberNotFound)
+from functions.create_welcome_image import create_picture
+from tinydb import Query, TinyDB
+
+users = TinyDB('database/db.json').table("users")
+UsersQuery = Query()
 
 
 class EventHandlers(Cog, name="Event handlers", description="Events fired when somethings kicks in the server."):
@@ -38,6 +43,8 @@ class EventHandlers(Cog, name="Event handlers", description="Events fired when s
     async def on_member_remove(self, member: Member):
         channel = member.guild.get_channel(self.out_channel)
         if channel is not None:
+            if users.contains((UsersQuery.id == member.id)):
+                users.remove(UsersQuery.id == member.id)
             await channel.send(content=f"<@{member.id}> has been mercylessly thrown into Oblivion ⚰, long forgotten.")
         else:
             print('channel is none or missing perms')

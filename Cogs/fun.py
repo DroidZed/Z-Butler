@@ -1,20 +1,20 @@
-from discord import Member
-from discord.ext.commands import (
-    BucketType,
-    cooldown,
-    Bot,
-    Cog,
-    command,
-    Context
-)
 import time
+from json import loads
 from random import choice
 from random import randint as rdn
-from config.main import tenor_key
-from json import loads
+
+from discord.ext.commands.errors import CommandError
+
 from config.embed import gif_config, how_gay
+from config.main import tenor_key
+from discord import Member
+from discord.ext.commands import (Bot, BucketType, Cog, Context, command,
+                                  cooldown)
 from functions.embed_factory import create_embed
 from requests import get
+
+from traceback import print_exception
+from sys import stderr
 
 
 class FunCog(
@@ -30,7 +30,7 @@ class FunCog(
              description="I think we got an imposter among us...",
              aliases=['sus', 'amogus', 'imposter'])
     @cooldown(1, 5, BucketType.user)
-    async def SUS(self, ctx: Context, member: Member = None):
+    async def SUS(self, ctx: Context, member: Member = None) -> None:
         member = member or ctx.message.author
 
         t = f".      　。　　　　•　    　  ﾟ　　    。"
@@ -50,7 +50,7 @@ class FunCog(
              aliases=['gif?']
              )
     @cooldown(1, 15, BucketType.user)
-    async def look_for_gif(self, ctx: Context, *query: str):
+    async def look_for_gif(self, ctx: Context, *query: str) -> None:
         limit = 100
 
         topic = " ".join(query)
@@ -80,7 +80,7 @@ class FunCog(
         usage="",
         description="Show the bot's ping.")
     @cooldown(1, 2, BucketType.member)
-    async def ping(self, ctx):
+    async def ping(self, ctx) -> None:
         before = time.monotonic()
 
         message = await ctx.send("🏓 Pong !")
@@ -94,7 +94,7 @@ class FunCog(
         usage="<username>",
         description="Checks how gay a user is, ew...",
         aliases=['hg'])
-    async def howgay(self, ctx: Context, member: Member = None):
+    async def how_gay(self, ctx: Context, member: Member = None) -> None:
 
         if member is None:
             member = ctx.author
@@ -116,7 +116,7 @@ class FunCog(
 
         await ctx.send(embed=embed)
 
-    def _gay_commentary(self, rate: int):
+    def _gay_commentary(self, rate: int) -> str:
 
         if not rate:
             return "That's a real human 😉"
@@ -131,6 +131,11 @@ class FunCog(
             return 'Utterly disgusting...🤮'
         else:
             return '**YOU ARE AN ABOMINATION, YOU HAVE NO RIGHT TO LIVE !! DIE YOU MONSTER !!**'
+
+    @how_gay.error
+    async def how_gay_handler(self, ctx: Context, error: CommandError) -> None:
+        print_exception(
+            type(error), error, error.__traceback__, file=stderr)
 
 
 def setup(bot: Bot):

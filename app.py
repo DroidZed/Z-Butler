@@ -1,14 +1,10 @@
 import os
+
 import discord
 from discord.ext import commands
 from pretty_help import DefaultMenu, PrettyHelp
 
-from config.main import (
-    token,
-    bot_prefix,
-    owner_id,
-    color
-)
+from config.main import bot_prefix, color, owner_id, token
 
 menu = DefaultMenu(page_left="⬅", page_right="➡",
                    remove="⛔", active_time=120)

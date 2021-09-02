@@ -1,6 +1,4 @@
-from random import choice
 from config.main import color
-from discord import Member
 
 no_perms_config = {
     "title": "You SUSSY BAKA !",
@@ -124,4 +122,23 @@ def how_gay(username: str, mention: str, rate: int, msg: str) -> dict:
             "name": "The Z Butler",
             "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg"
         }
+    }
+
+
+def help_config() -> dict:
+
+    return {
+        "title": f"Help Command",
+        "color": color,
+        "description": "Showing you the list of my powers, write Zhelp <command name> | <category name> for more info on those.",
+        "thumbnail_url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif",
+        "author": {
+            "name": "The Z Butler",
+            "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg"
+        },
+        'footer': {
+            'text': 'Commands provided by The Z Butler 💙',
+            'url': 'https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg'
+        }
+
     }

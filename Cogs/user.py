@@ -1,9 +1,7 @@
-from discord import Member
-from discord.ext.commands import Cog, Context, Bot, command, BucketType
-from discord.ext.commands.core import cooldown
-
 from config.embed import pfp_config
-
+from discord import Member
+from discord.ext.commands import Bot, BucketType, Cog, Context, command
+from discord.ext.commands.core import cooldown
 from functions.embed_factory import create_embed
 
 

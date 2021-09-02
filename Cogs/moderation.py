@@ -1,21 +1,16 @@
-from discord.ext.commands.core import has_role
-from discord.ext.commands.errors import CommandError
-from tinydb import TinyDB, Query
-from discord import Member
-from tinydb.table import Document
-from tinydb.operations import increment
-from discord.ext.commands import Cog, Context, Bot, command
+from sys import stderr
+from traceback import print_exception
 
-from config.embed import (
-    ban_config,
-    strike_config
-)
-
-from config.embed import no_perms_config
-
-from functions.embed_factory import create_embed
-
+from config.embed import ban_config, no_perms_config, strike_config
 from config.main import crown_role_id
+from discord import Member
+from discord.ext.commands import Bot, Cog, Context, command
+from discord.ext.commands.core import has_role
+from discord.ext.commands.errors import CommandError, MissingRole
+from functions.embed_factory import create_embed
+from tinydb import Query, TinyDB
+from tinydb.operations import increment
+from tinydb.table import Document
 
 users = TinyDB('database/db.json').table("users")
 UsersQuery = Query()
@@ -26,7 +21,7 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
     def __init__(self, bot: Bot):
         self.bot: Bot = bot
 
-    # ban kick warn
+    # ban kick warn purge
 
     @command(
         name="ban",
@@ -39,10 +34,7 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
             return
 
         else:
-            if users.contains((UsersQuery.id == member.id)):
-                users.remove(UsersQuery.id == member.id)
-
-            await self._ban_user(ctx, member, reason)
+            await self._ban_user(ctx, member,  ' '.join(reason))
 
     @command(
         name="kick",
@@ -74,7 +66,7 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
             return
 
         else:
-            await self._strike_ban_user(ctx, member, reason)
+            await self._strike_ban_user(ctx, member,  ' '.join(reason))
 
     @command(
         name="purge",
@@ -84,7 +76,7 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
     async def purge(self, ctx: Context, amount: int):
         await ctx.channel.purge(limit=amount)
 
-    async def _strike_ban_user(self, ctx: Context, member: Member, *reason: str):
+    async def _strike_ban_user(self, ctx: Context, member: Member, reason: str):
         found = self._check_member_in_db(member)
 
         if not found:
@@ -93,8 +85,8 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
             await member.send(
                 embed=create_embed(
                     config=strike_config(2),
-                    action='**STRIKE**',
-                    reason=" ".join(reason) if reason else 'Nothing',
+                    reason=reason or 'Nothing',
+                    Action='**STRIKE**',
                 )
             )
             await ctx.send("The naughty user has been warned, hope he gets the message 😑")
@@ -106,19 +98,18 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
         else:
             await self._strike_user(ctx, member, reason)
 
-    async def _ban_user(self, ctx: Context, member: Member, *reason: str):
-        rs = " ".join(reason)
+    async def _ban_user(self, ctx: Context, member: Member, reason: str):
         await member.send(
             embed=create_embed(
                 config=ban_config,
-                action='**BAN**',
-                reason=rs if reason else '3 Strikes'
+                reason=reason or '3 Strikes',
+                Action='**BAN**'
             )
         )
-        await ctx.send(f"User <@{member.id}> has been banned for {rs if reason else '3 Strikes'} 🔨")
-        await ctx.guild.ban(member, reason=rs if reason else '3 Strikes')
+        await ctx.send(f"User <@{member.id}> has been banned for {reason or '3 Strikes'} 🔨")
+        await ctx.guild.ban(member, reason=reason or '3 Strikes')
 
-    async def _strike_user(self, ctx: Context, member: Member, *reason: str):
+    async def _strike_user(self, ctx: Context, member: Member, reason: str):
 
         found_member_id = users.update(
             increment('strikeCount'),
@@ -126,37 +117,51 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
 
         target: Document = users.get(doc_id=found_member_id)
 
-        rs = " ".join(reason)
-
         await member.send(
             embed=create_embed(
                 config=strike_config(target['strikeCount'] - 1),
-                action='***STRIKE***',
-                reason=rs or "Nothing",
+                reason=reason or "Nothing",
+                Action='***STRIKE***',
             )
         )
 
         await ctx.send("The naughty user has been warned, hope he gets the message 😑")
 
-    def _check_member_in_db(self, member):
-        return users.search(UsersQuery.id == member.id)
+    # error handlers
 
     @purge.error
     async def purge_handler(self, ctx: Context, error: CommandError) -> None:
-        await self.invalid_perms_embed(ctx, 'purge')
+        if isinstance(error, MissingRole):
+            await self.invalid_perms_embed(ctx, 'purge')
+        else:
+            print_exception(
+                type(error), error, error.__traceback__, file=stderr)
 
     @ban.error
     async def ban_handler(self, ctx: Context, error: CommandError) -> None:
-        await self.invalid_perms_embed(ctx, 'ban')
+        if isinstance(error, MissingRole):
+            await self.invalid_perms_embed(ctx, 'ban')
+        else:
+            print_exception(
+                type(error), error, error.__traceback__, file=stderr)
 
     @kick.error
     async def kick_handler(self, ctx: Context, error: CommandError) -> None:
-        await self.invalid_perms_embed(ctx, 'kick')
+        if isinstance(error, MissingRole):
+            await self.invalid_perms_embed(ctx, 'kick')
+        else:
+            print_exception(
+                type(error), error, error.__traceback__, file=stderr)
 
     @strike.error
     async def strike_handler(self, ctx: Context, error: CommandError) -> None:
-        await self.invalid_perms_embed(ctx, 'strike')
+        if isinstance(error, MissingRole):
+            await self.invalid_perms_embed(ctx, 'strike')
+        else:
+            print_exception(
+                type(error), error, error.__traceback__, file=stderr)
 
+    # util functions
     async def invalid_perms_embed(self, ctx: Context, action: str) -> None:
         await ctx.send(
             embed=create_embed(
@@ -164,6 +169,9 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
                 no_perms_type=action
             )
         )
+
+    def _check_member_in_db(self, member):
+        return users.search(UsersQuery.id == member.id)
 
 
 def setup(bot: Bot):
