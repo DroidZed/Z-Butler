@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from discord.ext.commands.errors import CommandError, CommandOnCooldown, MemberNotFound, MissingPermissions
+from discord.ext.commands.errors import CommandError, CommandOnCooldown, MemberNotFound
 from functions.create_welcome_image import create_picture
 from discord import Member, Guild, File
 from discord.abc import GuildChannel
