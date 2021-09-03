@@ -137,7 +137,7 @@ def help_config() -> dict:
             "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg"
         },
         'footer': {
-            'text': 'Commands provided by The Z Butler 💙',
+            'text': 'The power of The Z Butler 🔱',
             'url': 'https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg'
         }
 

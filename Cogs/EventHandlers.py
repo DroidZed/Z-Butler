@@ -1,4 +1,6 @@
 from io import BytesIO
+from sys import stderr
+from traceback import print_exception
 
 from discord import File, Guild, Member
 from discord.abc import GuildChannel
@@ -25,7 +27,7 @@ class EventHandlers(Cog, name="Event handlers", description="Events fired when s
 
         channel: GuildChannel = guild.get_channel(self.out_channel)
 
-        if channel is not None:
+        if channel:
 
             with BytesIO() as image_binary:
 
@@ -34,19 +36,32 @@ class EventHandlers(Cog, name="Event handlers", description="Events fired when s
 
                 image_binary.seek(0)
 
-                await channel.send(content=f"👋🏻 <@{member.id}> finally landed on Dragon's Heart !! Bring the beer 🍻",
-                                   file=File(fp=image_binary, filename=f'{member.name}-welcome.png'))
+                await channel.send(
+                    content=f"👋🏻 <@{member.id}> finally landed on Dragon's Heart !! Bring the beer 🍻",
+                    file=File(
+                        fp=image_binary,
+                        filename=f'{member.name}-welcome.png'
+                    )
+                )
         else:
+
             print('channel is none or missing perms')
 
     @Cog.listener()
     async def on_member_remove(self, member: Member):
+
         channel = member.guild.get_channel(self.out_channel)
-        if channel is not None:
+
+        if channel:
+
             if users.contains((UsersQuery.id == member.id)):
+
                 users.remove(UsersQuery.id == member.id)
+
             await channel.send(content=f"<@{member.id}> has been mercylessly thrown into Oblivion ⚰, long forgotten.")
+
         else:
+
             print('channel is none or missing perms')
 
     @Cog.listener()
@@ -55,8 +70,12 @@ class EventHandlers(Cog, name="Event handlers", description="Events fired when s
         if isinstance(error, MemberNotFound):
             await ctx.send('¯\\_(ツ)_/¯ The user provided could not be found, try again...')
 
-        if isinstance(error, CommandOnCooldown):
+        elif isinstance(error, CommandOnCooldown):
             await ctx.send(f'⏳ Hold your horses, this command is on hold, you can use it in {round(error.retry_after, 2)} secs.')
+
+        else:
+            print_exception(
+                type(error), error, error.__traceback__, file=stderr)
 
 
 def setup(bot):

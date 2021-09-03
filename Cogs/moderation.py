@@ -1,6 +1,3 @@
-from sys import stderr
-from traceback import print_exception
-
 from config.embed import ban_config, no_perms_config, strike_config
 from config.main import crown_role_id
 from discord import Member
@@ -133,33 +130,21 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
     async def purge_handler(self, ctx: Context, error: CommandError) -> None:
         if isinstance(error, MissingRole):
             await self.invalid_perms_embed(ctx, 'purge')
-        else:
-            print_exception(
-                type(error), error, error.__traceback__, file=stderr)
 
     @ban.error
     async def ban_handler(self, ctx: Context, error: CommandError) -> None:
         if isinstance(error, MissingRole):
             await self.invalid_perms_embed(ctx, 'ban')
-        else:
-            print_exception(
-                type(error), error, error.__traceback__, file=stderr)
 
     @kick.error
     async def kick_handler(self, ctx: Context, error: CommandError) -> None:
         if isinstance(error, MissingRole):
             await self.invalid_perms_embed(ctx, 'kick')
-        else:
-            print_exception(
-                type(error), error, error.__traceback__, file=stderr)
 
     @strike.error
     async def strike_handler(self, ctx: Context, error: CommandError) -> None:
         if isinstance(error, MissingRole):
             await self.invalid_perms_embed(ctx, 'strike')
-        else:
-            print_exception(
-                type(error), error, error.__traceback__, file=stderr)
 
     # util functions
     async def invalid_perms_embed(self, ctx: Context, action: str) -> None:

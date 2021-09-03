@@ -35,8 +35,7 @@ class UserCog(Cog, name="User-related Commands", description="User commands for 
         name="greet",
         usage="<username>",
         description="Greet a given user",
-        aliases=['grt']
-    )
+        aliases=['grt'])
     @cooldown(1, 3, BucketType.user)
     async def hello(self, ctx: Context, *, member: Member = None):
         member = member or ctx.author
