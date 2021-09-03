@@ -17,7 +17,7 @@ def create_embed(
         embed.add_field(
             name=f,
             value=v,
-            inline=False
+            inline=(reason != None)
         )
 
     if 'thumbnail_url' in config:

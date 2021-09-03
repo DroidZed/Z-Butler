@@ -2,21 +2,17 @@ import os
 
 import discord
 from discord.ext import commands
-from pretty_help import DefaultMenu, PrettyHelp
 
-from config.main import bot_prefix, color, owner_id, token
-
-menu = DefaultMenu(page_left="⬅", page_right="➡",
-                   remove="⛔", active_time=120)
-
-# Custom ending note
-ending_note = "The power of {ctx.bot.user.name} 🔱"
+from classes.help import ZedHelpCommand
+from config.main import bot_prefix, owner_id, token
+from keep_alive import keep_alive
 
 # Intents
 intents = discord.Intents.all()
 # The bot
-bot = commands.Bot(command_prefix=bot_prefix, intents=intents,
-                   owner_id=owner_id, help_command=PrettyHelp(menu=menu, color=color, ending_note=ending_note))
+bot = commands.Bot(command_prefix=bot_prefix,
+                   intents=intents, owner_id=owner_id,
+                   help_command=ZedHelpCommand())
 
 # Load cogs
 if __name__ == '__main__':
@@ -29,6 +25,8 @@ if __name__ == '__main__':
 async def on_ready():
     print(f"We have logged in as {bot.user}")
     print(f" Discord version = {discord.__version__}")
+
+    # keep_alive() TODO: enable for production !
 
     await bot.change_presence(
         activity=discord.Game(

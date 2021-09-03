@@ -18,9 +18,8 @@ def create_picture(username: str, discriminator: str) -> Image:
 
         font = _create_font("./assets/fonts/CabinSketch-Regular.ttf")
 
-        text = _update_text_and_offset(f'{username}#{discriminator}', 305)[0]
-
-        offset = _update_text_and_offset(f'{username}#{discriminator}', 305)[1]
+        text, offset = _update_text_and_offset(
+            f'{username}#{discriminator}', 305)
 
         x, y = (i.size[0] // 2) - offset, 700
 
@@ -51,7 +50,7 @@ def create_picture(username: str, discriminator: str) -> Image:
     return i
 
 
-def _update_text_and_offset(text: str, offset: int) -> tuple:
+def _update_text_and_offset(text: str, offset: int) -> tuple[str, int]:
 
     name_length = len(text.split('#')[0])
 

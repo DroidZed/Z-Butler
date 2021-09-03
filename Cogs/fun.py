@@ -132,11 +132,6 @@ class FunCog(
         else:
             return '**YOU ARE AN ABOMINATION, YOU HAVE NO RIGHT TO LIVE !! DIE YOU MONSTER !!**'
 
-    @how_gay.error
-    async def how_gay_handler(self, ctx: Context, error: CommandError) -> None:
-        print_exception(
-            type(error), error, error.__traceback__, file=stderr)
-
 
 def setup(bot: Bot):
     bot.add_cog(FunCog(Cog))
