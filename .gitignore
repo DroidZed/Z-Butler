@@ -1,3 +1,6 @@
+## ENV VARS
+.env
+
 # Compiled python files
 */__pycache__/
 
