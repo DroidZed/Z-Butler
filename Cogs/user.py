@@ -1,8 +1,9 @@
-from config.embed import pfp_config
+from config.embed.pfp import pfp_config
 from discord import Member
 from discord.ext.commands import Bot, BucketType, Cog, Context, command
 from discord.ext.commands.core import cooldown
 from functions.embed_factory import create_embed
+from config.main import PREFIX
 
 
 class UserCog(Cog, name="User-related Commands", description="User commands for everyone"):
@@ -12,9 +13,10 @@ class UserCog(Cog, name="User-related Commands", description="User commands for 
         self._last_member = None
 
     @command(
-        name="pfp",
-        usage="<username>",
-        description="Display the requested user's profile picture.")
+        name="pic",
+        usage=f"{PREFIX}pic `username`",
+        description="Display the requested user's profile picture.",
+        aliases=['pfp'])
     @cooldown(1, 5, BucketType.user)
     async def pfp(self, ctx: Context, member: Member = None):
         if not member:
@@ -33,7 +35,7 @@ class UserCog(Cog, name="User-related Commands", description="User commands for 
 
     @command(
         name="greet",
-        usage="<username>",
+        usage=f"{PREFIX}greet `username`",
         description="Greet a given user",
         aliases=['grt'])
     @cooldown(1, 3, BucketType.user)

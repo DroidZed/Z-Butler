@@ -1,7 +1,8 @@
 from discord.abc import Messageable
-from config.embed import help_config
-from discord.ext.commands import HelpCommand
+from config.embed.help import help_config
+from discord.ext.commands import HelpCommand, Cog, Command
 from functions.embed_factory import create_embed
+from discord import Embed
 
 
 class ZedHelpCommand(HelpCommand):
@@ -14,22 +15,49 @@ class ZedHelpCommand(HelpCommand):
     async def send_bot_help(self, mapping):
         dest: Messageable = self.get_destination()
 
-        dic = {cog.qualified_name: ' '.join(
-            [f'`{command.name}`' for command in mapping[cog]]
-        )
-            for cog in mapping if cog}.pop('Event Handlers')
+        dic = {
+            cog.qualified_name: ' '.join(
+                f'`{command.name}`' for command in mapping[cog]
+            )
+            for cog in mapping
+            if cog
+        }
 
-        config = help_config()
-        embed = create_embed(config=config, reason=None,
+        dic.pop('Event Handlers')
+
+        embed = create_embed(config=help_config(),
+                             reason=None,
                              no_perms_type=None, **dic)
 
         await dest.send(embed=embed)
 
-    async def send_cog_help(self, cog):
-        return await super().send_cog_help(cog)
+    async def send_cog_help(self, cog: Cog):
+        dest: Messageable = self.get_destination()
 
-    async def send_group_help(self, group):
-        return await super().send_group_help(group)
+        cmds = cog.get_commands()
 
-    async def send_command_help(self, command):
-        return await super().send_command_help(command)
+        names = [n.name for n in cmds]
+
+        desc = [f'`{n.description}`' for n in cmds]
+
+        dic = dict(zip(names, desc))
+
+        embed = create_embed(config=help_config(cog.qualified_name, cog.description),
+                             reason=None,
+                             no_perms_type=None, **dic)
+
+        await dest.send(embed=embed)
+
+    async def send_command_help(self, command: Command):
+        dest: Messageable = self.get_destination()
+
+        dic = {
+            "Aliases": " | ".join(f'`{a}`' for a in command.aliases if a),
+            "Usage": command.usage,
+        }
+
+        embed = create_embed(config=help_config(command.name, command.description),
+                             reason=None,
+                             no_perms_type=None, **dic)
+
+        await dest.send(embed=embed)

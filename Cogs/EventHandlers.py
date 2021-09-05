@@ -5,7 +5,7 @@ from traceback import print_exception
 from discord import File, Guild, Member
 from discord.abc import GuildChannel
 from discord.ext.commands import Cog, Context
-from discord.ext.commands.errors import (CommandError, CommandOnCooldown,
+from discord.ext.commands.errors import (CommandError, CommandNotFound, CommandOnCooldown,
                                          MemberNotFound)
 from functions.create_welcome_image import create_picture
 from tinydb import Query, TinyDB
@@ -14,7 +14,7 @@ users = TinyDB('database/db.json').table("users")
 UsersQuery = Query()
 
 
-class EventHandlers(Cog, name="Event handlers", description="Events fired when somethings kicks in the server."):
+class EventHandlers(Cog, name="Event Handlers", description="Events fired when somethings kicks in the server."):
 
     def __init__(self, bot):
         self.bot = bot
@@ -72,6 +72,9 @@ class EventHandlers(Cog, name="Event handlers", description="Events fired when s
 
         elif isinstance(error, CommandOnCooldown):
             await ctx.send(f'⏳ Hold your horses, this command is on hold, you can use it in {round(error.retry_after, 2)} secs.')
+
+        elif isinstance(error, CommandNotFound):
+            await ctx.send('Nope, no such command was found *sight* 💨')
 
         else:
             print_exception(

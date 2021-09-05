@@ -4,14 +4,14 @@ import discord
 from discord.ext import commands
 
 from classes.help import ZedHelpCommand
-from config.main import bot_prefix, owner_id, token
+from config.main import PREFIX, OWNER_ID, TOKEN
 from keep_alive import keep_alive
 
 # Intents
 intents = discord.Intents.all()
 # The bot
-bot = commands.Bot(command_prefix=bot_prefix,
-                   intents=intents, owner_id=owner_id,
+bot = commands.Bot(command_prefix=PREFIX,
+                   intents=intents, owner_id=OWNER_ID,
                    help_command=ZedHelpCommand())
 
 # Load cogs
@@ -33,4 +33,4 @@ async def on_ready():
             name=f"{bot.command_prefix}help - By DroidZed"
         )
     )
-bot.run(token)
+bot.run(TOKEN)

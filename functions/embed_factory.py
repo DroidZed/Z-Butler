@@ -12,13 +12,15 @@ def create_embed(
     embed.set_author(name=config['author']['name'],
                      icon_url=config['author']['icon_url'])
 
-    for f, v in fields.items():
+    if fields:
 
-        embed.add_field(
-            name=f,
-            value=v,
-            inline=(reason != None)
-        )
+        for f, v in fields.items():
+
+            embed.add_field(
+                name=f,
+                value=v or '`Nothing to show...`',
+                inline=(reason != None)
+            )
 
     if 'thumbnail_url' in config:
 
