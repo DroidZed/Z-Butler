@@ -1,17 +1,17 @@
-from test import eight_ball_api
+from asyncio import sleep
+from config.embed.eight_ball import eight_ball_config
 import time
-from json import loads
-from random import choice
 from random import randint as rdn
+from functions.eight_ball_api import eight_ball_api
 
 from config.embed.gif import gif_config
 from config.embed.how_gay import how_gay_config
-from config.main import TENOR_KEY, PREFIX
-from discord import Member
+from config.main import PREFIX, TENOR_KEY
+from discord import Member, Message
 from discord.ext.commands import (Bot, BucketType, Cog, Context, command,
                                   cooldown)
 from functions.embed_factory import create_embed
-from requests import get
+from functions.find_gif import find_gif
 
 
 class FunCog(
@@ -19,7 +19,7 @@ class FunCog(
         name="Fun Commands",
         description="Fun commands from your trusty Z Butler 💙"):
 
-    def __init__(self, bot):
+    def __init__(self, bot: Bot):
         self.bot = bot
 
     @command(name='SUS',
@@ -48,19 +48,10 @@ class FunCog(
              )
     @cooldown(1, 15, BucketType.user)
     async def look_for_gif(self, ctx: Context, *query: str) -> None:
-        limit = 100
 
         topic = " ".join(query)
 
-        r = get("https://g.tenor.com/v1/search", {
-                'q': topic,
-                'key': TENOR_KEY,
-                'limit': limit
-                })
-
-        if r.status_code == 200:
-            data = loads(r.content)
-            result_set = choice(data['results'])
+        if result_set := await find_gif(topic):
             await ctx.send(
                 embed=create_embed(
                     config=gif_config(url=result_set['media'][0]['gif']['url'],
@@ -140,8 +131,38 @@ class FunCog(
             await ctx.send("No question provided 🙄")
         else:
             qst = " ".join(question)
-            api: dict = await eight_ball_api(qst)
-            await ctx.send(api['body']['answer'])
+            if api_resp := await eight_ball_api(qst):
+
+                if api_resp['success']:
+
+                    config = gif_config(
+                        "https://media.tenor.com/images/67155da2720fa29220200465f1a4bd84/tenor.gif",
+                        "Z Butler",
+                        "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                        "8-Ball Game",
+                        "https://tenor.com/view/skeleton-eightball-8ball-prediction-horoscope-gif-13531133"
+                    )
+
+                    config["description"] = "Thinking..."
+
+                    await ctx.send(embed=create_embed(config), delete_after=5)
+
+                    await sleep(5)
+
+                    await ctx.send(embed=create_embed(
+                        eight_ball_config(
+                            ctx.message.author.mention, api_resp['body']['answer']),
+                        None,
+                        None)
+                    )
+
+                else:
+                    await ctx.send("I wasn't succesful at determining an answer.")
+                    return
+
+            else:
+                await ctx.send("Something's wrong I can feel it...")
+                return
 
 
 def setup(bot: Bot):
