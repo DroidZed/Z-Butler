@@ -1,20 +1,17 @@
+from test import eight_ball_api
 import time
 from json import loads
 from random import choice
 from random import randint as rdn
 
-from discord.ext.commands.errors import CommandError
-
-from config.embed import gif_config, how_gay
-from config.main import tenor_key
+from config.embed.gif import gif_config
+from config.embed.how_gay import how_gay_config
+from config.main import TENOR_KEY, PREFIX
 from discord import Member
 from discord.ext.commands import (Bot, BucketType, Cog, Context, command,
                                   cooldown)
 from functions.embed_factory import create_embed
 from requests import get
-
-from traceback import print_exception
-from sys import stderr
 
 
 class FunCog(
@@ -26,7 +23,7 @@ class FunCog(
         self.bot = bot
 
     @command(name='SUS',
-             usage="<username>",
+             usage=f"{PREFIX}SUS `username`",
              description="I think we got an imposter among us...",
              aliases=['sus', 'amogus', 'imposter'])
     @cooldown(1, 5, BucketType.user)
@@ -45,7 +42,7 @@ class FunCog(
         await ctx.send(final)
 
     @command(name="gif_search",
-             usage="query",
+             usage=f"{PREFIX}gif_search query",
              description="Look for a gif about a certain topic",
              aliases=['gif?']
              )
@@ -57,7 +54,7 @@ class FunCog(
 
         r = get("https://g.tenor.com/v1/search", {
                 'q': topic,
-                'key': tenor_key,
+                'key': TENOR_KEY,
                 'limit': limit
                 })
 
@@ -77,7 +74,7 @@ class FunCog(
 
     @command(
         name="ping",
-        usage="",
+        usage=f"{PREFIX}ping",
         description="Show the bot's ping.")
     @cooldown(1, 2, BucketType.member)
     async def ping(self, ctx) -> None:
@@ -91,7 +88,7 @@ class FunCog(
 
     @command(
         name="howgay",
-        usage="<username>",
+        usage=f"{PREFIX}howgay `username`",
         description="Checks how gay a user is, ew...",
         aliases=['hg'])
     async def how_gay(self, ctx: Context, member: Member = None) -> None:
@@ -103,10 +100,10 @@ class FunCog(
 
         msg = self._gay_commentary(rate)
 
-        config = how_gay(username=member.name,
-                         mention=member.mention,
-                         rate=rate,
-                         msg=msg)
+        config = how_gay_config(username=member.name,
+                                mention=member.mention,
+                                rate=rate,
+                                msg=msg)
 
         if rate > 65:
 
@@ -131,6 +128,20 @@ class FunCog(
             return 'Utterly disgusting...🤮'
         else:
             return '**YOU ARE AN ABOMINATION, YOU HAVE NO RIGHT TO LIVE !! DIE YOU MONSTER !!**'
+
+    @command(
+        name="8ball",
+        usage=f"{PREFIX}8ball `question`",
+        description="Ask the magical 8 ball about anything.",
+        aliases=['8b'])
+    async def _8_ball(self, ctx: Context, *question: str) -> None:
+
+        if not question:
+            await ctx.send("No question provided 🙄")
+        else:
+            qst = " ".join(question)
+            api: dict = await eight_ball_api(qst)
+            await ctx.send(api['body']['answer'])
 
 
 def setup(bot: Bot):
