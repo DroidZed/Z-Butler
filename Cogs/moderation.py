@@ -1,5 +1,7 @@
-from config.embed import ban_config, no_perms_config, strike_config
-from config.main import crown_role_id
+from config.embed.ban import ban_config
+from config.embed.no_perms import no_perms_config
+from config.embed.strike import strike_config
+from config.main import CROWN_ROLE_ID, PREFIX
 from discord import Member
 from discord.ext.commands import Bot, Cog, Context, command
 from discord.ext.commands.core import has_role
@@ -22,9 +24,9 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
 
     @command(
         name="ban",
-        usage="<username> reason",
+        usage=f"{PREFIX}ban `username` `reason`",
         description="Ban a user for a specific reason.")
-    @has_role(crown_role_id)
+    @has_role(CROWN_ROLE_ID)
     async def ban(self, ctx: Context, member: Member = None, *reason: str):
         if member is None or member == ctx.message.author:
             await ctx.channel.send("No user provided 🙄 / You cannot ban yourself ⚓")
@@ -35,9 +37,9 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
 
     @command(
         name="kick",
-        usage="<username> reason",
+        usage=f"{PREFIX}kick `username` `reason`",
         description="Kick a user with a given reason.")
-    @has_role(crown_role_id)
+    @has_role(CROWN_ROLE_ID)
     async def kick(self, ctx: Context, member: Member = None, *reason: str):
         if member is None or member == ctx.message.author:
             await ctx.channel.send("You cannot kick yourself ⚓ you stupid...")
@@ -54,9 +56,9 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
 
     @command(
         name="strike",
-        usage="<username> reason",
+        usage=f"{PREFIX}strike `username` `reason`",
         description="Give a strike to a naughty user.")
-    @has_role(crown_role_id)
+    @has_role(CROWN_ROLE_ID)
     async def strike(self, ctx: Context, member: Member = None, *reason: str):
         if member is None or member == ctx.message.author:
             await ctx.channel.send("Why would you strike yourself 🙄 ?")
@@ -67,9 +69,9 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
 
     @command(
         name="purge",
-        usage="amount",
-        description="Clears a certain amount of messages, can't delete those older than 14 days tho.")
-    @has_role(crown_role_id)
+        usage=f"{PREFIX}purge `amount`",
+        description="Clears a certain amount of messages, can't delete those older than 14 days though.")
+    @has_role(CROWN_ROLE_ID)
     async def purge(self, ctx: Context, amount: int):
         await ctx.channel.purge(limit=amount)
 
