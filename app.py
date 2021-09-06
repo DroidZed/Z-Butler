@@ -5,7 +5,6 @@ from discord.ext import commands
 
 from classes.help import ZedHelpCommand
 from config.main import PREFIX, OWNER_ID, TOKEN
-from keep_alive import keep_alive
 
 # Intents
 intents = discord.Intents.all()
@@ -25,8 +24,6 @@ if __name__ == '__main__':
 async def on_ready():
     print(f"We have logged in as {bot.user}")
     print(f" Discord version = {discord.__version__}")
-
-    # keep_alive() TODO: enable for production !
 
     await bot.change_presence(
         activity=discord.Game(
