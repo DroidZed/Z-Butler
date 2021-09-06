@@ -5,7 +5,7 @@ from discord.ext import commands
 from discord import Intents, Game, __version__
 from classes.help import ZedHelpCommand
 from config.main import PREFIX, OWNER_ID, TOKEN
-from classes.print_codes import (GREEN, NOCOLOR, ITALIC, NORMAL, RED, BLUE)
+from classes.print_codes import (GREEN, NOCOLOR, ITALIC, NORMAL, CYAN, BLUE)
 
 # Intents
 intents = Intents.all()
@@ -25,7 +25,7 @@ if __name__ == '__main__':
 async def on_ready():
     print("/"*39)
     print(" ----------\\")
-    print(f" |       {RED}*{NOCOLOR}  |         /\\")
+    print(f" |       {CYAN}*{NOCOLOR}  |         /\\")
     print(" --------   |        /  \\")
     print("       /   /         \\   \\")
     print("      /   /          /   /")
