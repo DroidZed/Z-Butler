@@ -8,7 +8,6 @@ name = "pypi"
 python-decouple = "*"
 tinydb = "*"
 pillow = "*"
-flask = "*"
 httpx = "*"
 
 [dev-packages]
