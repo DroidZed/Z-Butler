@@ -1,13 +1,14 @@
 import os
+from platform import python_version
 
-import discord
 from discord.ext import commands
-
+from discord import Intents, Game, __version__
 from classes.help import ZedHelpCommand
 from config.main import PREFIX, OWNER_ID, TOKEN
+from classes.print_codes import (GREEN, NOCOLOR, ITALIC, NORMAL, RED, BLUE)
 
 # Intents
-intents = discord.Intents.all()
+intents = Intents.all()
 # The bot
 bot = commands.Bot(command_prefix=PREFIX,
                    intents=intents, owner_id=OWNER_ID,
@@ -22,11 +23,22 @@ if __name__ == '__main__':
 
 @bot.event
 async def on_ready():
-    print(f"We have logged in as {bot.user}")
-    print(f" Discord version = {discord.__version__}")
+    print("/"*39)
+    print(" ----------\\")
+    print(f" |       {RED}*{NOCOLOR}  |         /\\")
+    print(" --------   |        /  \\")
+    print("       /   /         \\   \\")
+    print("      /   /          /   /")
+    print(f"     /   / {BLUE}The Z Bot{NOCOLOR} \\   \\")
+    print("    |   -------------/   /")
+    print(f"    |       {GREEN}ONLINE{NOCOLOR}      /")
+    print("     ------------------")
+    print(f"| Discord version: {__version__}               |", end="\n")
+    print(f"| Running under: {ITALIC}Python v{python_version()}{NORMAL}         |", end="\n")
+    print("/"*39)
 
     await bot.change_presence(
-        activity=discord.Game(
+        activity=Game(
             name=f"{bot.command_prefix}help - By DroidZed"
         )
     )
