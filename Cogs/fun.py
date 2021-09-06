@@ -1,15 +1,15 @@
-from asyncio import sleep
-from config.embed.eight_ball import eight_ball_config
 import time
+from asyncio import sleep
 from random import randint as rdn
-from functions.eight_ball_api import eight_ball_api
 
+from config.embed.eight_ball import eight_ball_config
 from config.embed.gif import gif_config
 from config.embed.how_gay import how_gay_config
-from config.main import PREFIX, TENOR_KEY
-from discord import Member, Message
+from config.main import PREFIX
+from discord import Member
 from discord.ext.commands import (Bot, BucketType, Cog, Context, command,
                                   cooldown)
+from functions.eight_ball_api import eight_ball_api
 from functions.embed_factory import create_embed
 from functions.find_gif import find_gif
 
@@ -125,6 +125,7 @@ class FunCog(
         usage=f"{PREFIX}8ball `question`",
         description="Ask the magical 8 ball about anything.",
         aliases=['8b'])
+    @cooldown(1, 5, BucketType.member)
     async def _8_ball(self, ctx: Context, *question: str) -> None:
 
         if not question:

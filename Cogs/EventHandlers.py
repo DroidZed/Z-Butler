@@ -5,9 +5,10 @@ from traceback import print_exception
 from discord import File, Guild, Member
 from discord.abc import GuildChannel
 from discord.ext.commands import Cog, Context
-from discord.ext.commands.errors import (CommandError, CommandNotFound, CommandOnCooldown,
-                                         MemberNotFound)
+from discord.ext.commands.errors import (CommandError, CommandNotFound,
+                                         CommandOnCooldown, MemberNotFound)
 from functions.create_welcome_image import create_picture
+from httpx import ReadTimeout
 from tinydb import Query, TinyDB
 
 users = TinyDB('database/db.json').table("users")
@@ -75,6 +76,9 @@ class EventHandlers(Cog, name="Event Handlers", description="Events fired when s
 
         elif isinstance(error, CommandNotFound):
             await ctx.send('Nope, no such command was found *sight* 💨')
+
+        elif isinstance(error, ReadTimeout):
+            await ctx.send("Command timed out, please try again ❌")
 
         else:
             print_exception(
