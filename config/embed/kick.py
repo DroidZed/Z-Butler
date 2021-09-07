@@ -1,12 +1,10 @@
 from config.main import COLOR
 
 
-def eight_ball_config(mention: str, answer: str) -> dict:
-
+def kick_config(message: str) -> dict:
     return {
-        "title": "8-Ball Game 🎱",
+        "description": f"{message}",
         "color": COLOR,
-        "description": f"{mention}, your answer is: ***__{answer}__***",
         "author": {
             "name": "The Z Butler",
             "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg"

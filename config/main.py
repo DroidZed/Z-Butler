@@ -3,9 +3,17 @@ from decouple import config
 # Get configuration from env.
 
 TOKEN = config('API_TOKEN')
-PREFIX = config('PREFIX')
-OWNER_ID = eval(config('OWNER_ID'))
-CROWN_ROLE_ID: int = eval(config('BLACK_HOLE_ID'))
-COLOR = eval(config('COLOR'))
+
 TENOR_KEY = config('TENOR_API_KEY')
+
 RAPID_API_KEY = config('RAPID_API_KEY')
+
+PREFIX = 'Z'
+
+OWNER_ID = 443064096124960779
+
+GUILD_ID = 696838752600981534
+
+BLACK_HOLE_ID = 778285282872393769
+
+COLOR = 0x0027b3
