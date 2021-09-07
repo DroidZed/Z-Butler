@@ -135,9 +135,6 @@ class FunCog(
             try:
                 qst = " ".join(question)
                 if api_resp := await eight_ball_api(qst):
-                    await ctx.send("I wasn't succesful at determining an answer.")
-                    return
-                else:
 
                     if api_resp['success']:
 
@@ -161,6 +158,9 @@ class FunCog(
                             None,
                             None)
                         )
+                else:
+                    await ctx.send("I wasn't succesful at determining an answer.")
+                    return
 
             except ReadTimeout:
                 await ctx.send("Command timed out, please try again ❌")
