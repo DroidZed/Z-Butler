@@ -134,7 +134,7 @@ class FunCog(
         else:
             try:
                 qst = " ".join(question)
-                if api_resp := not await eight_ball_api(qst):
+                if api_resp := await eight_ball_api(qst):
                     await ctx.send("I wasn't succesful at determining an answer.")
                     return
                 else:
