@@ -13,7 +13,7 @@ from config.main import GUILD_ID, PREFIX
 from pprint import pprint
 
 
-class StatsCog(Cog, name="Server Stas", description="Stats for nerds."):
+class StatsCog(Cog, name="Server Stats", description="Stats for nerds."):
 
     def __init__(self, bot: Bot):
         self.bot = bot
