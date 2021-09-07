@@ -13,7 +13,7 @@ from config.main import GUILD_ID, PREFIX
 from pprint import pprint
 
 
-class StatsCog(Cog):
+class StatsCog(Cog, name="Server Stas", description="Stats for nerds."):
 
     def __init__(self, bot: Bot):
         self.bot = bot
@@ -40,7 +40,7 @@ class StatsCog(Cog):
 
         data = {
             "Lord": "𝕯𝖗𝖔𝖎𝖉𝖅𝖊𝖉",
-            "Heads Count": f"{humans_count} dragons.",
+            "Heads Count": f"{humans_count} dragons",
             "Dens": f"💬 {len(guild.text_channels)} & 🎶 {len(guild.voice_channels)}",
             "Established at": f"{guild.created_at.strftime('%b %d %Y %H:%M:%S')}",
             "🟢 Alive": f"{alive_humans} (**{round((alive_humans / guild.member_count * 100))}%**)",
