@@ -4,15 +4,19 @@ from discord import Embed
 def create_embed(
         config: dict,
         reason: str = None,
-        no_perms_type: str = None,
+        cfg_type: str = None,
         **fields: str) -> Embed:
 
     if fields:
 
         config["fields"] = [
-            {"name": f, "value": v or '`Nothing to show...`',
-                "inline": f != "Roles"}
-            for f, v in fields.items()]
+            {
+                "name": f,
+                "value": v or '`Nothing to show...`',
+                "inline": cfg_type in {'stats', 'mod'},
+            }
+            for f, v in fields.items()
+        ]
 
         if reason:
             config["fields"].append(
@@ -21,13 +25,13 @@ def create_embed(
                  "inline": True}
             )
 
-    if no_perms_type:
+    if cfg_type:
 
         ft = config.pop('footer')
 
         config['footer'] = {
-            'text': ft[no_perms_type]['text'],
-            'icon_url': ft[no_perms_type]['icon_url']
+            'text': ft[cfg_type]['text'],
+            'icon_url': ft[cfg_type]['icon_url']
         }
 
     return Embed.from_dict(config)

@@ -2,7 +2,6 @@ from discord.abc import Messageable
 from config.embed.help import help_config
 from discord.ext.commands import HelpCommand, Cog, Command
 from functions.embed_factory import create_embed
-from discord import Embed
 
 
 class ZedHelpCommand(HelpCommand):
@@ -27,7 +26,7 @@ class ZedHelpCommand(HelpCommand):
 
         embed = create_embed(config=help_config(),
                              reason=None,
-                             no_perms_type=None, **dic)
+                             cfg_type=None, **dic)
 
         await dest.send(embed=embed)
 
@@ -44,7 +43,7 @@ class ZedHelpCommand(HelpCommand):
 
         embed = create_embed(config=help_config(cog.qualified_name, cog.description),
                              reason=None,
-                             no_perms_type=None, **dic)
+                             cfg_type=None, **dic)
 
         await dest.send(embed=embed)
 
@@ -58,6 +57,6 @@ class ZedHelpCommand(HelpCommand):
 
         embed = create_embed(config=help_config(command.name, command.description),
                              reason=None,
-                             no_perms_type=None, **dic)
+                             cfg_type=None, **dic)
 
         await dest.send(embed=embed)
