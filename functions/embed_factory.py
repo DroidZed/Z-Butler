@@ -13,7 +13,7 @@ def create_embed(
             {
                 "name": f,
                 "value": v or '`Nothing to show...`',
-                "inline": cfg_type in {'stats', 'mod'},
+                "inline": cfg_type in {'stats', 'ban', 'strike', 'mod'},
             }
             for f, v in fields.items()
         ]
@@ -25,7 +25,7 @@ def create_embed(
                  "inline": True}
             )
 
-    if cfg_type:
+    if cfg_type and cfg_type != 'mod':
 
         ft = config.pop('footer')
 
