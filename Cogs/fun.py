@@ -14,6 +14,7 @@ from functions.embed_factory import create_embed
 from functions.find_gif import find_gif
 from httpx import ReadTimeout
 
+
 class FunCog(
         Cog,
         name="Fun Commands",
@@ -133,7 +134,10 @@ class FunCog(
         else:
             try:
                 qst = " ".join(question)
-                if api_resp := await eight_ball_api(qst):
+                if api_resp := not await eight_ball_api(qst):
+                    await ctx.send("I wasn't succesful at determining an answer.")
+                    return
+                else:
 
                     if api_resp['success']:
 
@@ -157,13 +161,10 @@ class FunCog(
                             None,
                             None)
                         )
-                    
-                    else:
-                        await ctx.send("I wasn't succesful at determining an answer.")
-                        return
 
             except ReadTimeout:
-                    await ctx.send("Command timed out, please try again ❌")
+                await ctx.send("Command timed out, please try again ❌")
+                return
 
 
 def setup(bot: Bot):

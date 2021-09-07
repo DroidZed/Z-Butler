@@ -1,5 +1,5 @@
-from config.embed.kick import kick_config
 from config.embed.ban import ban_config
+from config.embed.kick import kick_config
 from config.embed.no_perms import no_perms_config
 from config.embed.strike import strike_config
 from config.main import CROWN_ROLE_ID, PREFIX
@@ -10,7 +10,6 @@ from discord.ext.commands.errors import CommandError, MissingRole
 from functions.embed_factory import create_embed
 from tinydb import Query, TinyDB
 from tinydb.operations import increment
-from tinydb.table import Document
 
 users = TinyDB('database/db.json').table("users")
 UsersQuery = Query()

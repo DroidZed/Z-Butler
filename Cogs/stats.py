@@ -1,6 +1,7 @@
+from discord.ext.commands.cooldowns import BucketType
 from config.embed.server import server_stats_config
 from functions.embed_factory import create_embed
-from discord import (Embed, Member, Guild, Role)
+from discord import Guild, Role, Member, Status
 from discord.ext.commands import (
     cooldown,
     Bot,
@@ -9,6 +10,7 @@ from discord.ext.commands import (
     Context
 )
 from config.main import GUILD_ID, PREFIX
+from pprint import pprint
 
 
 class StatsCog(Cog):
@@ -21,16 +23,29 @@ class StatsCog(Cog):
              usage=f"{PREFIX}server",
              aliases=['info', 's?']
              )
+    @cooldown(1, 2, BucketType.user)
     async def server_info(self, ctx: Context):
 
         guild: Guild = self.bot.get_guild(GUILD_ID)
 
-        await ctx.send(f'{ctx.message.author.top_role.color=}')
+        roles: list[Role] = [role for role in guild.roles if role !=
+                             ctx.guild.default_role and not role.managed]
+
+        alive_humans = sum(
+            member.status != Status.offline and not member.bot for member in guild.members)
+
+        machines = sum(member.bot for member in guild.members)
+
+        humans_count = guild.member_count - machines
 
         data = {
-            "Server members": guild.member_count,
             "Lord": "𝕯𝖗𝖔𝖎𝖉𝖅𝖊𝖉",
-            "Channels": f"Txt: {len(guild.text_channels)} / Vc: {len(guild.voice_channels)}"
+            "Heads Count": f"{humans_count} dragons.",
+            "Dens": f"💬 {len(guild.text_channels)} & 🎶 {len(guild.voice_channels)}",
+            "Established at": f"{guild.created_at.strftime('%b %d %Y %H:%M:%S')}",
+            "🟢 Alive": f"{alive_humans} (**{round((alive_humans / guild.member_count * 100))}%**)",
+            "🤖 Machines": f"{machines}",
+            "Ranks": " ".join(role.mention for role in roles[::-1]),
         }
 
         embed = create_embed(server_stats_config(

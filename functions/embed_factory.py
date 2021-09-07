@@ -11,7 +11,7 @@ def create_embed(
 
         config["fields"] = [
             {"name": f, "value": v or '`Nothing to show...`',
-                "inline": (reason != None)}
+                "inline": f != "Roles"}
             for f, v in fields.items()]
 
         if reason:

@@ -6,7 +6,7 @@ from traceback import print_exception
 
 from discord import File, Guild, Member
 from discord.abc import GuildChannel
-from discord.ext.commands import Cog, Context
+from discord.ext.commands import Cog, Context, Bot
 from discord.ext.commands.errors import (CommandError, CommandNotFound,
                                          CommandOnCooldown, MemberNotFound)
 from functions.create_welcome_image import create_picture
@@ -83,5 +83,5 @@ class EventHandlers(Cog, name="Event Handlers", description="Events fired when s
                 type(error), error, error.__traceback__, file=stderr)
 
 
-def setup(bot):
+def setup(bot: Bot):
     bot.add_cog(EventHandlers(bot))
