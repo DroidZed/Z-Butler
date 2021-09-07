@@ -1,3 +1,5 @@
+from config.embed.leave import leave_config
+from functions.embed_factory import create_embed
 from io import BytesIO
 from sys import stderr
 from traceback import print_exception
@@ -8,7 +10,6 @@ from discord.ext.commands import Cog, Context
 from discord.ext.commands.errors import (CommandError, CommandNotFound,
                                          CommandOnCooldown, MemberNotFound)
 from functions.create_welcome_image import create_picture
-from httpx import ReadTimeout
 from tinydb import Query, TinyDB
 
 users = TinyDB('database/db.json').table("users")
@@ -59,7 +60,7 @@ class EventHandlers(Cog, name="Event Handlers", description="Events fired when s
 
                 users.remove(UsersQuery.id == member.id)
 
-            await channel.send(content=f"<@{member.id}> has been mercylessly thrown into Oblivion ⚰, long forgotten.")
+            await channel.send(embed=create_embed(leave_config(member.name, member.id)))
 
         else:
 
@@ -76,9 +77,6 @@ class EventHandlers(Cog, name="Event Handlers", description="Events fired when s
 
         elif isinstance(error, CommandNotFound):
             await ctx.send('Nope, no such command was found *sight* 💨')
-
-        elif isinstance(error, ReadTimeout):
-            await ctx.send("Command timed out, please try again ❌")
 
         else:
             print_exception(
