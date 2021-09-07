@@ -78,7 +78,7 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
 
     async def _strike_ban_user(self, ctx: Context, member: Member, reason: str):
 
-        if not users.search(UsersQuery.id == member.id)[0]:
+        if not users.search(UsersQuery.id == member.id):
             users.insert({'id': member.id, 'strike_count': 1})
             await self._strike_user(ctx, member, reason, 2)
 
@@ -91,7 +91,7 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
                 increment('strike_count'),
                 UsersQuery.id == member.id)[0]
 
-            await self._strike_user(ctx, member, reason, users.get(doc_id=found_member_id)['strikeCount'] - 1)
+            await self._strike_user(ctx, member, reason, users.get(doc_id=found_member_id)['strike_count'] - 1)
 
     async def _ban_user(self, ctx: Context, member: Member, reason: str):
         users.remove(UsersQuery.id == member.id)
@@ -99,7 +99,7 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
             embed=create_embed(
                 config=ban_config,
                 reason=reason or "3 Strikes",
-                no_perms_type=None,
+                cfg_type='mod',
                 Action='**BAN**'
             )
         )
@@ -112,7 +112,7 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
             embed=create_embed(
                 config=strike_config(strikes),
                 reason=reason or "Nothing",
-                no_perms_type=None,
+                cfg_type='mod',
                 Action='***STRIKE***',
             )
         )
@@ -145,7 +145,7 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
         await ctx.send(
             embed=create_embed(
                 config=no_perms_config,
-                no_perms_type=action
+                cfg_type=action
             )
         )
 
