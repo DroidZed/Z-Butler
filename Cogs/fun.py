@@ -98,8 +98,8 @@ class FunCog(
                                 msg=msg)
 
         if rate > 65:
-
-            config['image_url'] = "https://c.tenor.com/GTjxHh4xr2kAAAAC/you-are-an-abomination-creature.gif"
+            config.update({"image": {
+                          'url': "https://c.tenor.com/GTjxHh4xr2kAAAAC/you-are-an-abomination-creature.gif"}})
 
         embed = create_embed(config=config)
 

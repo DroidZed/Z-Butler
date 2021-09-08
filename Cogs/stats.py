@@ -48,8 +48,8 @@ class StatsCog(Cog, name="Server Stats", description="Stats for nerds."):
             "Ranks": " ".join(role.mention for role in roles[::-1]),
         }
 
-        embed = create_embed(server_stats_config(
-            title=guild.name), None, None, **data)
+        embed = create_embed(config=server_stats_config(
+            title=guild.name), reason=None, cfg_type='stats', **data)
 
         await ctx.send(embed=embed)
 

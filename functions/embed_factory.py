@@ -25,7 +25,7 @@ def create_embed(
                  "inline": True}
             )
 
-    if cfg_type and cfg_type != 'mod':
+    if cfg_type and cfg_type not in {'mod', 'stats'}:
 
         ft = config.pop('footer')
 
