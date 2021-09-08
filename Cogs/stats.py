@@ -1,3 +1,4 @@
+from config.embed.user_stats import user_stats
 from discord.ext.commands.cooldowns import BucketType
 from config.embed.server import server_stats_config
 from functions.embed_factory import create_embed
@@ -32,7 +33,7 @@ class StatsCog(Cog, name="Server Stats", description="Stats for nerds."):
                              ctx.guild.default_role and not role.managed]
 
         alive_humans = sum(
-            member.status != Status.offline and not member.bot for member in guild.members)
+            member for member in guild.members if member.status != Status.offline and not member.bot)
 
         machines = sum(member.bot for member in guild.members)
 
@@ -52,6 +53,35 @@ class StatsCog(Cog, name="Server Stats", description="Stats for nerds."):
             title=guild.name), reason=None, cfg_type='stats', **data)
 
         await ctx.send(embed=embed)
+
+    @command(name="user_status",
+             description="Grabs the request user's info.",
+             usage=f"{PREFIX}user <username>",
+             aliases=['user?', 'u?']
+             )
+    @cooldown(1, 2, BucketType.user)
+    async def user_stats(self, ctx: Context, member: Member = None) -> None:
+
+        member = member or ctx.author
+
+        fields = {
+            "Created at": f"{member.created_at.strftime('%b %d %Y')}",
+            "Joined at": f"{member.joined_at.strftime('%b %d %Y')}",
+            "Nickname": f"{member.nick}",
+            "Top Rank": f"{member.top_role.mention}",
+            "Ranks": " ".join(r.mention for r in member.roles if not r.is_default()),
+
+        }
+
+        await ctx.send(embed=create_embed(
+            user_stats(
+                member.name,
+                member.mention,
+                member.avatar_url),
+            None,
+            'stats',
+            **fields)
+        )
 
 
 def setup(bot: Bot):
