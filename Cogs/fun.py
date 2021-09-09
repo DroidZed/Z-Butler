@@ -1,3 +1,4 @@
+from functions.gay_commentary import gay_commentary
 import time
 from asyncio import sleep
 from random import randint as rdn
@@ -90,7 +91,7 @@ class FunCog(
 
         rate = rdn(0, 100)
 
-        msg = self._gay_commentary(rate)
+        msg = gay_commentary(rate)
 
         config = how_gay_config(username=member.name,
                                 mention=member.mention,
@@ -104,22 +105,6 @@ class FunCog(
         embed = create_embed(config=config)
 
         await ctx.send(embed=embed)
-
-    def _gay_commentary(self, rate: int) -> str:
-
-        if not rate:
-            return "That's a real human 😉"
-
-        elif rate < 10:
-            return "Need purifying 😬"
-
-        elif rate < 50:
-            return 'What a shame...🙄'
-
-        elif rate < 65:
-            return 'Utterly disgusting...🤮'
-        else:
-            return '**YOU ARE AN ABOMINATION, YOU HAVE NO RIGHT TO LIVE !! DIE YOU MONSTER !!**'
 
     @command(
         name="8ball",
@@ -165,7 +150,6 @@ class FunCog(
             except ReadTimeout:
                 await ctx.send("Command timed out, please try again ❌")
                 return
-
 
 def setup(bot: Bot):
     bot.add_cog(FunCog(Cog))

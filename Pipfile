@@ -4,11 +4,12 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-"discord.py" = "*"
 python-decouple = "*"
 tinydb = "*"
 pillow = "*"
 httpx = "*"
+py-cord = {extras = ["voice"], version = "*"}
+pynacl = "*"
 
 [dev-packages]
 autopep8 = "*"
