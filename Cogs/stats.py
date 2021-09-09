@@ -1,17 +1,11 @@
-from config.embed.user_stats import user_stats
-from discord.ext.commands.cooldowns import BucketType
 from config.embed.server import server_stats_config
-from functions.embed_factory import create_embed
-from discord import Guild, Role, Member, Status
-from discord.ext.commands import (
-    cooldown,
-    Bot,
-    Cog,
-    command,
-    Context
-)
+from config.embed.user_stats import user_stats
 from config.main import GUILD_ID, PREFIX
-from pprint import pprint
+from discord import Guild, Member
+from discord.ext.commands import Bot, Cog, Context, command, cooldown
+from discord.ext.commands.cooldowns import BucketType
+from functions.embed_factory import create_embed
+from functions.extract_guild_data import extract_guild_data
 
 
 class StatsCog(Cog, name="Server Stats", description="Stats for nerds."):
@@ -29,22 +23,14 @@ class StatsCog(Cog, name="Server Stats", description="Stats for nerds."):
 
         guild: Guild = self.bot.get_guild(GUILD_ID)
 
-        roles: list[Role] = [role for role in guild.roles if role !=
-                             ctx.guild.default_role and not role.managed]
-
-        alive_humans = sum(
-            member for member in guild.members if member.status != Status.offline and not member.bot)
-
-        machines = sum(member.bot for member in guild.members)
-
-        humans_count = guild.member_count - machines
+        roles, online_users_count, machines = extract_guild_data(ctx, guild)
 
         data = {
             "Lord": "𝕯𝖗𝖔𝖎𝖉𝖅𝖊𝖉",
-            "Heads Count": f"{humans_count} dragons",
+            "Heads Count": f"{guild.member_count - machines} dragons",
             "Dens": f"💬 {len(guild.text_channels)} & 🎶 {len(guild.voice_channels)}",
             "Established at": f"{guild.created_at.strftime('%b %d %Y %H:%M:%S')}",
-            "🟢 Alive": f"{alive_humans} (**{round((alive_humans / guild.member_count * 100))}%**)",
+            "🟢 Alive": f"{online_users_count} (**{round((online_users_count / guild.member_count * 100))}%**)",
             "🤖 Machines": f"{machines}",
             "Ranks": " ".join(role.mention for role in roles[::-1]),
         }
