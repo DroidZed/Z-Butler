@@ -30,7 +30,7 @@ class FunCog(
              description="I think we got an imposter among us...",
              aliases=['sus', 'amogus', 'imposter'])
     @cooldown(1, 5, BucketType.user)
-    async def SUS(self, ctx: Context, member: MemberConverter = None) -> None:
+    async def sus(self, ctx: Context, member: MemberConverter = None) -> None:
         member = member or ctx.message.author
 
         t = f".      　。　　　　•　    　  ﾟ　　    。"
@@ -45,7 +45,7 @@ class FunCog(
         await ctx.send(final)
 
     @command(name="gif_search",
-             usage=f"{PREFIX}gif_search query",
+             usage=f"{PREFIX}gif_search `query`",
              description="Look for a gif about a certain topic",
              aliases=['gif?']
              )
@@ -53,8 +53,10 @@ class FunCog(
     async def look_for_gif(self, ctx: Context, *query: str) -> None:
 
         topic = " ".join(query)
+        async with ctx.typing():
+            result_set = await find_gif(topic)
 
-        if result_set := await find_gif(topic):
+        if result_set:
             await ctx.send(
                 embed=create_embed(
                     config=gif_config(url=result_set['media'][0]['gif']['url'],
@@ -128,7 +130,9 @@ class FunCog(
         else:
             try:
                 qst = " ".join(question)
-                if api_resp := await eight_ball_api(qst):
+                async with ctx.typing():
+                    api_resp = await eight_ball_api(qst)
+                if api_resp:
 
                     if api_resp['success']:
 

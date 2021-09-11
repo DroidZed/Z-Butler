@@ -42,8 +42,9 @@ class UserCog(Cog, name="User-related Commands", description="User commands for 
     @cooldown(1, 3, BucketType.user)
     async def hello(self, ctx: Context, *, member: MemberConverter = None):
         member = member or ctx.author
-
-        if result_set := await find_gif("Hello"):
+        async with ctx.typing():
+            result_set = await find_gif("Hello")
+        if result_set:
             await ctx.message.delete()
             await ctx.send(
                 embed=create_embed(

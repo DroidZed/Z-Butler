@@ -33,7 +33,8 @@ class QuotesCog(Cog, name="Quotes Category", description="Quoty quotes !"):
         aliases=['q?'])
     @cooldown(1, 5, BucketType.user)
     async def random_quote(self, ctx: Context) -> None:
-        quote = await _grab_quote()
+        async with ctx.typing():
+            quote = await _grab_quote()
 
         msg: Message = await ctx.send(embed=create_embed(quotes_config(quote['author'], quote['body'])))
 

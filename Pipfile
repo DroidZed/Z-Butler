@@ -11,6 +11,7 @@ httpx = "*"
 py-cord = {extras = ["voice"], version = "*"}
 pynacl = "*"
 gql = {extras = ["aiohttp"], version = "*"}
+lyricsgenius = "*"
 
 [dev-packages]
 autopep8 = "*"
