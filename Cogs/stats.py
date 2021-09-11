@@ -43,7 +43,7 @@ class StatsCog(Cog, name="Server Stats", description="Stats for nerds."):
 
     @command(name="user_status",
              description="Grabs the request user's info.",
-             usage=f"{PREFIX}user <username>",
+             usage=f"{PREFIX}user `username`",
              aliases=['user?', 'u?']
              )
     @cooldown(1, 2, BucketType.user)
