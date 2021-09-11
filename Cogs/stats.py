@@ -1,8 +1,9 @@
 from config.embed.server import server_stats_config
 from config.embed.user_stats import user_stats
 from config.main import GUILD_ID, PREFIX
-from discord import Guild, Member
-from discord.ext.commands import Bot, Cog, Context, command, cooldown
+from discord import Guild
+from discord.ext.commands import (Bot, Cog, Context, MemberConverter, command,
+                                  cooldown)
 from discord.ext.commands.cooldowns import BucketType
 from functions.embed_factory import create_embed
 from functions.extract_guild_data import extract_guild_data
@@ -46,7 +47,7 @@ class StatsCog(Cog, name="Server Stats", description="Stats for nerds."):
              aliases=['user?', 'u?']
              )
     @cooldown(1, 2, BucketType.user)
-    async def user_stats(self, ctx: Context, member: Member = None) -> None:
+    async def user_stats(self, ctx: Context, member: MemberConverter = None) -> None:
 
         member = member or ctx.author
 

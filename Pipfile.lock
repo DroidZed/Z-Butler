@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "c0a5fe5e2c42d3200118f726042319a33299c2fa7c9844339322aacd4629c442"
+            "sha256": "9015c8c784ad02588e0a1b76fa661dde0f5fd639b2e293b6a3672e8279b12c22"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -155,6 +155,24 @@
             ],
             "markers": "python_version >= '3.5'",
             "version": "==2.0.4"
+        },
+        "gql": {
+            "extras": [
+                "aiohttp"
+            ],
+            "hashes": [
+                "sha256:bdcbf60bc37b11d6d2f2ed271f69292c4e96d56df7000ba1dad52e487330bdce"
+            ],
+            "index": "pypi",
+            "version": "==3.0.0a6"
+        },
+        "graphql-core": {
+            "hashes": [
+                "sha256:c78d09596d347e1cffd266c5384abfedf43ed1eae08729773bebb3d527fe5a14",
+                "sha256:e65975b6a13878f9113a1fa5320760585b522d139944e005936b1b8358d0651a"
+            ],
+            "markers": "python_version >= '3.6' and python_version < '4.0'",
+            "version": "==3.1.6"
         },
         "h11": {
             "hashes": [

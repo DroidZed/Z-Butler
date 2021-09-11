@@ -4,7 +4,6 @@ from json import dumps
 
 
 async def eight_ball_api(question: str) -> dict:
-    url = "https://magic-8-ball.p.rapidapi.com/8-ball"
 
     payload = dumps(
         {"question": f"{question}"}, separators=(',', ':'))
@@ -16,6 +15,6 @@ async def eight_ball_api(question: str) -> dict:
     }
 
     async with AsyncClient(headers=headers) as client:
-        r = await client.post(url, data=payload)
+        r = await client.post("https://magic-8-ball.p.rapidapi.com/8-ball", data=payload)
 
         return r.json()

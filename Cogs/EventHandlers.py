@@ -1,15 +1,15 @@
-from config.embed.leave import leave_config
-from functions.embed_factory import create_embed
 from io import BytesIO
 from sys import stderr
 from traceback import print_exception
 
-from discord import File, Guild, Member
+from config.embed.leave import leave_config
+from discord import File, Guild
 from discord.abc import GuildChannel
-from discord.ext.commands import Cog, Context, Bot
+from discord.ext.commands import Bot, Cog, Context, MemberConverter
 from discord.ext.commands.errors import (CommandError, CommandNotFound,
                                          CommandOnCooldown, MemberNotFound)
 from functions.create_welcome_image import create_picture
+from functions.embed_factory import create_embed
 from tinydb import Query, TinyDB
 
 users = TinyDB('database/db.json').table("users")
@@ -23,7 +23,7 @@ class EventHandlers(Cog, name="Event Handlers", description="Events fired when s
         self.out_channel = 696842023625424947
 
     @Cog.listener()
-    async def on_member_join(self, member: Member):
+    async def on_member_join(self, member: MemberConverter):
 
         guild: Guild = member.guild
 
@@ -50,9 +50,9 @@ class EventHandlers(Cog, name="Event Handlers", description="Events fired when s
             print('channel is none or missing perms')
 
     @Cog.listener()
-    async def on_member_remove(self, member: Member):
+    async def on_member_remove(self, member: MemberConverter):
 
-        channel = member.guild.get_channel(self.out_channel)
+        channel: GuildChannel = member.guild.get_channel(self.out_channel)
 
         if channel:
 
@@ -70,13 +70,13 @@ class EventHandlers(Cog, name="Event Handlers", description="Events fired when s
     async def on_command_error(self, ctx: Context, error: CommandError):
 
         if isinstance(error, MemberNotFound):
-            await ctx.send('¯\\_(ツ)_/¯ The user provided could not be found, try again...')
+            await ctx.send('¯\\_(ツ)_/¯ The user provided could not be found, try again...', delete_after=5)
 
         elif isinstance(error, CommandOnCooldown):
-            await ctx.send(f'⏳ Hold your horses, this command is on hold, you can use it in {round(error.retry_after, 2)} secs.')
+            await ctx.send(f'⏳ Hold your horses, this command is on cooldown, you can use it in {round(error.retry_after, 2)} secs.', delete_after=5)
 
         elif isinstance(error, CommandNotFound):
-            await ctx.send('Nope, no such command was found *sight* 💨')
+            await ctx.send('Nope, no such command was found *sight* 💨', delete_after=5)
 
         else:
             print_exception(
