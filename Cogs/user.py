@@ -1,16 +1,17 @@
+from config.embed.hello import hello_config
 from config.embed.pfp import pfp_config
-from discord import Member
-from discord.ext.commands import Bot, BucketType, Cog, Context, command
+from config.main import PREFIX
+from discord.ext.commands import (Bot, BucketType, Cog, Context,
+                                  MemberConverter, command)
 from discord.ext.commands.core import cooldown
 from functions.embed_factory import create_embed
-from config.main import PREFIX
+from functions.find_gif import find_gif
 
 
 class UserCog(Cog, name="User-related Commands", description="User commands for everyone"):
 
     def __init__(self, bot: Bot):
         self.bot = bot
-        self._last_member = None
 
     @command(
         name="pic",
@@ -18,7 +19,7 @@ class UserCog(Cog, name="User-related Commands", description="User commands for 
         description="Display the requested user's profile picture.",
         aliases=['pfp'])
     @cooldown(1, 5, BucketType.user)
-    async def pfp(self, ctx: Context, member: Member = None):
+    async def pfp(self, ctx: Context, member: MemberConverter = None):
         if not member:
             member = ctx.message.author
 
@@ -39,15 +40,19 @@ class UserCog(Cog, name="User-related Commands", description="User commands for 
         description="Greet a given user",
         aliases=['grt'])
     @cooldown(1, 3, BucketType.user)
-    async def hello(self, ctx: Context, *, member: Member = None):
+    async def hello(self, ctx: Context, *, member: MemberConverter = None):
         member = member or ctx.author
-        await ctx.message.delete()
-        if self._last_member is None or self._last_member.id != member.id:
-            await ctx.send(f'Hello <@{member.id}>~')
-        else:
-            await ctx.send(f'Hello <@{member.id}>... This feels familiar.')
-        self._last_member = member
+
+        if result_set := await find_gif("Hello"):
+            await ctx.message.delete()
+            await ctx.send(
+                embed=create_embed(
+                    hello_config(
+                        message=f'Hello <@{member.id}>~ 👋🏻',
+                        url=result_set['media'][0]['gif']['url'])
+                )
+            )
 
 
 def setup(bot: Bot):
-    bot.add_cog(UserCog(Cog))
+    bot.add_cog(UserCog(bot))

@@ -11,7 +11,7 @@ async def find_gif(topic: str) -> dict:
     params = {
         'q': topic,
         'key': TENOR_KEY,
-        'limit': 1
+        'limit': 101
     }
 
     async with AsyncClient() as client:

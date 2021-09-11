@@ -3,8 +3,7 @@ from config.embed.kick import kick_config
 from config.embed.no_perms import no_perms_config
 from config.embed.strike import strike_config
 from config.main import CROWN_ROLE_ID, PREFIX
-from discord import Member
-from discord.ext.commands import Bot, Cog, Context, command
+from discord.ext.commands import Bot, Cog, Context, MemberConverter, command
 from discord.ext.commands.core import has_role
 from discord.ext.commands.errors import CommandError, MissingRole
 from functions.embed_factory import create_embed
@@ -27,7 +26,7 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
         usage=f"{PREFIX}ban `username` `reason`",
         description="Ban a user for a specific reason.")
     @has_role(CROWN_ROLE_ID)
-    async def ban(self, ctx: Context, member: Member = None, *reason: str):
+    async def ban(self, ctx: Context, member: MemberConverter = None, *reason: str):
         if member is None or member == ctx.message.author:
             await ctx.channel.send("No user provided 🙄 / You cannot ban yourself ⚓")
             return
@@ -40,7 +39,7 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
         usage=f"{PREFIX}kick `username` `reason`",
         description="Kick a user with a given reason.")
     @has_role(CROWN_ROLE_ID)
-    async def kick(self, ctx: Context, member: Member = None, *reason: str):
+    async def kick(self, ctx: Context, member: MemberConverter = None, *reason: str):
 
         if member is None or member == ctx.message.author:
             await ctx.channel.send(embed=create_embed(kick_config("You cannot kick yourself ⚓ you stupid...")))
@@ -60,7 +59,7 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
         usage=f"{PREFIX}strike `username` `reason`",
         description="Give a strike to a naughty user.")
     @has_role(CROWN_ROLE_ID)
-    async def strike(self, ctx: Context, member: Member = None, *reason: str):
+    async def strike(self, ctx: Context, member: MemberConverter = None, *reason: str):
         if member is None or member == ctx.message.author:
             await ctx.channel.send("Why would you strike yourself 🙄 ?")
             return
@@ -74,9 +73,9 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
         description="Clears a certain amount of messages, can't delete those older than 14 days though.")
     @has_role(CROWN_ROLE_ID)
     async def purge(self, ctx: Context, amount: int):
-        await ctx.channel.purge(limit=amount)
+        await ctx.channel.purge(limit=amount-1)
 
-    async def _strike_ban_user(self, ctx: Context, member: Member, reason: str):
+    async def _strike_ban_user(self, ctx: Context, member: MemberConverter, reason: str):
 
         if not users.search(UsersQuery.id == member.id):
             users.insert({'id': member.id, 'strike_count': 1})
@@ -93,7 +92,7 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
 
             await self._strike_user(ctx, member, reason, users.get(doc_id=found_member_id)['strike_count'] - 1)
 
-    async def _ban_user(self, ctx: Context, member: Member, reason: str):
+    async def _ban_user(self, ctx: Context, member: MemberConverter, reason: str):
         users.remove(UsersQuery.id == member.id)
         await member.send(
             embed=create_embed(
@@ -106,7 +105,7 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
         await ctx.send(f"User <@{member.id}> has been banned for {reason or '3 Strikes'} 🔨")
         await ctx.guild.ban(member, reason=reason or '3 Strikes')
 
-    async def _strike_user(self, ctx: Context, member: Member, reason: str, strikes: int):
+    async def _strike_user(self, ctx: Context, member: MemberConverter, reason: str, strikes: int):
 
         await member.send(
             embed=create_embed(

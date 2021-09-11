@@ -1,4 +1,3 @@
-from functions.gay_commentary import gay_commentary
 import time
 from asyncio import sleep
 from random import randint as rdn
@@ -6,13 +5,15 @@ from random import randint as rdn
 from config.embed.eight_ball import eight_ball_config
 from config.embed.gif import gif_config
 from config.embed.how_gay import how_gay_config
+from config.embed.ping import ping_config
 from config.main import PREFIX
-from discord import Member
-from discord.ext.commands import (Bot, BucketType, Cog, Context, command,
-                                  cooldown)
+from discord import Message
+from discord.ext.commands import (Bot, BucketType, Cog, Context,
+                                  MemberConverter, command, cooldown)
 from functions.eight_ball_api import eight_ball_api
 from functions.embed_factory import create_embed
 from functions.find_gif import find_gif
+from functions.gay_commentary import gay_commentary
 from httpx import ReadTimeout
 
 
@@ -29,7 +30,7 @@ class FunCog(
              description="I think we got an imposter among us...",
              aliases=['sus', 'amogus', 'imposter'])
     @cooldown(1, 5, BucketType.user)
-    async def SUS(self, ctx: Context, member: Member = None) -> None:
+    async def SUS(self, ctx: Context, member: MemberConverter = None) -> None:
         member = member or ctx.message.author
 
         t = f".      　。　　　　•　    　  ﾟ　　    。"
@@ -70,21 +71,29 @@ class FunCog(
         usage=f"{PREFIX}ping",
         description="Show the bot's ping.")
     @cooldown(1, 2, BucketType.member)
-    async def ping(self, ctx) -> None:
-        before = time.monotonic()
+    async def ping(self, ctx: Context) -> None:
 
-        message = await ctx.send("🏓 Pong !")
+        await ctx.message.delete()
 
-        ping = (time.monotonic() - before) * 1000
+        start_time = time.time()
+        message: Message = await ctx.send(embed=create_embed(ping_config("🏓 Pong !")))
+        end_time = time.time()
 
-        await message.edit(content=f"🏓 Pong !  `{int(ping)} ms`")
+        fields = {
+            'API': f'`{round((end_time - start_time) * 1000)}ms`',
+
+            'Bot Latency': f'`{round(self.bot.latency * 1000)}ms`'
+
+        }
+
+        await message.edit(embed=create_embed(ping_config("🏓 Pong!"), None, 'ping', **fields))
 
     @command(
         name="howgay",
         usage=f"{PREFIX}howgay `username`",
         description="Checks how gay a user is, ew...",
         aliases=['hg'])
-    async def how_gay(self, ctx: Context, member: Member = None) -> None:
+    async def how_gay(self, ctx: Context, member: MemberConverter = None) -> None:
 
         if member is None:
             member = ctx.author
@@ -151,5 +160,6 @@ class FunCog(
                 await ctx.send("Command timed out, please try again ❌")
                 return
 
+
 def setup(bot: Bot):
-    bot.add_cog(FunCog(Cog))
+    bot.add_cog(FunCog(bot))

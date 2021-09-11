@@ -10,9 +10,13 @@ pillow = "*"
 httpx = "*"
 py-cord = {extras = ["voice"], version = "*"}
 pynacl = "*"
+gql = {extras = ["aiohttp"], version = "*"}
 
 [dev-packages]
 autopep8 = "*"
 
 [requires]
 python_version = "3.9"
+
+[pipenv]
+allow_prereleases = true

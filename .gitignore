@@ -1,6 +1,18 @@
-# Compiled python files
+### Compiled python files ###
 */**/__pycache__/
 
 test.py
 
 *.zip
+
+ps1_cmd.txt
+
+.vscode/
+
+### ENV VARS ###
+*.env
+
+### IDES ###
+/.idea/
+
+/.vscode/
