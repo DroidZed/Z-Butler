@@ -1,10 +1,9 @@
 from PIL import Image
-from PIL import ImageFont
 from PIL import ImageDraw
+from PIL import ImageFont
 
 
 def _create_font(font_name: str) -> ImageFont.FreeTypeFont:
-
     return ImageFont.truetype(
         font=font_name,
         size=87,
@@ -13,9 +12,7 @@ def _create_font(font_name: str) -> ImageFont.FreeTypeFont:
 
 
 def create_picture(username: str, discriminator: str) -> Image:
-
     with Image.open('./assets/img/bg.png') as i:
-
         font = _create_font("./assets/fonts/CabinSketch-Regular.ttf")
 
         text, offset = _update_text_and_offset(
@@ -51,7 +48,6 @@ def create_picture(username: str, discriminator: str) -> Image:
 
 
 def _update_text_and_offset(text: str, offset: int) -> tuple[str, int]:
-
     name_length = len(text.split('#')[0])
 
     if name_length >= 18:
@@ -60,4 +56,4 @@ def _update_text_and_offset(text: str, offset: int) -> tuple[str, int]:
     if name_length > 8:
         text = text.replace('#', '\n#')
 
-    return (text, offset)
+    return text, offset

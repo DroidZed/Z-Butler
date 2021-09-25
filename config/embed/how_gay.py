@@ -1,11 +1,10 @@
-from config.main import COLOR
+from config.colors import Colors
 
 
 def how_gay_config(username: str, mention: str, rate: int, msg: str) -> dict:
-
     return {
         "title": f"{username}'s Gay Level",
-        "color": COLOR,
+        "color": Colors.BOT_COLOR,
         "description": f"**{mention} is {rate}% gay** 🏳️‍🌈\n{msg}",
         "thumbnail": {
             "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif"},

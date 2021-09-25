@@ -1,11 +1,11 @@
 from random import choice
 
-from config.main import TENOR_KEY
 from httpx import AsyncClient
+
+from config.main import TENOR_KEY
 
 
 async def find_gif(topic: str) -> dict:
-
     url = "https://g.tenor.com/v1/search"
 
     params = {

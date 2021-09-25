@@ -1,12 +1,13 @@
 from asyncio import sleep
 
-from config.embed.quote import quotes_config
-from config.main import PREFIX
 from discord import Message, Reaction, Member
 from discord.abc import GuildChannel
 from discord.ext.commands import (Bot, BucketType, Cog, Context,
                                   command, cooldown)
 from discord.ext.tasks import loop
+
+from config.embed.quote import quotes_config
+from config.main import PREFIX
 from functions.embed_factory import create_embed
 from functions.quotes_api import quotes_gql
 
