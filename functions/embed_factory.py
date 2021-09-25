@@ -6,7 +6,6 @@ def create_embed(
         reason: str = None,
         cfg_type: str = None,
         **fields: str) -> Embed:
-
     cfg = {'stats', 'ban', 'strike', 'mod', 'ping'}
 
     if fields:
@@ -28,7 +27,6 @@ def create_embed(
             )
 
     if cfg_type and cfg_type not in {'mod', 'stats', 'ping'}:
-
         ft = config.pop('footer')
 
         config['footer'] = {

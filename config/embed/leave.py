@@ -1,11 +1,12 @@
-from config.main import COLOR
+from config.colors import Colors
 
 
-def leave_config(username: str, id: int) -> dict:
+def leave_config(username: str, member_id: int) -> dict:
     return {
         "title": f"{username} Left us.",
-        "color": COLOR,
-        "description": f"<@{id}> got sucked into a blackhole <a:black_hole:796434656605765632>, long forgotten.",
+        "color": Colors.BOT_COLOR,
+        "description": f"<@{member_id}> "
+                       "got sucked into a black hole <a:black_hole:796434656605765632>, long forgotten.",
         "author": {
             "name": "The Z Butler",
             "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg"},

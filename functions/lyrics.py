@@ -1,8 +1,7 @@
-from config.genius import get_song_data
+from functions.genius import get_song_data
 
 
 def query_lyrics(title: str, artist: str) -> dict:
-
     artist, song = get_song_data(title, artist)
 
     if artist and song:

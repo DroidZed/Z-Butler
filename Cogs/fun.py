@@ -2,25 +2,26 @@ import time
 from asyncio import sleep
 from random import randint as rdn
 
+from discord import Message
+from discord.ext.commands import (Bot, BucketType, Cog, Context,
+                                  MemberConverter, command, cooldown)
+from httpx import ReadTimeout
+
 from config.embed.eight_ball import eight_ball_config
 from config.embed.gif import gif_config
 from config.embed.how_gay import how_gay_config
 from config.embed.ping import ping_config
 from config.main import PREFIX
-from discord import Message
-from discord.ext.commands import (Bot, BucketType, Cog, Context,
-                                  MemberConverter, command, cooldown)
 from functions.eight_ball_api import eight_ball_api
 from functions.embed_factory import create_embed
 from functions.find_gif import find_gif
 from functions.gay_commentary import gay_commentary
-from httpx import ReadTimeout
 
 
 class FunCog(
-        Cog,
-        name="Fun Commands",
-        description="Fun commands from your trusty Z Butler 💙"):
+    Cog,
+    name="Fun Commands",
+    description="Fun commands from your trusty Z Butler 💙"):
 
     def __init__(self, bot: Bot):
         self.bot = bot
@@ -40,7 +41,7 @@ class FunCog(
         t5 = "　 　　。　　　　　　ﾟ　　　.　　　　　."
         t6 = ",         .　         .　　       ."
 
-        final = f"{t2}\n{t3}\n{t4}\n{t5}\n{t6}"
+        final = f"{t}\n{t2}\n{t3}\n{t4}\n{t5}\n{t6}"
 
         await ctx.send(final)
 
@@ -111,7 +112,7 @@ class FunCog(
 
         if rate > 65:
             config.update({"image": {
-                          'url': "https://c.tenor.com/GTjxHh4xr2kAAAAC/you-are-an-abomination-creature.gif"}})
+                'url': "https://c.tenor.com/GTjxHh4xr2kAAAAC/you-are-an-abomination-creature.gif"}})
 
         embed = create_embed(config=config)
 
@@ -135,7 +136,6 @@ class FunCog(
                 if api_resp:
 
                     if api_resp['success']:
-
                         config = gif_config(
                             "https://media.tenor.com/images/67155da2720fa29220200465f1a4bd84/tenor.gif",
                             "Z Butler",
@@ -157,7 +157,7 @@ class FunCog(
                             None)
                         )
                 else:
-                    await ctx.send("I wasn't succesful at determining an answer.")
+                    await ctx.send("I wasn't successful at determining an answer.")
                     return
 
             except ReadTimeout:

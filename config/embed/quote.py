@@ -1,11 +1,10 @@
-from config.main import COLOR
+from config.colors import Colors
 
 
 def quotes_config(author: str, quote: str) -> dict:
-
     return {
         "title": f"**{author}**",
-        "color": COLOR,
+        "color": Colors.BOT_COLOR,
         "description": f"*{quote}*",
         "author": {
             "name": "The Z Butler",

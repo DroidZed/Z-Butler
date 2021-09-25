@@ -1,12 +1,14 @@
-from config.main import COLOR
+from config.colors import Colors
 
 
 def help_config(title: str = None, desc: str = None) -> dict:
+    desc = desc or \
+           "Showing you the list of my powers, write Zhelp <command name> | <category name> for more info on those."
 
     return {
         "title": title or "Help Command",
-        "color": COLOR,
-        "description": desc or "Showing you the list of my powers, write Zhelp <command name> | <category name> for more info on those.",
+        "color": Colors.BOT_COLOR,
+        "description": desc,
         "thumbnail": {
             "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif"},
         "author": {

@@ -1,10 +1,10 @@
-from config.main import COLOR
+from config.colors import Colors
 
 no_perms_config = {
     "title": "You SUSSY BAKA !",
     "url": "https://c.tenor.com/ep6ztNAdFMcAAAAC/hank-schrider-sussy-baka.gif",
-    "description": "You're not powerful enough to use this command, how pifitul 😒",
-    "color": COLOR,
+    "description": "You're not powerful enough to use this command, how pitiful 😒",
+    "color": Colors.BOT_COLOR,
     "image": {"url": "https://c.tenor.com/ep6ztNAdFMcAAAAC/hank-schrider-sussy-baka.gif"},
     "author": {
         "name": "The Z Butler",
@@ -14,7 +14,7 @@ no_perms_config = {
         "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif"},
     "footer": {
         "ban": {
-            "text": "How funny...the admin shuold see this 😶",
+            "text": "How funny...the admin should see this 😶",
             "icon_url": "https://emoji.gg/assets/emoji/3886_BAN.gif"
         },
         "strike": {

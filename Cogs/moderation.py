@@ -127,7 +127,7 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
         description="Clears a certain amount of messages, can't delete those older than 14 days though.")
     @has_role(CROWN_ROLE_ID)
     async def purge(self, ctx: Context, amount: int):
-        await ctx.channel.purge(limit=amount - 1)
+        await ctx.channel.purge(limit=amount)
 
     # error handlers
     @purge.error

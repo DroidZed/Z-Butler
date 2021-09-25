@@ -10,8 +10,7 @@ from functions.song import look_for_song
 
 
 def _parse_metadata(*info: str):
-
-    if not info:
+    if not info or len(info) == 1:
         return None
 
     metadata = " ".join(info).split(" ")
@@ -20,7 +19,7 @@ def _parse_metadata(*info: str):
 
     title = info[0].replace("_", " ")
 
-    artist = " ".join(m for m in metadata)
+    artist = " ".join(metadata)
 
     return title, artist
 
@@ -53,13 +52,17 @@ class MusicCog(Cog,
 
         if data["valid"]:
 
+            emb = create_embed(
+                lyrics_config(**data),
+                None,
+                None
+            )
+
+            if len(emb.description) > 4096:
+                emb.description = f"The lyrics were too long, here's a [link instead]({data['song_url']})."
+
             await ctx.send(f'{ctx.author.mention}, check your inbox !!', delete_after=10)
-            await ctx.author.send(embed=create_embed(
-                    lyrics_config(**data),
-                    None,
-                    None
-                )
-                )
+            await ctx.author.send(embed=emb)
 
         else:
             await ctx.send("Could not find the song you're looking for ! Try again later.")

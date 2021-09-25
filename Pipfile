@@ -8,9 +8,9 @@ python-decouple = "*"
 tinydb = "*"
 pillow = "*"
 httpx = "*"
-py-cord = {extras = ["voice"], version = "*"}
+py-cord = { extras = ["voice"], version = "*" }
 pynacl = "*"
-gql = {extras = ["aiohttp"], version = "*"}
+gql = { extras = ["aiohttp"], version = "*" }
 lyricsgenius = "*"
 
 [dev-packages]

@@ -1,13 +1,11 @@
+import lyricsgenius
 from lyricsgenius.artist import Artist
 from lyricsgenius.song import Song
 
 from config.main import GENIUS_ACCESS_TOKEN
 
-import lyricsgenius
-
 
 def get_song_data(title: str, artist_name: str):
-
     genius = lyricsgenius.Genius(GENIUS_ACCESS_TOKEN)
 
     genius.verbose = True  # Turn off status messages

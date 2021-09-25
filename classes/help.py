@@ -1,11 +1,11 @@
 from discord.abc import Messageable
-from config.embed.help import help_config
 from discord.ext.commands import HelpCommand, Cog, Command
+
+from config.embed.help import help_config
 from functions.embed_factory import create_embed
 
 
 class ZedHelpCommand(HelpCommand):
-
     """Help command for those seeking the power of Z"""
 
     def __init__(self):
