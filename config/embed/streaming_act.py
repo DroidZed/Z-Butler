@@ -33,7 +33,8 @@ def streaming_activity_config(name: str,
         dic["description"] += f"\nFollow this [link]({stream_url}) to catch them **live** 🔴 on `{platform}` !"
 
     if streamed_game:
-        dic["description"].replace("this", f"{streamed_game}")
+        dic["description"] = dic["description"].replace(
+            "this", f"{streamed_game}")
 
     return dic
 

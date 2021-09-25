@@ -13,8 +13,6 @@ from config.main import PREFIX
 from functions.embed_factory import create_embed
 from functions.find_gif import find_gif
 
-from asyncio import sleep
-
 
 class UserCog(Cog, name="User-related Commands", description="User commands for everyone"):
 
@@ -34,7 +32,7 @@ class UserCog(Cog, name="User-related Commands", description="User commands for 
         async with ctx.typing():
             embed = create_embed(
                 config=pfp_config(
-                    url=member.avatar_url,
+                    url=str(member.avatar_url),
                     tag=f'{member.name}#{member.discriminator}',
                     issuer=f'{ctx.message.author}',
                     avatar_url=f'{ctx.message.author.avatar_url}'
