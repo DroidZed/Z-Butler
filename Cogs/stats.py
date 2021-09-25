@@ -1,4 +1,4 @@
-from discord import Guild
+from discord import Guild, Embed, Member
 from discord.ext.commands import (Bot, Cog, Context, MemberConverter, command,
                                   cooldown)
 from discord.ext.commands.cooldowns import BucketType
@@ -25,7 +25,8 @@ class StatsCog(Cog, name="Server Stats", description="Stats for nerds."):
         async with ctx.typing():
             guild: Guild = self.bot.get_guild(GUILD_ID)
 
-            roles, online_users_count, machines = extract_guild_data(ctx, guild)
+            roles, online_users_count, machines = extract_guild_data(
+                ctx, guild)
 
             data = {
                 "Lord": "𝕯𝖗𝖔𝖎𝖉𝖅𝖊𝖉",
@@ -49,26 +50,25 @@ class StatsCog(Cog, name="Server Stats", description="Stats for nerds."):
              )
     @cooldown(1, 2, BucketType.user)
     async def user_stats(self, ctx: Context, member: MemberConverter = None) -> None:
-        async with ctx.typing():
-            member = member or ctx.author
+        member = member or ctx.message.author
 
-            fields = {
-                "Created at": f"{member.created_at.strftime('%b %d %Y')}",
-                "Joined at": f"{member.joined_at.strftime('%b %d %Y')}",
-                "Nickname": f"{member.nick}",
-                "Top Rank": f"{member.top_role.mention}",
-                "Ranks": " ".join(r.mention for r in member.roles if not r.is_default()),
+        fields = {
+            "Created at": f"{member.created_at.strftime('%b %d %Y')}",
+            "Joined at": f"{member.joined_at.strftime('%b %d %Y')}",
+            "Nickname": f"{member.nick}",
+            "Top Rank": f"{member.top_role.mention}",
+            "Ranks": " ".join(r.mention for r in member.roles if not r.is_default()),
 
-            }
+        }
 
-            embed = create_embed(
-                user_stats(
-                    member.name,
-                    member.mention,
-                    member.avatar_url),
-                None,
-                'stats',
-                **fields)
+        embed: Embed = create_embed(
+            user_stats(
+                member.name,
+                member.mention,
+                str(str(member.avatar_url))),
+            None,
+            'stats',
+            **fields)
 
         await ctx.send(embed=embed)
 
