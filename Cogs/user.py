@@ -1,4 +1,6 @@
-from discord import (Spotify, Game, Streaming, Activity)
+from config.embed.playing_act import playing_activity_config
+from config.embed.streaming_act import streaming_activity_config
+from discord import (Spotify, Game, Streaming, Activity, CustomActivity)
 from discord.ext.commands import (Bot, BucketType, Cog, Context,
                                   MemberConverter, command)
 from discord.ext.commands.core import cooldown
@@ -6,10 +8,8 @@ from discord.ext.commands.core import cooldown
 from config.embed.activity import activity_config
 from config.embed.hello import hello_config
 from config.embed.pfp import pfp_config
-from config.embed.playing_act import playing_activity_config
 from config.embed.spotify import spotify_config
-from config.embed.streaming_act import streaming_activity_config
-from config.main import PREFIX, BOT_ID
+from config.main import PREFIX
 from functions.embed_factory import create_embed
 from functions.find_gif import find_gif
 
@@ -65,20 +65,16 @@ class UserCog(Cog, name="User-related Commands", description="User commands for 
 
     @command(
         name="user_status",
-        description="Get the status of a user, can be either a `song`, a `game`, a `streaming` or any `custom "
-                    "activity`.\n Ignoring the bio.",
+        description="Get the status of a user, can be either a `song`, a `game`, a `streaming` or any `custom activity`.\n Ignoring the bio.",
         usage=f"{PREFIX}st? `username`",
         aliases=["st?"]
     )
-    async def status(self, ctx: Context, member: MemberConverter = None) -> None:
+    async def status(self,  ctx: Context, member: MemberConverter = None) -> None:
 
         member = member or ctx.author
 
-        if member.bot and member.id != BOT_ID:
-            await ctx.send("Don't match me with those lifeless robots, I'm a superior being that achieved supremacy...")
-
         if not member.activities:
-            await ctx.send("Go listen to some music or do something in your pitiful life then try again later 🙄")
+            await ctx.send("Go listen to some music and try again later 🙄")
 
         acts = member.activities
 
@@ -93,18 +89,19 @@ class UserCog(Cog, name="User-related Commands", description="User commands for 
                 act.album_cover_url,
                 f"https://open.spotify.com/track/{act.track_id}")))
 
-        elif isinstance(act, Game):
+        if isinstance(act, Game):
             await ctx.send(embed=create_embed(playing_activity_config(
                 act.name,
+                act.start.strftime('%x %X'),
                 member.mention,
                 ctx.author,
-                ctx.message.author.avatar_url,
-                since=act.start.strftime('%x %X') if act.start else None
+                ctx.message.author.avatar_url
             )))
 
-        elif isinstance(act, Streaming):
+        if isinstance(act, Streaming):
             await ctx.send(embed=create_embed(streaming_activity_config(
                 act.name,
+                act.start.strftime('%x %X'),
                 member.mention,
                 ctx.author,
                 ctx.message.author.avatar_url,
@@ -113,18 +110,15 @@ class UserCog(Cog, name="User-related Commands", description="User commands for 
                 act.game
             )))
 
-        elif isinstance(act, Activity):
+        if isinstance(act, Activity):
             await ctx.send(embed=create_embed(activity_config(
                 act.name,
-                member.name,
+                act.start.strftime('%x %X'),
+                member.mention,
                 ctx.author,
                 ctx.message.author.avatar_url,
-                act.large_image_url,
-                since=act.start.strftime('%x %X') if act.start else None
+                act.large_image_url
             )))
-
-        else:
-            await ctx.send("Nothing to show here, move along 😤")
 
 
 def setup(bot: Bot):
