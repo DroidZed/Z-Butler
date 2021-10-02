@@ -1,4 +1,4 @@
-from discord import Guild, Embed, Member
+from discord import Guild, Embed
 from discord.ext.commands import (Bot, Cog, Context, MemberConverter, command,
                                   cooldown)
 from discord.ext.commands.cooldowns import BucketType

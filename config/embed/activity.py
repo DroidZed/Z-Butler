@@ -3,10 +3,15 @@ from datetime import datetime
 from config.colors import Colors
 
 
-def activity_config(name: str, since: datetime, mention: str, issuer: str, avatar_url: str, image_url: str) -> dict:
+def activity_config(name: str,
+                    username: str,
+                    issuer: str,
+                    avatar_url: str,
+                    image_url: str,
+                    since: datetime = None) -> dict:
     return {
-        "title": f"{name}",
-        "description": f"{mention} has been doing this since {since}",
+        "title": f"{username}'s Activity",
+        "description": f"{name}{f' since {since}' if since else ''}",
         "color": Colors.BOT_COLOR,
         "image": {"url": f"{image_url}"},
         "author": {
