@@ -109,7 +109,7 @@ class UserCog(Cog, name="User-related Commands", description="User commands for 
                 act.url,
                 act.game
             )))
-
+	# testing the bot. 
         if isinstance(act, Activity):
             await ctx.send(embed=create_embed(activity_config(
                 act.name,
