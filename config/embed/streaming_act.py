@@ -1,21 +1,18 @@
-from datetime import datetime
-
 from config.colors import Colors
 
 
+# noinspection PyUnresolvedReferences
 def streaming_activity_config(name: str,
-                              since: datetime,
                               mention: str,
                               issuer: str,
                               avatar_url: str,
                               platform: str,
                               stream_url: str = None,
                               streamed_game: str = None) -> dict:
-
     dic = {
         "title": f"{name}",
-        "description": f"{mention} has been `streaming` ***this*** since {since} 👻",
-        "color":  __change_platform_color(platform),
+        "description": f"{mention} has been `streaming` ***this*** 👻",
+        "color": __change_platform_color(platform),
         "author": {
             "name": "The Z Butler",
             "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg"

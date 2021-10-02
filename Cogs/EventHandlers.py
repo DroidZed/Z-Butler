@@ -17,6 +17,7 @@ users = TinyDB('database/db.json').table("users")
 UsersQuery = Query()
 
 
+# noinspection PyTypeChecker
 class EventHandlers(Cog, name="Event Handlers", description="Events fired when somethings kicks in the server."):
 
     def __init__(self, bot):
@@ -50,6 +51,7 @@ class EventHandlers(Cog, name="Event Handlers", description="Events fired when s
 
             print('channel is none or missing perms')
 
+    # noinspection PyTypeChecker
     @Cog.listener()
     async def on_member_remove(self, member: MemberConverter):
 
@@ -74,7 +76,8 @@ class EventHandlers(Cog, name="Event Handlers", description="Events fired when s
 
         elif isinstance(error, CommandOnCooldown):
             await ctx.send(
-                f'⏳ Hold your horses, this command is on cooldown, you can use it in {round(error.retry_after, 2)} secs.',
+                f'⏳ Hold your horses, this command is on cooldown, you can use it in '
+                f'{round(error.retry_after, 2)} secs.',
                 delete_after=5)
 
         elif isinstance(error, CommandNotFound):

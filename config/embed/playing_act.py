@@ -3,10 +3,10 @@ from datetime import datetime
 from config.colors import Colors
 
 
-def playing_activity_config(name: str, since: datetime, mention: str, issuer: str, avatar_url: str) -> dict:
+def playing_activity_config(name: str, mention: str, issuer: str, avatar_url: str, since: datetime = None) -> dict:
     return {
         "title": f"{name}",
-        "description": f"{mention} has been `playing` ***{name}*** since {since} 🎮",
+        "description": f"{mention} has been `playing` ***{name}***{f' since {since}' if since else ''} 🎮",
         "color": Colors.BOT_COLOR,
         "author": {
             "name": "The Z Butler",

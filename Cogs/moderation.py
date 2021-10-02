@@ -15,6 +15,7 @@ users = TinyDB('database/db.json').table("users")
 UsersQuery = Query()
 
 
+# noinspection PyTypeChecker
 async def _ban_user(ctx: Context, member: MemberConverter, reason: str):
     users.remove(UsersQuery.id == member.id)
     await member.send(
@@ -52,6 +53,7 @@ async def _strike_ban_user(ctx: Context, member: MemberConverter, reason: str):
         await _ban_user(ctx, member, reason)
 
     else:
+        # noinspection PyTypeChecker
         found_member_id = users.update(
             increment('strike_count'),
             UsersQuery.id == member.id)[0]
@@ -104,6 +106,7 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
             msg = f"<@{member.id}> has been kicked for {rs} <a:kick:880995293179555852>"
             if not reason:
                 msg = "Kicked without a reason, not that I care ¯\\_(ツ)_/¯"
+            # noinspection PyTypeChecker
             users.remove(UsersQuery.id == member.id)
             await ctx.guild.kick(member, reason=rs)
             await ctx.send(embed=create_embed(kick_config(msg), rs, None))
