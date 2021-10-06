@@ -41,6 +41,8 @@ class MusicCog(Cog,
     @cooldown(1, 5, BucketType.user)
     async def lyrics(self, ctx: Context, *info: str) -> None:
 
+        # TODO: add functionality to check if the user is listening to a song to get the lyrics from it.
+
         try:
             title, artist = _parse_metadata(*info)
         except TypeError:
