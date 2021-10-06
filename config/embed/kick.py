@@ -1,10 +1,10 @@
-from config.colors import Colors
+from util.colors import CROWN_COLOR
 
 
 def kick_config(message: str) -> dict:
     return {
         "description": message,
-        "color": Colors.CROWN_COLOR,
+        "color": CROWN_COLOR,
         "author": {
             "name": "The Z Butler",
             "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg"

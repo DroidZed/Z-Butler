@@ -1,10 +1,10 @@
-from config.colors import Colors
+from util.colors import SPOTIFY_COLOR
 
 
 def spotify_config(mention: str, song: str, album: str, artist: str, art: str, link: str) -> dict:
     return {
         "title": f"**{song}**",
-        "color": Colors.SPOTIFY_COLOR,
+        "color": SPOTIFY_COLOR,
         "description": f"{mention} is listening to this song by _{artist}_, from the album: **{album}**."
                        f"\n Check it out -> [link]({link})",
         "image": {"url": f'{art}'},

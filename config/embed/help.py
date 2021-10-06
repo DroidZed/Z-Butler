@@ -1,4 +1,4 @@
-from config.colors import Colors
+from util.colors import BOT_COLOR
 
 
 def help_config(title: str = None, desc: str = None) -> dict:
@@ -7,7 +7,7 @@ def help_config(title: str = None, desc: str = None) -> dict:
 
     return {
         "title": title or "Help Command",
-        "color": Colors.BOT_COLOR,
+        "color": BOT_COLOR,
         "description": desc,
         "thumbnail": {
             "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif"},

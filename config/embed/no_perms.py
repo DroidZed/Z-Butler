@@ -1,10 +1,10 @@
-from config.colors import Colors
+from util.colors import BOT_COLOR
 
 no_perms_config = {
     "title": "You SUSSY BAKA !",
     "url": "https://c.tenor.com/ep6ztNAdFMcAAAAC/hank-schrider-sussy-baka.gif",
     "description": "You're not powerful enough to use this command, how pitiful 😒",
-    "color": Colors.BOT_COLOR,
+    "color": BOT_COLOR,
     "image": {"url": "https://c.tenor.com/ep6ztNAdFMcAAAAC/hank-schrider-sussy-baka.gif"},
     "author": {
         "name": "The Z Butler",

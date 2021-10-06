@@ -1,9 +1,9 @@
-from config.colors import Colors
+from util.colors import BOT_COLOR
 
 
 def server_stats_config(title: str):
     return {
-        "color": Colors.BOT_COLOR,
+        "color": BOT_COLOR,
         "thumbnail": {
             "url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg"},
         "author": {

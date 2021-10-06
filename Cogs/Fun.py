@@ -21,7 +21,7 @@ from functions.gay_commentary import gay_commentary
 class FunCog(
     Cog,
     name="Fun Commands",
-    description="Fun commands from your trusty Z Butler 💙"):
+        description="Fun commands from your trusty Z Butler 💙"):
 
     def __init__(self, bot: Bot):
         self.bot = bot
@@ -130,39 +130,32 @@ class FunCog(
             await ctx.send("No question provided 🙄")
         else:
             try:
-                qst = " ".join(question)
                 async with ctx.typing():
-                    api_resp = await eight_ball_api(qst)
-                if api_resp:
+                    api_resp = await eight_ball_api(" ".join(question))
+                if api_resp and api_resp['success']:
 
-                    if api_resp['success']:
-                        config = gif_config(
-                            "https://media.tenor.com/images/67155da2720fa29220200465f1a4bd84/tenor.gif",
-                            "Z Butler",
-                            "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
-                            "8-Ball Game",
-                            "https://tenor.com/view/skeleton-eightball-8ball-prediction-horoscope-gif-13531133"
-                        )
+                    config = gif_config(
+                        "https://media.tenor.com/images/67155da2720fa29220200465f1a4bd84/tenor.gif",
+                        "Z Butler",
+                        "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                        "8-Ball Game",
+                        "https://tenor.com/view/skeleton-eightball-8ball-prediction-horoscope-gif-13531133"
+                    )
 
-                        config["description"] = "Thinking..."
+                    config["description"] = "Thinking..."
 
-                        await ctx.send(embed=create_embed(config), delete_after=5)
+                    await ctx.send(embed=create_embed(config), delete_after=5)
 
+                    async with ctx.typing():
                         await sleep(5)
 
-                        await ctx.send(embed=create_embed(
-                            eight_ball_config(
-                                ctx.message.author.mention, api_resp['body']['answer']),
-                            None,
-                            None)
-                        )
+                    await ctx.send(embed=create_embed(
+                        eight_ball_config(ctx.message.author.mention, api_resp['body']['answer']), None, None))
                 else:
-                    await ctx.send("I wasn't successful at determining an answer.")
-                    return
+                    await ctx.send("Failure at requesting the ball, is it deaf or smth ? SMFH 😣")
 
             except ReadTimeout:
                 await ctx.send("Command timed out, please try again ❌")
-                return
 
 
 def setup(bot: Bot):

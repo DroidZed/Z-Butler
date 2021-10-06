@@ -1,10 +1,10 @@
-from config.colors import Colors
+from util.colors import BOT_COLOR
 
 
 def pfp_config(url: str, tag: str, issuer: str, avatar_url: str) -> dict:
     res = {
         "title": f"**{tag}**'s Profile Picture",
-        "color": Colors.BOT_COLOR,
+        "color": BOT_COLOR,
         "image": {"url": f'{url}'},
         "author": {
             "name": "The Z Butler",
