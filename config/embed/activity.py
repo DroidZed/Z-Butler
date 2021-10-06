@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from config.colors import Colors
+from util.colors import BOT_COLOR
 
 
 def activity_config(name: str,
@@ -12,7 +12,7 @@ def activity_config(name: str,
     return {
         "title": f"{username}'s Activity",
         "description": f"{name}{f' since {since}' if since else ''}",
-        "color": Colors.BOT_COLOR,
+        "color": BOT_COLOR,
         "image": {"url": f"{image_url}"},
         "author": {
             "name": "The Z Butler",

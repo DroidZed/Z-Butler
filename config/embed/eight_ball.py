@@ -1,10 +1,10 @@
-from config.colors import Colors
+from util.colors import BOT_COLOR
 
 
 def eight_ball_config(mention: str, answer: str) -> dict:
     return {
         "title": "8-Ball Game 🎱",
-        "color": Colors.BOT_COLOR,
+        "color": BOT_COLOR,
         "description": f"{mention}, your answer is: ***__{answer}__***",
         "author": {
             "name": "The Z Butler",

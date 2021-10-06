@@ -1,11 +1,11 @@
-from config.colors import Colors
+from util.colors import CROWN_COLOR
 
 ban_config = {
     "title": "YOU HAVE BEEN BANNED",
     "url": "https://media1.tenor.com/images/0dcb84c900e10b6272152cd759eb1eab/tenor.gif",
     "description":
         "After the actions you've done in my server the admin decided to ban you for the safety of our community.",
-    "color": Colors.CROWN_COLOR,
+    "color": CROWN_COLOR,
     "image": {
         "url": "https://media1.tenor.com/images/0dcb84c900e10b6272152cd759eb1eab/tenor.gif"},
     "author": {

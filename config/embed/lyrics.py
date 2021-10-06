@@ -1,11 +1,11 @@
-from config.colors import Colors
+from util.colors import BOT_COLOR
 
 
 def lyrics_config(**data) -> dict:
     return {
         "title": f"**{data['title']}** by {data['artist']}",
         "url": data['song_url'],
-        "color": Colors.BOT_COLOR,
+        "color": BOT_COLOR,
         "description": data['lyrics'],
         "image": {"url": f"{data['art_url']}"},
         "author": {

@@ -1,7 +1,11 @@
 from discord import Guild, Embed
-from discord.ext.commands import (Bot, Cog, Context, MemberConverter, command,
-                                  cooldown)
-from discord.ext.commands.cooldowns import BucketType
+from discord.ext.commands import (Bot,
+                                  Cog,
+                                  Context,
+                                  MemberConverter,
+                                  command,
+                                  cooldown,
+                                  BucketType)
 
 from config.embed.server import server_stats_config
 from config.embed.user_stats import user_stats

@@ -1,7 +1,6 @@
-from config.colors import Colors
+from util.colors import TWITCH_PURPLE, BOT_COLOR, YOUTUBE_RED
 
 
-# noinspection PyUnresolvedReferences
 def streaming_activity_config(name: str,
                               mention: str,
                               issuer: str,
@@ -36,10 +35,10 @@ def streaming_activity_config(name: str,
     return dic
 
 
-def __change_platform_color(platform: str):
+def __change_platform_color(platform: str) -> int:
     if platform == 'Twitch':
-        return Colors.TWITCH_PURPLE
+        return TWITCH_PURPLE
     elif platform == 'YouTube':
-        return Colors.YOUTUBE_RED
+        return YOUTUBE_RED
     else:
-        return Colors.BOT_COLOR
+        return BOT_COLOR

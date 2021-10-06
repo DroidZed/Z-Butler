@@ -1,4 +1,4 @@
-from config.colors import Colors
+from util.colors import BOT_COLOR
 
 
 def gif_config(url: str,
@@ -8,7 +8,7 @@ def gif_config(url: str,
                tenor_link: str) -> dict:
     return {
         "title": f"**{gif_name}**",
-        "color": Colors.BOT_COLOR,
+        "color": BOT_COLOR,
         "description": f"Original image link: [here]({tenor_link})",
         "image": {"url": f'{url}'},
         "author": {

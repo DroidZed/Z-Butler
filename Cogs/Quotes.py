@@ -2,8 +2,12 @@ from asyncio import sleep
 
 from discord import Message, Reaction, Member
 from discord.abc import GuildChannel
-from discord.ext.commands import (Bot, BucketType, Cog, Context,
-                                  command, cooldown)
+from discord.ext.commands import (Bot,
+                                  BucketType,
+                                  Cog,
+                                  Context,
+                                  command,
+                                  cooldown)
 from discord.ext.tasks import loop
 
 from config.embed.quote import quotes_config

@@ -1,13 +1,13 @@
 from datetime import datetime
 
-from config.colors import Colors
+from util.colors import BOT_COLOR
 
 
 def playing_activity_config(name: str, mention: str, issuer: str, avatar_url: str, since: datetime = None) -> dict:
     return {
         "title": f"{name}",
         "description": f"{mention} has been `playing` ***{name}***{f' since {since}' if since else ''} 🎮",
-        "color": Colors.BOT_COLOR,
+        "color": BOT_COLOR,
         "author": {
             "name": "The Z Butler",
             "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg"

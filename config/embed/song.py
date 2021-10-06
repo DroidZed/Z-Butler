@@ -1,11 +1,11 @@
-from config.colors import Colors
+from util.colors import BOT_COLOR
 
 
 def song_config(**data) -> dict:
     return {
         "title": f"**{data['title']}**",
         "url": data['song_url'],
-        "color": Colors.BOT_COLOR,
+        "color": BOT_COLOR,
         "description": f"The song you've requested, by {data['artist']}",
         "image": {"url": f"{data['art_url']}"},
         "author": {

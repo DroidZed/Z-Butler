@@ -1,4 +1,4 @@
-from config.colors import Colors
+from util.colors import CROWN_COLOR
 
 
 def strike_config(number_of_strikes_left: int):
@@ -6,7 +6,7 @@ def strike_config(number_of_strikes_left: int):
         "title": "YOU GOT A STRIKE, MIND YOUR OWN BUSINESS NEXT TIME.",
         "url": "https://c.tenor.com/ep6ztNAdFMcAAAAC/hank-schrider-sussy-baka.gif",
         "description": "HOLD UP THERE ! BAD THINGS ARE NOT ALLOWED HERE, DO IT ELSEWHERE OR FACE THE CONSEQUENCES !",
-        "color": Colors.CROWN_COLOR,
+        "color": CROWN_COLOR,
         "image": {"url": "https://c.tenor.com/ep6ztNAdFMcAAAAC/hank-schrider-sussy-baka.gif"},
         "author": {
             "name": "The Z Butler",
