@@ -1,7 +1,6 @@
 from asyncio import sleep
 
 from discord import Message, Reaction, Member
-from discord.abc import GuildChannel
 from discord.ext.commands import (Bot,
                                   BucketType,
                                   Cog,
@@ -57,11 +56,17 @@ class QuotesCog(Cog, name="Quotes Category", description="Quoty quotes !"):
 
     @loop(hours=24, reconnect=True)
     async def daily_quote(self) -> None:
+
         quote = await _grab_quote()
 
-        channel: GuildChannel = self.bot.get_channel(696838753528053782)
-
-        await channel.send(embed=create_embed(quotes_config(quote['author'], quote['body'])))
+        await self.bot.get_channel(696838753528053782).send(
+            embed=create_embed(
+                quotes_config(
+                    quote['author'],
+                    quote['body']
+                )
+            )
+        )
 
     @daily_quote.before_loop
     async def before_printer(self):
