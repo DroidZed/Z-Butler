@@ -1,4 +1,4 @@
-from discord import (Spotify, Game, Streaming, Activity)
+from discord import (Spotify, Game, Streaming, Activity, CustomActivity)
 from discord.ext.commands import (Bot,
                                   BucketType,
                                   Cog,
@@ -79,10 +79,14 @@ class UserCog(Cog, name="User-related Commands", description="User commands for 
         member = member or ctx.author
 
         if not member.activities:
-            await ctx.send("Go listen to some music and try again later 🙄")
+            await ctx.message.reply("https://pics.me.me/thumb_c-mon-do-something-me-irl-38375559.png")
             return
 
         acts = member.activities
+
+        if all(isinstance(e, CustomActivity) for e in acts):
+            await ctx.message.reply("Go listen to some music or do something in your life then try again later 🙄")
+            return
 
         act = (acts[1:])[0] if len(acts) > 1 else acts[0]
 

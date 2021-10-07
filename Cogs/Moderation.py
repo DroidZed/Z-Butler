@@ -64,7 +64,7 @@ async def _strike_ban_user(ctx: Context, member: MemberConverter, reason: str):
 async def invalid_perms_embed(ctx: Context, action: str) -> None:
     await ctx.send(
         embed=create_embed(
-            config=no_perms_config,
+            config=no_perms_config(),
             cfg_type=action
         )
     )
