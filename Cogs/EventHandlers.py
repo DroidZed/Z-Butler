@@ -6,7 +6,7 @@ from discord import File, Guild
 from discord.abc import GuildChannel
 from discord.ext.commands import Bot, Cog, Context, MemberConverter
 from discord.ext.commands.errors import (CommandError, CommandNotFound,
-                                         CommandOnCooldown, MemberNotFound)
+                                         CommandOnCooldown, MemberNotFound, MissingRole)
 from tinydb import Query, TinyDB
 
 from config.embed.leave import leave_config
@@ -84,8 +84,9 @@ class EventHandlers(Cog, name="Event Handlers", description="Events fired when s
             await ctx.send('Nope, no such command was found *sight* 💨', delete_after=5)
 
         else:
-            print_exception(
-                type(error), error, error.__traceback__, file=stderr)
+            if not isinstance(error, MissingRole):
+                print_exception(type(error), error,
+                                error.__traceback__, file=stderr)
 
 
 def setup(bot: Bot):
