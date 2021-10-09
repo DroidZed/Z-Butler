@@ -29,8 +29,7 @@ class StatsCog(Cog, name="Server Stats", description="Stats for nerds."):
         async with ctx.typing():
             guild: Guild = self.bot.get_guild(GUILD_ID)
 
-            roles, online_users_count, machines = extract_guild_data(
-                ctx, guild)
+            roles, online_users_count, machines = extract_guild_data(ctx, guild)
 
             data = {
                 "Lord": "𝕯𝖗𝖔𝖎𝖉𝖅𝖊𝖉",

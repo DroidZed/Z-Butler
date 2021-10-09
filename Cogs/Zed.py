@@ -12,7 +12,7 @@ from config.main import PREFIX, OWNER_ID
 from functions.embed_factory import create_embed
 
 
-class ZedCog(Cog, name="Zed Domain", description="Domain expansion !"):
+class ZedCog(Cog, name="⚡ Zed Domain", description="Domain expansion !"):
 
     def __init__(self, bot: Bot):
         self.bot = bot
