@@ -1,3 +1,6 @@
+from asyncio import sleep
+
+from discord import Role, utils
 from discord.ext.commands import Bot, Cog, Context, MemberConverter, command
 from discord.ext.commands.core import has_role
 from discord.ext.commands.errors import CommandError, MissingRole
@@ -15,7 +18,6 @@ users = TinyDB('database/db.json').table("users")
 UsersQuery = Query()
 
 
-# noinspection PyTypeChecker
 async def _ban_user(ctx: Context, member: MemberConverter, reason: str):
     users.remove(UsersQuery.id == member.id)
     await member.send(
@@ -70,12 +72,12 @@ async def invalid_perms_embed(ctx: Context, action: str) -> None:
     )
 
 
-class ModerationCog(Cog, name="Moderation Commands", description="Mod commands for the admin only."):
+class ModerationCog(Cog, name="🏛 Moderation Commands", description="Mod commands for **__Lord Lorkhan__** only."):
 
     def __init__(self, bot: Bot):
         self.bot: Bot = bot
 
-    # ban kick warn purge
+    # ban kick warn purge mute
 
     @command(
         name="ban",
@@ -132,7 +134,33 @@ class ModerationCog(Cog, name="Moderation Commands", description="Mod commands f
     async def purge(self, ctx: Context, amount: int):
         await ctx.channel.purge(limit=amount)
 
-    # error handlers
+    @command(
+        name="mute",
+        usage=f"{PREFIX}mute `username` `amount`",
+        description="Mutes a member for a certain amount of time.")
+    @has_role(CROWN_ROLE_ID)
+    async def mute(self, ctx: Context, member: MemberConverter = None, amount: int = 10):
+
+        if not member:
+            await ctx.send("You really want to mute yourself ? 🤔", delete_after=1.5)
+            return
+
+        if member.top_role.id == 896349097391444029:
+            await ctx.message.reply("User already muted you dump fuck !")
+            return
+
+        role: Role = utils.get(ctx.message.guild.roles, id=896349097391444029)
+
+        await member.add_roles(role)
+        await ctx.send(f":white_check_mark: Muted {member.mention} for {amount} minutes. Take the time to seek help.",
+                       delete_after=1.2)
+        await sleep(amount * 60)
+        await member.remove_roles(role)
+        await ctx.send(f":white_check_mark: {member.mention} was unmuted. Hopefully you've reflected on your actions.",
+                       delete_after=1.2)
+
+        # error handlers
+
     @purge.error
     async def purge_handler(self, ctx: Context, error: CommandError) -> None:
         if isinstance(error, MissingRole):

@@ -18,7 +18,7 @@ from functions.embed_factory import create_embed
 from functions.find_gif import find_gif
 
 
-class UserCog(Cog, name="User-related Commands", description="User commands for everyone"):
+class UserCog(Cog, name="👤 User-related Commands", description="User commands for everyone"):
 
     def __init__(self, bot: Bot):
         self.bot = bot
