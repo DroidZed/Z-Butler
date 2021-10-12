@@ -12,6 +12,8 @@ py-cord = { extras = ["voice"], version = "*" }
 pynacl = "*"
 gql = { extras = ["aiohttp"], version = "*" }
 lyricsgenius = "*"
+numpy = "*"
+wand = "*"
 
 [dev-packages]
 autopep8 = "*"
