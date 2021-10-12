@@ -31,19 +31,24 @@ async def _send_lyrics(ctx, title: str, artist: str) -> None:
     async with ctx.typing():
         data = query_lyrics(title, artist)
 
-        if data["valid"]:
+    if not data["valid"]:
 
-            emb = create_embed(
+        await ctx.send("❌ Cannot find lyrics for the given song....")
+        return
+
+    else:
+
+        emb = create_embed(
                 lyrics_config(**data),
                 None,
                 None
             )
 
-            if len(emb.description) > 4096:
-                emb.description = f"The lyrics were too long, here's a [link instead]({data['song_url']})."
+        if len(emb.description) > 4096:
+            emb.description = f"The lyrics were too long, here's a [link instead]({data['song_url']})."
 
-    await ctx.send(f'{ctx.author.mention}, check your inbox !!', delete_after=10)
-    await ctx.author.send(embed=emb)
+        await ctx.send(f'{ctx.author.mention}, check your inbox !!', delete_after=10)
+        await ctx.author.send(embed=emb)
 
 
 class MusicCog(Cog,
