@@ -1,9 +1,11 @@
+import json
 from typing import Optional
 
 from discord import Member, Spotify
 from discord.ext.commands import (Bot, BucketType, Cog, Context, command,
                                   cooldown)
 
+from classes.SpotiClient import SpotiClient
 from config.embed.lyrics import lyrics_config
 from config.embed.song import song_config
 from config.main import PREFIX
@@ -39,10 +41,10 @@ async def _send_lyrics(ctx, title: str, artist: str) -> None:
     else:
 
         emb = create_embed(
-                lyrics_config(**data),
-                None,
-                None
-            )
+            lyrics_config(**data),
+            None,
+            None
+        )
 
         if len(emb.description) > 4096:
             emb.description = f"The lyrics were too long, here's a [link instead]({data['song_url']})."
@@ -105,7 +107,11 @@ class MusicCog(Cog,
             return
 
         async with ctx.typing():
+            res = SpotiClient().client.search(f"{title} {artist}", search_types=["track"], limit=1)
             data = look_for_song(title, artist)
+
+        # TODO: update the code to use the Spotify API !
+        print(json.dumps(res["tracks"]["items"][0], indent=4))
 
         if data["valid"]:
 

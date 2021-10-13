@@ -14,6 +14,7 @@ gql = { extras = ["aiohttp"], version = "*" }
 lyricsgenius = "*"
 numpy = "*"
 wand = "*"
+spotify-client = "*"
 
 [dev-packages]
 autopep8 = "*"
