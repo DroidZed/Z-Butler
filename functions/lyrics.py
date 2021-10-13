@@ -1,4 +1,4 @@
-from functions.genius import get_song_data
+from util.genius import get_song_data
 
 
 def query_lyrics(title: str, artist: str) -> dict:

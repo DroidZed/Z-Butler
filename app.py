@@ -5,6 +5,7 @@ from discord import Intents, Game, __version__
 from discord.ext import commands
 
 from classes.Help import ZedHelpCommand
+from classes.SpotiClient import SpotiClient
 from config.main import PREFIX, OWNER_ID, TOKEN
 from util.print_codes import (GREEN, NOCOLOR, ITALIC, NORMAL, CYAN, BLUE)
 
@@ -43,6 +44,8 @@ async def on_ready():
             name=f"{bot.command_prefix}help - By DroidZed"
         )
     )
+
+    SpotiClient()
 
 
 bot.run(TOKEN)
