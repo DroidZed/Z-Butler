@@ -1,17 +1,15 @@
-import json
 from typing import Optional
 
 from discord import Member, Spotify
 from discord.ext.commands import (Bot, BucketType, Cog, Context, command,
                                   cooldown)
 
-from classes.SpotiClient import SpotiClient
 from config.embed.lyrics import lyrics_config
 from config.embed.song import song_config
 from config.main import PREFIX
 from functions.embed_factory import create_embed
 from functions.lyrics import query_lyrics
-from functions.song import look_for_song
+from functions.spotify_search import spotify_search_rest
 
 
 def _parse_metadata(*info: str) -> Optional[tuple[str, str]]:
@@ -107,19 +105,16 @@ class MusicCog(Cog,
             return
 
         async with ctx.typing():
-            res = SpotiClient().client.search(f"{title} {artist}", search_types=["track"], limit=1)
-            data = look_for_song(title, artist)
 
-        # TODO: update the code to use the Spotify API !
-        print(json.dumps(res["tracks"]["items"][0], indent=4))
+            res = spotify_search_rest(title, artist)
 
-        if data["valid"]:
+        if res:
 
             await ctx.send(embed=create_embed(
-                song_config(**data),
+                song_config(**res),
                 None,
                 None
-            )
+                )
             )
 
         else:
