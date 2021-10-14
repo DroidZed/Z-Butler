@@ -5,7 +5,7 @@ def spotify_config(mention: str, song: str, album: str, artist: str, art: str, l
     return {
         "title": f"**{song}**",
         "color": SPOTIFY_COLOR,
-        "description": f"{mention} is listening to this song by _{artist}_, from the album: **{album}**."
+        "description": f"{mention} is listening to this song by _{artist}_\nFrom the album **{album}**."
         f"\n Check it out -> [link]({link})",
         "image": {"url": f'{art}'},
         "author": {
