@@ -90,7 +90,7 @@ class QuotesCog(Cog, name="💭 Quotes Category", description="Quoty quotes !"):
     async def daily_quote(self) -> None:
         quote = await _grab_quote()
 
-        await self.bot.get_channel(696838753528053782).send(
+        await self.bot.get_channel(899278487792279622).send(
             embed=create_embed(
                 quotes_config(
                     quote['author'],
