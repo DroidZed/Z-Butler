@@ -23,7 +23,7 @@ async def _grab_quote():
     return api['randomQuote']
 
 
-class QuotesCog(Cog, name="💭 Quotes Category", description="Quoty quotes !"):
+class QuotesCog(Cog, name="Quotes Category", description="💭 Quoty quotes !"):
 
     def __init__(self, bot: Bot):
         self.bot = bot

@@ -72,7 +72,7 @@ async def invalid_perms_embed(ctx: Context, action: str) -> None:
     )
 
 
-class ModerationCog(Cog, name="🏛 Moderation Commands", description="Mod commands for **__Lord Lorkhan__** only."):
+class ModerationCog(Cog, name="Moderation Commands", description="🏛 Mod commands for **__Lord Lorkhan__** only."):
 
     def __init__(self, bot: Bot):
         self.bot: Bot = bot
