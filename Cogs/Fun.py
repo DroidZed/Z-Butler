@@ -20,8 +20,8 @@ from functions.gay_commentary import gay_commentary
 
 class FunCog(
     Cog,
-    name="🎉 Fun Commands",
-        description="Fun commands from your trusty Z Butler 💙"):
+    name="Fun Commands",
+        description="🎉 Fun commands from your trusty Z Butler 💙"):
 
     def __init__(self, bot: Bot):
         self.bot = bot

@@ -9,11 +9,10 @@ def activity_config(name: str,
                     avatar_url: str,
                     image_url: str,
                     since: datetime = None) -> dict:
-    return {
+    d = {
         "title": f"{username}'s Activity",
         "description": f"{name}{f' since {since}' if since else ''}",
         "color": BOT_COLOR,
-        "image": {"url": f"{image_url}"},
         "author": {
             "name": "The Z Butler",
             "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg"
@@ -26,3 +25,8 @@ def activity_config(name: str,
             "icon_url": f"{avatar_url}"
         }
     }
+
+    if image_url:
+        d["image"] = {"url": f"{image_url}"}
+
+    return d

@@ -52,8 +52,8 @@ async def _send_lyrics(ctx, title: str, artist: str) -> None:
 
 
 class MusicCog(Cog,
-               name="🎶 Music Category",
-               description="Enjoy the bits and pieces of the music you like."
+               name="Music Category",
+               description="🎶 Enjoy the bits and pieces of the music you like."
                ):
 
     def __init__(self, bot: Bot):

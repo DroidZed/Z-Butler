@@ -18,7 +18,7 @@ from functions.embed_factory import create_embed
 from functions.find_gif import find_gif
 
 
-class UserCog(Cog, name="👤 User-related Commands", description="User commands for everyone"):
+class UserCog(Cog, name="User-Commands", description="👤 User commands for everyone"):
 
     def __init__(self, bot: Bot):
         self.bot = bot
@@ -90,30 +90,28 @@ class UserCog(Cog, name="👤 User-related Commands", description="User commands
 
         act = (acts[1:])[0] if len(acts) > 1 else acts[0]
 
-        if isinstance(act, Spotify):
-            link = f"https://open.spotify.com/track/{act.track_id}"
+        config: dict = None
 
-            await ctx.send(embed=create_embed(spotify_config(
+        if isinstance(act, Spotify):
+            config = spotify_config(
                 member.mention,
                 act.title,
                 act.album,
                 act.artist,
                 act.album_cover_url,
-                link)))
-            return
+                f"https://open.spotify.com/track/{act.track_id}")
 
         if isinstance(act, Game):
-            await ctx.send(embed=create_embed(playing_activity_config(
+            config = playing_activity_config(
                 act.name,
                 member.mention,
                 ctx.author,
                 ctx.message.author.avatar_url,
                 act.start.strftime('%x %X') if act.start else None
-            )))
-            return
+            )
 
         if isinstance(act, Streaming):
-            await ctx.send(embed=create_embed(streaming_activity_config(
+            config = streaming_activity_config(
                 act.name,
                 member.mention,
                 ctx.author,
@@ -121,19 +119,24 @@ class UserCog(Cog, name="👤 User-related Commands", description="User commands
                 act.platform,
                 act.url,
                 act.game
-            )))
-            return
+            )
 
         if isinstance(act, Activity):
-            await ctx.send(embed=create_embed(activity_config(
+            config = activity_config(
                 act.name,
                 member.name,
                 ctx.author,
                 ctx.message.author.avatar_url,
                 act.large_image_url,
                 act.start.strftime('%x %X')
-            )))
+            )
+
+        if not config:
+            await ctx.send("Nothing, move along....")
             return
+
+        await ctx.send(embed=create_embed(config))
+        return
 
 
 def setup(bot: Bot):
