@@ -10,7 +10,7 @@ def streaming_activity_config(name: str,
                               streamed_game: str = None) -> dict:
     dic = {
         "title": f"{name}",
-        "description": f"{mention} has been `streaming` ***this*** 👻",
+        "description": f"{mention} is `streaming` ***this*** 👻",
         "color": __change_platform_color(platform),
         "author": {
             "name": "The Z Butler",
