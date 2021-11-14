@@ -110,8 +110,6 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
                 act.start.strftime('%x %X') if act.start else None
             )
 
-        # TODO: display the streaming video alongside the embed
-
         if isinstance(act, Streaming):
             config = streaming_activity_config(
                 act.name,
