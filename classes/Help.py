@@ -32,7 +32,7 @@ class ZedHelpCommand(HelpCommand):
 
     async def send_cog_help(self, cog: Cog):
 
-        if cog.qualified_name() == "Event Handlers":
+        if cog.qualified_name == "Event Handlers":
             return
 
         dest: Messageable = self.get_destination()
