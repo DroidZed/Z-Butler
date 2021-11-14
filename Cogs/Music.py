@@ -52,7 +52,7 @@ async def _send_lyrics(ctx, title: str, artist: str) -> None:
 
 
 class MusicCog(Cog,
-               name="Music Category",
+               name="Muse",
                description="🎶 Enjoy the bits and pieces of the music you like."
                ):
 

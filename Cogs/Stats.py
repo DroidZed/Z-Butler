@@ -14,7 +14,7 @@ from functions.embed_factory import create_embed
 from functions.extract_guild_data import extract_guild_data
 
 
-class StatsCog(Cog, name="Server Stats", description="Stats for nerds."):
+class StatsCog(Cog, name="Stats", description="Stats for nerds."):
 
     def __init__(self, bot: Bot):
         self.bot = bot
