@@ -22,7 +22,7 @@ class StatsCog(Cog, name="Stats", description="Stats for nerds."):
     @command(name="server",
              description="Grabs the server's info.",
              usage=f"{PREFIX}server",
-             aliases=['info', 's?']
+             aliases=["s?"]
              )
     @cooldown(1, 2, BucketType.user)
     async def server_info(self, ctx: Context):
@@ -46,10 +46,10 @@ class StatsCog(Cog, name="Stats", description="Stats for nerds."):
 
         await ctx.send(embed=embed)
 
-    @command(name="user_stats",
+    @command(name="user",
              description="Grabs the request user's info.",
              usage=f"{PREFIX}user `username`",
-             aliases=['user?', 'u?']
+             aliases=["u?"]
              )
     @cooldown(1, 2, BucketType.user)
     async def user_stats(self, ctx: Context, member: MemberConverter = None) -> None:

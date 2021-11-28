@@ -28,8 +28,11 @@ class ZedCog(Cog, name="Zed-Domain", description="⚡ Domain expansion !"):
         replies = [
             "WHAT ?!",
             "What do you need ?",
-            "I'm busy attending to the server, move along...",
-            "Don't bother me you stupid !"
+            "I'm busy attending to the __server, move along...",
+            "Don't bother me you stupid !",
+            "Go out there and touch some grass !!",
+            "Shouldn't you be outside finding a partner instead ? You miserable virgin !!",
+            "I bet your parents aren't proud of you and your gf/bf things you're a boring little clamp !"
         ]
 
         if ctx.author.id == OWNER_ID:

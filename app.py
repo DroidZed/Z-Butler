@@ -36,7 +36,7 @@ async def on_ready():
     print(f"    |       {GREEN}ONLINE{NOCOLOR}      /")
     print("     ------------------")
     print(f"| Discord version: {__version__}               |", end="\n")
-    print(f"| Running under: {ITALIC}Python v{python_version()}{NORMAL}         |", end="\n")
+    print(f"| Running under: {ITALIC}Python v{python_version()}{NORMAL}        |", end="\n")
     print("/" * 39)
 
     await bot.change_presence(

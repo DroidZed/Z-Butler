@@ -1,8 +1,8 @@
 from typing import Optional
 
-from discord import Member, Spotify
+from discord import Spotify
 from discord.ext.commands import (Bot, BucketType, Cog, Context, command,
-                                  cooldown)
+                                  cooldown, MemberConverter)
 
 from config.embed.lyrics import lyrics_config
 from config.embed.song import song_config
@@ -62,16 +62,17 @@ class MusicCog(Cog,
     @command(
         name="lyrics",
         description="Give the lyrics of a requested song.\nYou can also, if you want, use the song you're currently "
-                    "listening to on Spotify. To achieve that, simply run the command without arguments",
-        usage=f"{PREFIX}lyrics `song_name` (respect the _ !) `artist` | Nothing",
+                    "listening to on Spotify or someone else. "
+                    "To achieve that, simply run the command without arguments to check for yourself or tag a user.",
+        usage=f"{PREFIX}lyrics `song_name` (respect the _ !) `artist` | `user` | Nothing",
         aliases=['ly?']
     )
     @cooldown(1, 5, BucketType.user)
-    async def lyrics(self, ctx: Context, *info: str) -> None:
+    async def lyrics(self, ctx: Context, member: MemberConverter = None, *info: str) -> None:
 
         if not info or len(info) <= 1:
 
-            member: Member = ctx.author
+            member = member or ctx.author
 
             acts = member.activities
 

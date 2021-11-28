@@ -3,7 +3,7 @@ from discord.ext.commands import Context
 
 
 def extract_guild_data(ctx: Context, guild: Guild) -> tuple[list[Role], int, int]:
-    """Extracts some useful data from the server.
+    """Extracts some useful data from the __server.
 
     Params:
     ------------
