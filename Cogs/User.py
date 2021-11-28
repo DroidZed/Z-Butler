@@ -27,7 +27,7 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
         name="pic",
         usage=f"{PREFIX}pic `username`",
         description="Display the requested user's profile picture.",
-        aliases=['pfp'])
+        aliases=["pfp"])
     @cooldown(1, 5, BucketType.user)
     async def pfp(self, ctx: Context, member: MemberConverter = None):
         if not member:
@@ -49,7 +49,7 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
         name="greet",
         usage=f"{PREFIX}greet `username`",
         description="Greet a given user",
-        aliases=['grt'])
+        aliases=["grt"])
     @cooldown(1, 3, BucketType.user)
     async def hello(self, ctx: Context, *, member: MemberConverter = None):
         member = member or ctx.author
@@ -68,10 +68,10 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
             )
 
     @command(
-        name="user_status",
+        name="status",
         description="Get the status of a user, can be either a `song`, a `game`, a `stream` or any `custom "
                     "activity`.\n Ignoring the bio.",
-        usage=f"{PREFIX}st? `username`",
+        usage=f"{PREFIX}status `username`",
         aliases=["st?"]
     )
     async def status(self, ctx: Context, member: MemberConverter = None) -> None:
@@ -90,7 +90,7 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
 
         act = (acts[1:])[0] if len(acts) > 1 else acts[0]
 
-        config: dict = None
+        config: dict = {}
 
         if isinstance(act, Spotify):
             config = spotify_config(
@@ -128,7 +128,7 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
                 ctx.author,
                 ctx.message.author.avatar_url,
                 act.large_image_url,
-                act.start.strftime('%x %X')
+                act.start.strftime('%x %X') if act.start else None
             )
 
         if not config:

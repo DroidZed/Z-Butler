@@ -17,8 +17,7 @@ users = TinyDB('database/db.json').table("users")
 UsersQuery = Query()
 
 
-# noinspection PyTypeChecker
-class EventHandlers(Cog, name="Event Handlers", description="Events fired when somethings kicks in the server."):
+class EventHandlers(Cog, name="Event Handlers", description="Events fired when somethings kicks in the __server."):
 
     def __init__(self, bot):
         self.bot = bot
@@ -51,7 +50,6 @@ class EventHandlers(Cog, name="Event Handlers", description="Events fired when s
 
             print('channel is none or missing perms')
 
-    # noinspection PyTypeChecker
     @Cog.listener()
     async def on_member_remove(self, member: MemberConverter):
 

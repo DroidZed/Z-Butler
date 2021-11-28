@@ -1,6 +1,4 @@
-from asyncio import sleep
-
-from discord import Role, utils
+from discord import Role
 from discord.ext.commands import Bot, Cog, Context, MemberConverter, command
 from discord.ext.commands.core import has_role
 from discord.ext.commands.errors import CommandError, MissingRole
@@ -72,7 +70,13 @@ async def invalid_perms_embed(ctx: Context, action: str) -> None:
     )
 
 
+def silenced_role(ctx) -> Role:
+    return ctx.guild.get_role(896349097391444029)
+
+
 class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for **__Lord Lorkhan__** only."):
+
+    _guild = None
 
     def __init__(self, bot: Bot):
         self.bot: Bot = bot
@@ -136,30 +140,34 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
 
     @command(
         name="mute",
-        usage=f"{PREFIX}mute `username` `amount`",
-        description="Mutes a member for a certain amount of time.")
+        usage=f"{PREFIX}mute `username",
+        description="Mutes a member.")
     @has_role(CROWN_ROLE_ID)
-    async def mute(self, ctx: Context, member: MemberConverter = None, amount: int = 10):
+    async def mute(self, ctx: Context, member: MemberConverter):
 
-        if not member:
-            await ctx.send("You really want to mute yourself ? 🤔", delete_after=1.5)
+        if member.top_role == silenced_role(ctx):
+            await ctx.message.reply("User already muted you dump fuck !", delete_after=1.8)
             return
 
-        if member.top_role.id == 896349097391444029:
-            await ctx.message.reply("User already muted you dump fuck !")
-            return
-
-        role: Role = utils.get(ctx.message.guild.roles, id=896349097391444029)
-
-        await member.add_roles(role)
-        await ctx.send(f":white_check_mark: Muted {member.mention} for {amount} minutes. Take the time to seek help.",
+        await member.add_roles(silenced_role(ctx))
+        await ctx.send(f":white_check_mark: Muted {member.mention}. Take the time to seek help.",
                        delete_after=1.2)
-        await sleep(amount * 60)
-        await member.remove_roles(role)
+
+    @command(
+        name="!mute",
+        usage=f"{PREFIX}!mute `username`",
+        description="UNmutes a muted member.")
+    @has_role(CROWN_ROLE_ID)
+    async def unmute(self, ctx: Context, member: MemberConverter):
+
+        if member.top_role != silenced_role(ctx):
+            await ctx.message.reply("User already unmuted...what a waste of time 🙄", delete_after=1.8)
+            return
+
+        await member.remove_roles(silenced_role(ctx))
+
         await ctx.send(f":white_check_mark: {member.mention} was unmuted. Hopefully you've reflected on your actions.",
                        delete_after=1.2)
-
-        # error handlers
 
     @purge.error
     async def purge_handler(self, ctx: Context, error: CommandError) -> None:
