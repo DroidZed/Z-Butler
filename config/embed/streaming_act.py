@@ -12,9 +12,13 @@ def streaming_activity_config(name: str,
         "title": f"{name}",
         "description": f"{mention} is `streaming` ***this*** 👻",
         "color": __change_platform_color(platform),
+        "url": f"{stream_url}",
         "author": {
             "name": "The Z Butler",
             "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg"
+        },
+        "image": {
+            "url": f"{stream_url}"
         },
         "thumbnail": {
             "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif"
