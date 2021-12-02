@@ -28,7 +28,7 @@ class ZedCog(Cog, name="Zed-Domain", description="⚡ Domain expansion !"):
         replies = [
             "WHAT ?!",
             "What do you need ?",
-            "I'm busy attending to the __server, move along...",
+            "I'm busy attending to the server, move along...",
             "Don't bother me you stupid !",
             "Go out there and touch some grass !!",
             "Shouldn't you be outside finding a partner instead ? You miserable virgin !!",

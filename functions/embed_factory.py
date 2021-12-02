@@ -33,6 +33,5 @@ def create_embed(
             'text': ft[cfg_type]['text'],
             'icon_url': ft[cfg_type]['icon_url']
         }
-    Embed.from_dict(config)
 
-    return
+    return Embed.from_dict(config)

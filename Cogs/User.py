@@ -6,7 +6,9 @@ from discord.ext.commands import (Bot,
                                   MemberConverter,
                                   command,
                                   cooldown)
+from discord.ext.tasks import loop
 
+from classes.TwitchClient import TwitchClient
 from config.embed.activity import activity_config
 from config.embed.hello import hello_config
 from config.embed.pfp import pfp_config
@@ -16,12 +18,17 @@ from config.embed.streaming_act import streaming_activity_config
 from config.main import PREFIX
 from functions.embed_factory import create_embed
 from functions.find_gif import find_gif
+from functions.get_twitch_user import get_twitch_user_pfp
 
 
 class UserCog(Cog, name="User-Commands", description="👤 User commands for everyone"):
 
     def __init__(self, bot: Bot):
         self.bot = bot
+        self.decrement_token_validity.start()
+
+    def cog_unload(self):
+        self.decrement_token_validity.stop()
 
     @command(
         name="pic",
@@ -74,6 +81,7 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
         usage=f"{PREFIX}status `username`",
         aliases=["st?"]
     )
+    @cooldown(1, 7, BucketType.user)
     async def status(self, ctx: Context, member: MemberConverter = None) -> None:
 
         member = member or ctx.author
@@ -93,43 +101,53 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
         config: dict = {}
 
         if isinstance(act, Spotify):
-            config = spotify_config(
-                member.mention,
-                act.title,
-                act.album,
-                act.artist,
-                act.album_cover_url,
-                f"https://open.spotify.com/track/{act.track_id}")
+            async with ctx.typing():
+                config = spotify_config(
+                    member.mention,
+                    act.title,
+                    act.album,
+                    act.artist,
+                    act.album_cover_url,
+                    f"https://open.spotify.com/track/{act.track_id}")
 
         if isinstance(act, Game):
-            config = playing_activity_config(
-                act.name,
-                member.mention,
-                ctx.author,
-                ctx.message.author.avatar_url,
-                act.start.strftime('%x %X') if act.start else None
-            )
+            async with ctx.typing():
+                config = playing_activity_config(
+                    act.name,
+                    member.mention,
+                    ctx.author,
+                    ctx.message.author.avatar_url,
+                    act.start.strftime('%x %X') if act.start else None
+                )
 
         if isinstance(act, Streaming):
-            config = streaming_activity_config(
-                act.name,
-                member.mention,
-                ctx.author,
-                ctx.message.author.avatar_url,
-                act.platform,
-                act.url,
-                act.game
-            )
+            async with ctx.typing():
+                streamer_image_url: str | None = await get_twitch_user_pfp(act.url[22:])
+
+                if not streamer_image_url.startswith("https://"):
+                    streamer_image_url = None
+
+                config = streaming_activity_config(
+                    act.name,
+                    member.mention,
+                    ctx.author,
+                    ctx.message.author.avatar_url,
+                    act.platform,
+                    stream_url=act.url,
+                    streamed_game=act.game,
+                    streamer_pfp=streamer_image_url
+                )
 
         if isinstance(act, Activity):
-            config = activity_config(
-                act.name,
-                member.name,
-                ctx.author,
-                ctx.message.author.avatar_url,
-                act.large_image_url,
-                act.start.strftime('%x %X') if act.start else None
-            )
+            async with ctx.typing():
+                config = activity_config(
+                    act.name,
+                    member.name,
+                    ctx.author,
+                    ctx.message.author.avatar_url,
+                    act.large_image_url,
+                    act.start.strftime('%x %X') if act.start else None
+                )
 
         if not config:
             await ctx.send("Nothing, move along....")
@@ -137,6 +155,18 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
 
         await ctx.send(embed=create_embed(config))
         return
+
+    @loop(hours=24, reconnect=True)
+    def decrement_token_validity(self):
+
+        bearer_obj = TwitchClient()
+
+        bearer_obj.decrement_expiration()
+
+    @decrement_token_validity.before_loop
+    async def before_token_decrement(self):
+
+        await self.bot.wait_until_ready()
 
 
 def setup(bot: Bot):
