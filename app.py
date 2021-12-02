@@ -6,6 +6,7 @@ from discord.ext import commands
 
 from classes.Help import ZedHelpCommand
 from classes.SpotiClient import SpotiClient
+from classes.TwitchClient import TwitchClient
 from config.main import PREFIX, OWNER_ID, TOKEN
 from util.print_codes import (GREEN, NOCOLOR, ITALIC, NORMAL, CYAN, BLUE)
 
@@ -46,6 +47,8 @@ async def on_ready():
     )
 
     SpotiClient()
+
+    TwitchClient()
 
 
 bot.run(TOKEN)

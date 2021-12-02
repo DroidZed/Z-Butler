@@ -17,7 +17,7 @@ users = TinyDB('database/db.json').table("users")
 UsersQuery = Query()
 
 
-class EventHandlers(Cog, name="Event Handlers", description="Events fired when somethings kicks in the __server."):
+class EventHandlers(Cog, name="Event Handlers", description="Events fired when somethings kicks in the server."):
 
     def __init__(self, bot):
         self.bot = bot
