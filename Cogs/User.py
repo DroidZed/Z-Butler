@@ -157,7 +157,7 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
         return
 
     @loop(hours=24, reconnect=True)
-    def decrement_token_validity(self):
+    async def decrement_token_validity(self):
 
         bearer_obj = TwitchClient()
 
