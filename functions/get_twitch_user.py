@@ -11,22 +11,21 @@ async def get_twitch_user_pfp(login: str) -> str | None:
     if twitch_bearer_data.is_token_expired:
         twitch_bearer_data.refresh_token()
 
-        return
+        return get_twitch_user_pfp(login)  # TODO we need to test this !
 
-    else:
-        headers = {
-            "Authorization": f"Bearer {twitch_bearer_data.token}",
-            "Client-Id": TWITCH_CLIENT_ID
-        }
+    headers = {
+        "Authorization": f"Bearer {twitch_bearer_data.token}",
+        "Client-Id": TWITCH_CLIENT_ID
+    }
 
-        url = f"https://api.twitch.tv/helix/search/channels?query={login}&live_only=true&first=2"
+    url = f"https://api.twitch.tv/helix/search/channels?query={login}&live_only=true&first=2"
 
-        async with AsyncClient(headers=headers) as client:
-            x = await client.get(url)
+    async with AsyncClient(headers=headers) as client:
+        x = await client.get(url)
 
-            json = x.json()
+        json = x.json()
 
-            if not json["data"]:
-                return
+        if not json["data"]:
+            return
 
-            return x.json()['data'][0]['thumbnail_url']
+        return x.json()['data'][0]['thumbnail_url']

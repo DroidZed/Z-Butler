@@ -31,7 +31,6 @@ class ZedHelpCommand(HelpCommand):
         await dest.send(embed=embed)
 
     async def send_cog_help(self, cog: Cog):
-
         if cog.qualified_name == "Event Handlers":
             return
 

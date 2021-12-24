@@ -39,7 +39,7 @@ class ZedCog(Cog, name="Zed-Domain", description="⚡ Domain expansion !"):
             await ctx.message.reply("Hello master 😍", mention_author=True)
             return
 
-        await ctx.message.reply(choice(replies), mention_author=True)
+        await ctx.message.reply(choice([choice(replies), choice(replies)]), mention_author=True)
 
     @command(
         name="env",

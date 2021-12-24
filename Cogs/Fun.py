@@ -54,6 +54,7 @@ class FunCog(
     async def look_for_gif(self, ctx: Context, *query: str) -> None:
 
         topic = " ".join(query)
+
         async with ctx.typing():
             result_set = await find_gif(topic)
 
@@ -95,11 +96,10 @@ class FunCog(
         name="howgay",
         usage=f"{PREFIX}howgay `username`",
         description="Checks how gay a user is, ew...",
-        aliases=['hg'])
+        aliases=['hg', 'hg?'])
     async def how_gay(self, ctx: Context, member: MemberConverter = None) -> None:
 
-        if member is None:
-            member = ctx.author
+        member = member or ctx.author
 
         rate = rdn(0, 100)
 
@@ -110,7 +110,7 @@ class FunCog(
                                 rate=rate,
                                 msg=msg)
 
-        if rate > 65:
+        if rate >= 69:
             config.update({"image": {
                 'url': "https://c.tenor.com/GTjxHh4xr2kAAAAC/you-are-an-abomination-creature.gif"}})
 
@@ -128,34 +128,58 @@ class FunCog(
 
         if not question:
             await ctx.send("No question provided 🙄")
-        else:
-            try:
-                async with ctx.typing():
-                    api_resp = await eight_ball_api(" ".join(question))
-                if api_resp and api_resp['success']:
+            return
 
-                    config = gif_config(
-                        "https://media.tenor.com/images/67155da2720fa29220200465f1a4bd84/tenor.gif",
-                        "Z Butler",
-                        "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
-                        "8-Ball Game",
-                        "https://tenor.com/view/skeleton-eightball-8ball-prediction-horoscope-gif-13531133"
-                    )
+        try:
+            async with ctx.typing():
+                api_resp = await eight_ball_api(" ".join(question))
 
-                    config["description"] = "Thinking..."
+            if not api_resp or not api_resp['success']:
+                await ctx.send("Failure at requesting the ball, is it deaf or smth ? SMFH 😣")
+                return
 
-                    await ctx.send(embed=create_embed(config), delete_after=5)
+            config = gif_config(
+                "https://media.tenor.com/images/67155da2720fa29220200465f1a4bd84/tenor.gif",
+                "Z Butler",
+                "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                "8-Ball Game",
+                "https://tenor.com/view/skeleton-eightball-8ball-prediction-horoscope-gif-13531133"
+            )
 
-                    async with ctx.typing():
-                        await sleep(5)
+            config["description"] = "Thinking..."
 
-                    await ctx.send(embed=create_embed(
-                        eight_ball_config(ctx.message.author.mention, api_resp['body']['answer']), None, None))
-                else:
-                    await ctx.send("Failure at requesting the ball, is it deaf or smth ? SMFH 😣")
+            await ctx.send(embed=create_embed(config), delete_after=5)
 
-            except ReadTimeout:
-                await ctx.send("Command timed out, please try again ❌")
+            async with ctx.typing():
+                await sleep(5)
+
+            await ctx.send(embed=create_embed(eight_ball_config(ctx.message.author.mention,
+                                                                api_resp['body']['answer']), None, None))
+
+        except ReadTimeout:
+
+            await ctx.send("Command timed out, please try again ❌")
+
+    @command(name="hug",
+             usage=f"{PREFIX}hug `username`",
+             description="Give someone some a hug !!")
+    @cooldown(1, 2, BucketType.user)
+    async def hug(self, ctx: Context, member: MemberConverter) -> None:
+
+        async with ctx.typing():
+            gif = await find_gif("hug anime")
+
+        if not gif:
+            await ctx.send("Couldn't send the hug :( ")
+            return
+
+        await ctx.send(
+            embed=create_embed(
+                config=gif_config(url=gif['media'][0]['gif']['url'],
+                                  issuer=ctx.message.author.name,
+                                  avatar_url=ctx.message.author.avatar_url,
+                                  gif_name=f"{member.name} I send you a hug by {ctx.author.name} ❤",
+                                  tenor_link=gif['url'])))
 
 
 def setup(bot: Bot):

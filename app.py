@@ -5,6 +5,7 @@ from discord import Intents, Game, __version__
 from discord.ext import commands
 
 from classes.Help import ZedHelpCommand
+from classes.MongoDBConnection import MongoDBConnection
 from classes.SpotiClient import SpotiClient
 from classes.TwitchClient import TwitchClient
 from config.main import PREFIX, OWNER_ID, TOKEN
@@ -49,6 +50,8 @@ async def on_ready():
     SpotiClient()
 
     TwitchClient()
+
+    MongoDBConnection()
 
 
 bot.run(TOKEN)
