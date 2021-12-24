@@ -5,19 +5,19 @@ from traceback import print_exception
 from discord import File, Guild
 from discord.abc import GuildChannel
 from discord.ext.commands import Bot, Cog, Context, MemberConverter
-from discord.ext.commands.errors import (CommandError, CommandNotFound,
-                                         CommandOnCooldown, MemberNotFound, MissingRole)
-from tinydb import Query, TinyDB
+from discord.ext.commands.errors import (CommandError,
+                                         CommandNotFound,
+                                         CommandOnCooldown,
+                                         MissingRole,
+                                         CommandInvokeError, MemberNotFound, MissingRequiredArgument)
 
+from classes.MongoDBHelperClient import MongoDBHelperClient
 from config.embed.leave import leave_config
 from functions.create_welcome_image import create_picture
 from functions.embed_factory import create_embed
 
-users = TinyDB('database/db.json').table("users")
-UsersQuery = Query()
 
-
-class EventHandlers(Cog, name="Event Handlers", description="Events fired when somethings kicks in the server."):
+class EventHandlers(Cog, name="Event Handlers", description="Events fired when something kicks in the server."):
 
     def __init__(self, bot):
         self.bot = bot
@@ -31,9 +31,7 @@ class EventHandlers(Cog, name="Event Handlers", description="Events fired when s
         channel: GuildChannel = guild.get_channel(self.out_channel)
 
         if channel:
-
             with BytesIO() as image_binary:
-
                 create_picture(username=f'{member.name}',
                                discriminator=f'{member.discriminator}').save(image_binary, 'PNG')
 
@@ -46,40 +44,52 @@ class EventHandlers(Cog, name="Event Handlers", description="Events fired when s
                         filename=f'{member.name}-welcome.png'
                     )
                 )
-        else:
-
-            print('channel is none or missing perms')
 
     @Cog.listener()
     async def on_member_remove(self, member: MemberConverter):
 
         channel: GuildChannel = member.guild.get_channel(self.out_channel)
 
-        if channel:
+        client = MongoDBHelperClient()
 
-            if users.contains((UsersQuery.id == member.id)):
-                users.remove(UsersQuery.id == member.id)
+        if not channel:
+            return
 
-            await channel.send(embed=create_embed(leave_config(member.name, member.id)))
+        if client.query_collection("users", {"uid": member.id}):
+        
+            client.delete_from_collection("user", {
+                "uid": member.id
+            })
 
-        else:
-
-            print('channel is none or missing perms')
+        await channel.send(embed=create_embed(leave_config(member.name, member.id)))
 
     @Cog.listener()
     async def on_command_error(self, ctx: Context, error: CommandError):
 
         if isinstance(error, MemberNotFound):
-            await ctx.send('¯\\_(ツ)_/¯ The user provided could not be found, try again...', delete_after=5)
+
+            await ctx.reply('¯\\_(ツ)_/¯ The user provided could not be found, try again...')
 
         elif isinstance(error, CommandOnCooldown):
-            await ctx.send(
-                f'⏳ Hold your horses, this command is on cooldown, you can use it in '
-                f'{round(error.retry_after, 2)} secs.',
-                delete_after=5)
+
+            await ctx.reply(
+                f'⏳ Hold your horses, this command is on cooldown, you can use it in {round(error.retry_after, 2)}s')
 
         elif isinstance(error, CommandNotFound):
-            await ctx.send('Nope, no such command was found *sight* 💨', delete_after=5)
+
+            await ctx.reply('Nope, no such command was found *sight* 💨')
+
+        elif isinstance(error, CommandInvokeError):
+
+            await ctx.reply(
+                "Internal anomaly, I wasn't able to handle your request invoker. Sorry for my incompetence.")
+            print_exception(type(error), error,
+                            error.__traceback__, file=stderr)
+
+        elif isinstance(error, MissingRequiredArgument):
+
+            await ctx.reply("You __***IDIOT***__ !! Don't you know when typing this command, YOU **MUST** provide "
+                            "ARGUMENTS ? I think you should go back to elementary school and learn how to read 🙄")
 
         else:
             if not isinstance(error, MissingRole):

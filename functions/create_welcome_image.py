@@ -1,9 +1,10 @@
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
+from PIL.ImageFont import FreeTypeFont
 
 
-def _create_font(font_name: str) -> ImageFont.FreeTypeFont:
+def _create_font(font_name: str) -> FreeTypeFont:
     return ImageFont.truetype(
         font=font_name,
         size=87,

@@ -37,8 +37,8 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
         aliases=["pfp"])
     @cooldown(1, 5, BucketType.user)
     async def pfp(self, ctx: Context, member: MemberConverter = None):
-        if not member:
-            member = ctx.message.author
+
+        member = member or ctx.author
 
         async with ctx.typing():
             embed = create_embed(
@@ -59,6 +59,7 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
         aliases=["grt"])
     @cooldown(1, 3, BucketType.user)
     async def hello(self, ctx: Context, *, member: MemberConverter = None):
+
         member = member or ctx.author
 
         async with ctx.typing():
@@ -87,67 +88,78 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
         member = member or ctx.author
 
         if not member.activities:
-            await ctx.message.reply("https://pics.me.me/thumb_c-mon-do-something-me-irl-38375559.png")
+            if member == ctx.author:
+                await ctx.message.reply("https://pics.me.me/thumb_c-mon-do-something-me-irl-38375559.png")
+            else:
+                await ctx.send(f"{member.mention}")
+                await ctx.send("https://pics.me.me/thumb_c-mon-do-something-me-irl-38375559.png")
             return
 
         acts = member.activities
 
         if all(isinstance(e, CustomActivity) for e in acts):
-            await ctx.message.reply("Go listen to some music or do something in your life then try again later 🙄")
+
+            if member == ctx.author:
+                await ctx.message.reply("Try again later with someone who's actually doing something, "
+                                        "not a snob like you wasting his life energy instead of being a "
+                                        "useful human being... 🙄")
+            else:
+                await ctx.send(f"{member.mention} Go listen to some music or do something in your life 🙄")
             return
 
         act = (acts[1:])[0] if len(acts) > 1 else acts[0]
 
         config: dict = {}
 
-        if isinstance(act, Spotify):
-            async with ctx.typing():
-                config = spotify_config(
-                    member.mention,
-                    act.title,
-                    act.album,
-                    act.artist,
-                    act.album_cover_url,
-                    f"https://open.spotify.com/track/{act.track_id}")
+        match act:
+            case Spotify():
+                async with ctx.typing():
+                    config = spotify_config(
+                        member.mention,
+                        act.title,
+                        act.album,
+                        act.artist,
+                        act.album_cover_url,
+                        f"https://open.spotify.com/track/{act.track_id}")
 
-        if isinstance(act, Game):
-            async with ctx.typing():
-                config = playing_activity_config(
-                    act.name,
-                    member.mention,
-                    ctx.author,
-                    ctx.message.author.avatar_url,
-                    act.start.strftime('%x %X') if act.start else None
-                )
+            case Game():
+                async with ctx.typing():
+                    config = playing_activity_config(
+                        act.name,
+                        member.mention,
+                        ctx.author,
+                        ctx.message.author.avatar_url,
+                        act.start.strftime('%x %X') if act.start else None
+                    )
 
-        if isinstance(act, Streaming):
-            async with ctx.typing():
-                streamer_image_url: str | None = await get_twitch_user_pfp(act.url[22:])
+            case Streaming():
+                async with ctx.typing():
+                    streamer_image_url: str | None = await get_twitch_user_pfp(act.url[22:])
 
-                if not streamer_image_url.startswith("https://"):
-                    streamer_image_url = None
+                    if not streamer_image_url.startswith("https://"):
+                        streamer_image_url = None
 
-                config = streaming_activity_config(
-                    act.name,
-                    member.mention,
-                    ctx.author,
-                    ctx.message.author.avatar_url,
-                    act.platform,
-                    stream_url=act.url,
-                    streamed_game=act.game,
-                    streamer_pfp=streamer_image_url
-                )
+                    config = streaming_activity_config(
+                        act.name,
+                        member.mention,
+                        ctx.author,
+                        ctx.message.author.avatar_url,
+                        act.platform,
+                        stream_url=act.url,
+                        streamed_game=act.game,
+                        streamer_pfp=streamer_image_url
+                    )
 
-        if isinstance(act, Activity):
-            async with ctx.typing():
-                config = activity_config(
-                    act.name,
-                    member.name,
-                    ctx.author,
-                    ctx.message.author.avatar_url,
-                    act.large_image_url,
-                    act.start.strftime('%x %X') if act.start else None
-                )
+            case Activity():
+                async with ctx.typing():
+                    config = activity_config(
+                        act.name,
+                        member.name,
+                        ctx.author,
+                        ctx.message.author.avatar_url,
+                        act.large_image_url,
+                        act.start.strftime('%x %X') if act.start else None
+                    )
 
         if not config:
             await ctx.send("Nothing, move along....")

@@ -6,6 +6,7 @@ from config.main import RAPID_API_KEY
 
 
 async def eight_ball_api(question: str) -> dict:
+
     headers = {
         'content-type': "application/json",
         'x-rapidapi-host': "magic-8-ball.p.rapidapi.com",

@@ -7,7 +7,7 @@ def gif_config(url: str,
                gif_name: str,
                tenor_link: str) -> dict:
     return {
-        "title": f"**{gif_name}**",
+        "title": f"**{'NOICE 😏' if gif_name == '69' else gif_name}**",
         "color": BOT_COLOR,
         "description": f"Original image link: [here]({tenor_link})",
         "image": {"url": f'{url}'},

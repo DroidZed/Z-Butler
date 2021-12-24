@@ -6,7 +6,7 @@ def create_embed(
         reason: str = None,
         cfg_type: str = None,
         **fields: str) -> Embed:
-    cfg = {'stats', 'ban', 'strike', 'mod', 'ping'}
+    cfg = ['mod', 'stats', 'ping', 'mute', 'strike', 'ban']
 
     if fields:
 
@@ -21,12 +21,14 @@ def create_embed(
 
         if reason:
             config["fields"].append(
-                {"name": "Reason",
-                 "value": reason or "`No reason given...`",
-                 "inline": True}
+                {
+                    "name": "Reason",
+                    "value": reason or "`No reason given...`",
+                    "inline": True
+                }
             )
 
-    if cfg_type and cfg_type not in {'mod', 'stats', 'ping'}:
+    if cfg_type and cfg_type not in cfg[0:3]:
         ft = config.pop('footer')
 
         config['footer'] = {
