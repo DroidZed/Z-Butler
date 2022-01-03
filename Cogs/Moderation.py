@@ -12,11 +12,10 @@ from config.main import CROWN_ROLE_ID, PREFIX
 from functions.embed_factory import create_embed
 
 
-async def _ban_user(ctx: Context, member: MemberConverter, reason: str):
-    client = MongoDBHelperClient()
+async def _ban_user(ctx: Context, member: MemberConverter, reason: str, client: MongoDBHelperClient):
 
     async with ctx.typing():
-        client.delete_from_collection("users", {
+        client.delete_from_collection({
             "uid": member.id
         })
 
@@ -45,10 +44,9 @@ async def _strike_user(ctx: Context, member: MemberConverter, reason: str, strik
     await ctx.send("The naughty user has been warned, hope he gets the message 😑")
 
 
-async def _strike_ban_user(ctx: Context, member: MemberConverter, reason: str):
-    client = MongoDBHelperClient()
+async def _strike_ban_user(ctx: Context, member: MemberConverter, reason: str, client: MongoDBHelperClient):
 
-    user_query: list[dict] = client.query_collection("users", {
+    user_query: list[dict] = client.query_collection({
         "uid": member.id
     })
 
@@ -58,19 +56,19 @@ async def _strike_ban_user(ctx: Context, member: MemberConverter, reason: str):
 
         async with ctx.typing():
 
-            client.insert_into_collection("users", [{'uid': member.id, 'strike_count': 1, "reason": reason}])
+            client.insert_into_collection([{'uid': member.id, 'strike_count': 1, "reason": reason}])
 
         await _strike_user(ctx, member, reason, 2)
 
     elif user["strike_count"] == 2:
 
-        await _ban_user(ctx, member, reason)
+        await _ban_user(ctx, member, reason, client)
 
     else:
 
         async with ctx.typing():
 
-            client.update_document("users", {"uid": user["uid"]}, {
+            client.update_document({"uid": user["uid"]}, {
                 "$set":
                     {
                         "reason": reason
@@ -81,7 +79,7 @@ async def _strike_ban_user(ctx: Context, member: MemberConverter, reason: str):
                     }
             })
 
-            nb_strikes = client.query_collection("users", {"uid": user["uid"]})[0]['strike_count']
+            nb_strikes = client.query_collection({"uid": user["uid"]})[0]['strike_count']
 
         await _strike_user(ctx,
                            member,
@@ -106,6 +104,7 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
 
     def __init__(self, bot: Bot):
         self.bot: Bot = bot
+        self.db_client = MongoDBHelperClient("users")
 
     # ban kick warn purge mute & unmute
 
@@ -120,7 +119,7 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
             await ctx.channel.send("No user provided 🙄 / You cannot ban yourself ⚓")
             return
 
-        await _ban_user(ctx, member, ' '.join(reason))
+        await _ban_user(ctx, member, ' '.join(reason), self.db_client)
 
     @command(
         name="kick",
@@ -141,9 +140,8 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
             msg = "Kicked without a reason, not that I care ¯\\_(ツ)_/¯"
 
         async with ctx.typing():
-            client = MongoDBHelperClient()
 
-            client.delete_from_collection("users", {
+            self.db_client.delete_from_collection({
                 "uid": member.id
             })
 
@@ -162,7 +160,7 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
             await ctx.channel.send("Why would you strike yourself 🙄 ?")
             return
 
-        await _strike_ban_user(ctx, member, ' '.join(reason))
+        await _strike_ban_user(ctx, member, ' '.join(reason), self.db_client)
 
     @command(
         name="purge",
@@ -184,6 +182,7 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
             return
 
         await member.add_roles(silenced_role(ctx))
+
         await ctx.send(f":white_check_mark: Muted {member.mention}. Take the time to seek help.")
 
     @command(

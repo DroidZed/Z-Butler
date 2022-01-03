@@ -19,6 +19,7 @@ from config.main import PREFIX
 from functions.embed_factory import create_embed
 from functions.find_gif import find_gif
 from functions.get_twitch_user import get_twitch_user_pfp
+from util.twitch_bearer import twitch_bearer
 
 
 class UserCog(Cog, name="User-Commands", description="👤 User commands for everyone"):
@@ -171,12 +172,12 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
     @loop(hours=24, reconnect=True)
     async def decrement_token_validity(self):
 
-        bearer_obj = TwitchClient()
-
-        bearer_obj.decrement_expiration()
+        TwitchClient().decrement_expiration()
 
     @decrement_token_validity.before_loop
     async def before_token_decrement(self):
+        
+        TwitchClient(await twitch_bearer())
 
         await self.bot.wait_until_ready()
 

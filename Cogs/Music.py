@@ -2,7 +2,7 @@ from discord import Spotify
 from discord.ext.commands import (Bot, BucketType, Cog, Context, command,
                                   cooldown)
 
-from classes.SongMetaDataConverter import SongArtistConverter, SongNameConverter
+from classes.SongMetadataConverter import SongArtistConverter, SongNameConverter
 from config.embed.lyrics import lyrics_config
 from config.embed.song import song_config
 from config.main import PREFIX
