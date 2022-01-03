@@ -1,9 +1,15 @@
-from classes.SpotiClient import SpotiClient
+from spotify_client import SpotifyClient
+
+from config.main import SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET
 
 
 def spotify_search_rest(title: str, artist: str) -> dict:
 
-    res = SpotiClient().client.search(
+    client = SpotifyClient(SPOTIFY_CLIENT_ID,
+                           SPOTIFY_CLIENT_SECRET,
+                           identifier="Z-Bot-Singleton")
+
+    res = client.search(
         f"{title} {artist}",
         search_types=["track"],
         limit=1)

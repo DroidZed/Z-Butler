@@ -6,50 +6,26 @@ from classes.MongoDBConnection import MongoDBConnection
 
 class MongoDBHelperClient:
 
-    def __init__(self):
+    def __init__(self, collection_name: str):
         self._mdb_connection: Database = MongoDBConnection().db_connection
+        self._collection: Collection = self._mdb_connection[collection_name]
 
-    def query_all_from_collection(self, collection_name: str) -> list[dict]:
+    def query_all_from_collection(self) -> list[dict]:
 
-        if not collection_name:
-            return
+        return [c for c in self._collection.find({}, {"_id": 0})]
 
-        collection: Collection = self._mdb_connection[collection_name]
+    def query_collection(self, payload: dict) -> list[dict] | None:
 
-        return [c for c in collection.find({}, {"_id": 0})]
+        return [c for c in self._collection.find(payload, {"_id": 0})]
 
-    def query_collection(self, collection_name: str, payload: dict) -> list[dict] | None:
+    def insert_into_collection(self, payload: list[dict]) -> None:
 
-        if not collection_name or not payload:
-            return
+        self._collection.insert_many(payload)
 
-        collection: Collection = self._mdb_connection[collection_name]
+    def delete_from_collection(self,  payload: dict) -> None:
 
-        return [c for c in collection.find(payload, {"_id": 0})]
+        self._collection.delete_many(payload)
 
-    def insert_into_collection(self, collection_name: str, payload: list[dict]) -> None:
+    def update_document(self, criteria: dict, payload: dict) -> None:
 
-        if not collection_name or not payload:
-            return
-
-        collection: Collection = self._mdb_connection[collection_name]
-
-        collection.insert_many(payload)
-
-    def delete_from_collection(self, collection_name: str, payload: dict) -> None:
-
-        if not collection_name:
-            return
-
-        collection: Collection = self._mdb_connection[collection_name]
-
-        collection.delete_many(payload)
-
-    def update_document(self, collection_name: str, criteria: dict, payload: dict) -> None:
-
-        if not collection_name:
-            return
-
-        collection: Collection = self._mdb_connection[collection_name]
-
-        collection.update_one(criteria, payload, upsert=True)
+        self._collection.update_one(criteria, payload, upsert=True)

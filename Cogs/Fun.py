@@ -5,14 +5,13 @@ from random import randint as rdn
 from discord import Message
 from discord.ext.commands import (Bot, BucketType, Cog, Context,
                                   MemberConverter, command, cooldown)
-from httpx import ReadTimeout
 
 from config.embed.eight_ball import eight_ball_config
 from config.embed.gif import gif_config
 from config.embed.how_gay import how_gay_config
 from config.embed.ping import ping_config
 from config.main import PREFIX
-from functions.eight_ball_api import eight_ball_api
+from functions.eight_ball_api import eight_ball_answers
 from functions.embed_factory import create_embed
 from functions.find_gif import find_gif
 from functions.gay_commentary import gay_commentary
@@ -21,7 +20,7 @@ from functions.gay_commentary import gay_commentary
 class FunCog(
     Cog,
     name="Fun",
-    description="🎉 Fun commands from your trusty Z Butler 💙"):
+        description="🎉 Fun commands from your trusty Z Butler 💙"):
 
     def __init__(self, bot: Bot):
         self.bot = bot
@@ -130,35 +129,25 @@ class FunCog(
             await ctx.send("No question provided 🙄")
             return
 
-        try:
-            async with ctx.typing():
-                api_resp = await eight_ball_api(" ".join(question))
-
-            if not api_resp or not api_resp['success']:
-                await ctx.send("Failure at requesting the ball, is it deaf or smth ? SMFH 😣")
-                return
+        async with ctx.typing():
+            answer = eight_ball_answers()
 
             config = gif_config(
-                "https://media.tenor.com/images/67155da2720fa29220200465f1a4bd84/tenor.gif",
-                "Z Butler",
-                "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
-                "8-Ball Game",
-                "https://tenor.com/view/skeleton-eightball-8ball-prediction-horoscope-gif-13531133"
-            )
+                    "https://media.tenor.com/images/67155da2720fa29220200465f1a4bd84/tenor.gif",
+                    "Z Butler",
+                    "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                    "8-Ball Game",
+                    "https://tenor.com/view/skeleton-eightball-8ball-prediction-horoscope-gif-13531133"
+                )
 
             config["description"] = "Thinking..."
 
-            await ctx.send(embed=create_embed(config), delete_after=5)
+        await ctx.send(embed=create_embed(config), delete_after=5)
 
-            async with ctx.typing():
-                await sleep(5)
+        async with ctx.typing():
+            await sleep(2)
 
-            await ctx.send(embed=create_embed(eight_ball_config(ctx.message.author.mention,
-                                                                api_resp['body']['answer']), None, None))
-
-        except ReadTimeout:
-
-            await ctx.send("Command timed out, please try again ❌")
+        await ctx.send(embed=create_embed(eight_ball_config(ctx.message.author.mention, answer), None, None))
 
     @command(name="hug",
              usage=f"{PREFIX}hug `username`",

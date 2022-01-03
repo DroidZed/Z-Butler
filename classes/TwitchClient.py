@@ -1,35 +1,27 @@
+from classes.SingletonClass import SingletonClass
 from util.twitch_bearer import twitch_bearer
 
 
-class TwitchClient:
+class TwitchClient(metaclass=SingletonClass):
 
-    _instance = None
+    """
+    A class to interact with the twitch API. Gives an object containing the token, alongside others
+    user data.
+    """
 
     __slots__ = ["_data", "_token", "_expiration_day", "_is_token_expired"]
 
-    def __init__(self):
+    def __init__(self, bearer: dict | None = None):
 
-        self._data = twitch_bearer()
+        self._data = bearer
         self._token = self._data["access_token"]
         self._expiration_day = (self._data["expires_in"] // (60 * 60 * 24)) + 1
         self._is_token_expired = False
 
-    def __new__(cls, *args, **kwargs):
-
-        if cls._instance is None:
-            cls._instance = super().__new__(cls, *args, **kwargs)
-
-        return cls._instance
-
-    def __repr__(self):
-        return f"Token:{self._token}" \
-               f"\nExpiration day: {self._expiration_day}" \
-               f"\nIs the token expired: {self._is_token_expired}"
-
     def __str__(self):
-        return f"Token:{self._token}" \
-               f"\nExpiration day: {self._expiration_day}" \
-               f"\nIs the token expired: {self._is_token_expired}"
+        return f"Token:{self._token}\n" \
+               f"Expires after: {self._expiration_day} days.\n" \
+               f"Is the token expired: {self._is_token_expired}."
 
     @property
     def token(self):
@@ -55,16 +47,12 @@ class TwitchClient:
     def is_token_expired(self, state):
         self._is_token_expired = state
 
-    def refresh_token(self):
-        self._data = twitch_bearer()
-
-    def increment_expiration(self):
-        self._expiration_day += 1
+    async def refresh_token(self):
+        self._data = await twitch_bearer()
 
     def decrement_expiration(self):
 
         if self._expiration_day > 0:
             self._expiration_day -= 1
-
-        if self._expiration_day <= 0:
+        else:
             self.is_token_expired = True
