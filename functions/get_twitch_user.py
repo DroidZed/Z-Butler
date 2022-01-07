@@ -1,6 +1,6 @@
 from httpx import AsyncClient
 
-from classes.TwitchClient import TwitchClient
+from classes.twitch_client import TwitchClient
 from config.main import TWITCH_CLIENT_ID
 
 
@@ -15,17 +15,17 @@ async def get_twitch_user_pfp(login: str) -> str | None:
 
     headers = {
         "Authorization": f"Bearer {twitch_bearer_data.token}",
-        "Client-Id": TWITCH_CLIENT_ID
+        "Client-Id": TWITCH_CLIENT_ID,
     }
 
     url = f"https://api.twitch.tv/helix/search/channels?query={login}&live_only=true&first=2"
 
     async with AsyncClient(headers=headers) as client:
-        x = await client.get(url)
+        query = await client.get(url)
 
-        json = x.json()
+        json = query.json()
 
         if not json["data"]:
             return
 
-        return x.json()['data'][0]['thumbnail_url']
+        return query.json()["data"][0]["thumbnail_url"]

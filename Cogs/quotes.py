@@ -1,12 +1,7 @@
 from asyncio import sleep
 
 from discord import Message, Reaction, Member
-from discord.ext.commands import (Bot,
-                                  BucketType,
-                                  Cog,
-                                  Context,
-                                  command,
-                                  cooldown)
+from discord.ext.commands import Bot, BucketType, Cog, Context, command, cooldown
 from discord.ext.commands.core import has_role
 from discord.ext.commands.errors import CommandError, MissingRole
 from discord.ext.tasks import loop
@@ -20,11 +15,10 @@ from functions.quotes_api import quotes_gql
 async def _grab_quote():
     api = await quotes_gql()
 
-    return api['randomQuote']
+    return api["randomQuote"]
 
 
 class QuotesCog(Cog, name="Quotes", description="💭 Quoty quotes !"):
-
     def __init__(self, bot: Bot):
         self.bot = bot
         self.daily_quote.start()
@@ -36,13 +30,14 @@ class QuotesCog(Cog, name="Quotes", description="💭 Quoty quotes !"):
         name="quote",
         description="Get a random quote",
         usage=f"{PREFIX}q?",
-        aliases=['q?'])
+        aliases=["q?"],
+    )
     @cooldown(1, 5, BucketType.user)
     async def random_quote(self, ctx: Context):
         async with ctx.typing():
             quote = await _grab_quote()
 
-        msg: Message = await ctx.send(embed=create_embed(quotes_config(quote['author'], quote['body'])))
+        msg: Message = await ctx.send(embed=create_embed(quotes_config(quote["author"], quote["body"])))
 
         await sleep(1)
 
@@ -56,19 +51,13 @@ class QuotesCog(Cog, name="Quotes", description="💭 Quoty quotes !"):
         if confirmation:
             await ctx.author.send(embed=msg.embeds[0])
 
-    @command(
-        name="sdq",
-        description="Starts the daily quote task.",
-        usage=f"{PREFIX}sdq")
+    @command(name="sdq", description="Starts the daily quote task.", usage=f"{PREFIX}sdq")
     @has_role(CROWN_ROLE_ID)
     async def start_daily_quotes(self, ctx: Context):
         await ctx.send("🏃 Starting the daily quote routine...", delete_after=1.5)
         self.daily_quote.start()
 
-    @command(
-        name="!sdq",
-        description="Stops the daily quote task.",
-        usage=f"{PREFIX}!sdq")
+    @command(name="!sdq", description="Stops the daily quote task.", usage=f"{PREFIX}!sdq")
     @has_role(CROWN_ROLE_ID)
     async def stop_daily_quotes(self, ctx: Context):
         await ctx.send("🛑 Ending the daily quote routine...", delete_after=1.5)
@@ -78,8 +67,10 @@ class QuotesCog(Cog, name="Quotes", description="💭 Quoty quotes !"):
     async def stop_daily_quotes_handler(self, ctx: Context, error: CommandError):
 
         if isinstance(error, MissingRole):
-            await ctx.send("Get a life you stupid fat fuck, talk to real life people instead of wasting my time, "
-                           "you're parents ain't proud of you.")
+            await ctx.send(
+                "Get a life you stupid fat fuck, talk to real life people instead of wasting my time, "
+                "you're parents ain't proud of you."
+            )
 
     @start_daily_quotes.error
     async def start_daily_quotes_handler(self, ctx: Context, error: CommandError):
@@ -91,12 +82,7 @@ class QuotesCog(Cog, name="Quotes", description="💭 Quoty quotes !"):
         quote = await _grab_quote()
 
         await self.bot.get_channel(899278487792279622).send(
-            embed=create_embed(
-                quotes_config(
-                    quote['author'],
-                    quote['body']
-                )
-            )
+            embed=create_embed(quotes_config(quote["author"], quote["body"]))
         )
 
     @daily_quote.before_loop

@@ -12,10 +12,9 @@ def query_lyrics(title: str, artist: str) -> dict:
             "art_url": song.song_art_image_url,
             "song_url": song.url,
             "lyrics": song.lyrics,
-            "valid": True
+            "valid": True,
         }
 
-    else:
-        return {
-            "valid": False,
-        }
+    return {
+        "valid": False,
+    }

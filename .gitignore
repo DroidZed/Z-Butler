@@ -1,17 +1,18 @@
 ### Compiled python files ###
 */**/__pycache__/
 
-test.py
-
-*.zip
-
-
-.vscode/
-
 ### ENV VARS ###
 *.env
 
 ### IDES ###
 /.idea/
+.vscode/
 
-/.vscode/
+### DEV ###
+*.ps1
+test.py
+*-dev.*
+
+### other ###
+*.zip
+*.mongodb
