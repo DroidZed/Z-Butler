@@ -28,8 +28,6 @@ if __name__ == "__main__":
 
 @bot.event
 async def on_ready():
-    print("Hello World !!")
-
     print("/" * 39)
     print(" ----------\\")
     rch.print(f" |       [b cyan]*[/]  |         [white]/[/]\\")
@@ -40,12 +38,13 @@ async def on_ready():
     print("    |   --------------   /")
     rch.print(f"    |       [b green]ONLINE[/]      [white]/[/]")
     print("     ------------------")
-    rch.print(f"|[b]         [i]By: [purple]DroidZed[/purple]{' ' * 17}|")
+    rch.print(f"|[b]         [i]By: [purple]DroidZed[/purple][/i]{' ' * 17}|")
     rch.print(f"|[b] Discord version: [u blue]{__version__}[/u blue]               |", end="\n")
     rch.print(
-        f"[b white]| Running under: Python v{python_version()}        |",
+        f"[b white]| Running under: [i yellow]Python v{python_version()}[/i yellow] :snake:      |",
         end="\n",
-    )
+    )  # Don't remove the extra space added after the snake emoji, it was added so the bars will align in the console
+    # of the hosting.
     print("/" * 39)
 
     await bot.change_presence(activity=Game(name=f"{bot.command_prefix}help - By DroidZed"))
