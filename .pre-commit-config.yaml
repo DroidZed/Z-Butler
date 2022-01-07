@@ -1,0 +1,20 @@
+repos:
+    - repo: https://github.com/psf/black
+      rev: 21.12b0
+      hooks:
+        - id: black
+          args: [--target-version=py310]
+    - repo: https://github.com/pre-commit/pre-commit-hooks
+      rev: v4.1.0
+      hooks:
+        - id: end-of-file-fixer
+        - id: trailing-whitespace
+          args: [--markdown-linebreak-ext=md]
+    - repo: local
+      hooks:
+        - id: create requirements
+          name: create requirements
+          entry: pipenv run pipenv_to_requirements -f
+          language: system
+          always_run: true
+          pass_filenames: false

@@ -3,7 +3,7 @@ from random import choice
 
 def eight_ball_answers() -> str:
 
-    t = {
+    answers = {
         "+": {
             "It is certain.",
             "It is decidedly so.",
@@ -13,7 +13,7 @@ def eight_ball_answers() -> str:
             "As I see it, yes.",
             "Most likely.",
             "Outlook good.",
-            "Signs point to yes."
+            "Signs point to yes.",
         },
         "/": {
             "Reply hazy, try again.",
@@ -24,7 +24,7 @@ def eight_ball_answers() -> str:
             "I don't really know..",
             "Clouded mind, can't think straight.",
             "Go for a walk, maybe that should clear your mind about the issue that troubles you.",
-            "Drink water, pet an animal or talk to someone about it, I'm not your doctor."
+            "Drink water, pet an animal or talk to someone about it, I'm not your doctor.",
         },
         "-": {
             "Don't count on it.",
@@ -35,7 +35,8 @@ def eight_ball_answers() -> str:
             "IMPOSSIBLE",
             "You're a fool to believe that !",
             "Ain't smart enough to figure it out eh ? Well guess what !! or don't, you're so stupid to not understand.",
-            "A dark path is on the horizon, better go left."
-        }}
+            "A dark path is on the horizon, better go left.",
+        },
+    }
 
-    return choice(t[choice(["+", "-", "/"])])
+    return choice(answers[choice(["+", "-", "/"])])
