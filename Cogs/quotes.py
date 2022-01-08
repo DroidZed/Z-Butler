@@ -9,13 +9,11 @@ from discord.ext.tasks import loop
 from config.embed.quote import quotes_config
 from config.main import PREFIX, CROWN_ROLE_ID
 from functions.embed_factory import create_embed
-from functions.quotes_api import quotes_gql
+from functions.quotes_api import anime_quotes
 
 
 async def _grab_quote():
-    api = await quotes_gql()
-
-    return api["randomQuote"]
+    return await anime_quotes()
 
 
 class QuotesCog(Cog, name="Quotes", description="💭 Quoty quotes !"):
@@ -37,7 +35,9 @@ class QuotesCog(Cog, name="Quotes", description="💭 Quoty quotes !"):
         async with ctx.typing():
             quote = await _grab_quote()
 
-        msg: Message = await ctx.send(embed=create_embed(quotes_config(quote["author"], quote["body"])))
+        msg: Message = await ctx.send(
+            embed=create_embed(quotes_config(f"{quote['character']} - {quote['anime']}", quote["quote"]))
+        )
 
         await sleep(1)
 
@@ -82,7 +82,7 @@ class QuotesCog(Cog, name="Quotes", description="💭 Quoty quotes !"):
         quote = await _grab_quote()
 
         await self.bot.get_channel(899278487792279622).send(
-            embed=create_embed(quotes_config(quote["author"], quote["body"]))
+            embed=create_embed(quotes_config(f"{quote['character']} - {quote['anime']}", quote["quote"]))
         )
 
     @daily_quote.before_loop

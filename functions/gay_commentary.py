@@ -1,6 +1,3 @@
-# pylint: skip-file
-
-
 def gay_commentary(rate: int) -> str:
 
     if rate < 0:

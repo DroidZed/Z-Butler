@@ -1,5 +1,3 @@
-# pylint: skip-file
-
 from classes.singleton_class import SingletonClass
 from util.twitch_bearer import twitch_bearer
 

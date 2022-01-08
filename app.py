@@ -10,6 +10,7 @@ from classes.mongo_db_connection import MongoDBConnection
 from config.main import PREFIX, OWNER_ID, TOKEN
 
 # Intents
+
 intents = Intents.all()
 # The bot
 bot = commands.Bot(

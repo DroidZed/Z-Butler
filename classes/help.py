@@ -1,5 +1,3 @@
-# pylint: skip-file
-
 from discord.abc import Messageable
 from discord.ext.commands import HelpCommand, Cog, Command
 

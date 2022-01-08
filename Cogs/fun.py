@@ -133,23 +133,21 @@ class FunCog(Cog, name="Fun", description="🎉 Fun commands from your trusty Z 
             await ctx.send("No question provided 🙄")
             return
 
+        config = gif_config(
+            "https://media.tenor.com/images/67155da2720fa29220200465f1a4bd84/tenor.gif",
+            "Z Butler",
+            "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+            "8-Ball Game",
+            "https://tenor.com/view/skeleton-eightball-8ball-prediction-horoscope-gif-13531133",
+        )
+
+        config["description"] = "Thinking..."
+
+        message: Message = await ctx.send(embed=create_embed(config))
+
         async with ctx.typing():
             answer = eight_ball_answers()
-
-            config = gif_config(
-                "https://media.tenor.com/images/67155da2720fa29220200465f1a4bd84/tenor.gif",
-                "Z Butler",
-                "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
-                "8-Ball Game",
-                "https://tenor.com/view/skeleton-eightball-8ball-prediction-horoscope-gif-13531133",
-            )
-
-            config["description"] = "Thinking..."
-
-        message: Message = await ctx.send(embed=create_embed(config), delete_after=2)
-
-        async with ctx.typing():
-            await sleep(2)
+            await sleep(4)
 
         await message.edit(embed=create_embed(eight_ball_config(ctx.message.author.mention, answer), None, None))
 

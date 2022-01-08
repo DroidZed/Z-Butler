@@ -1,5 +1,3 @@
-# pylint: skip-file
-
 from discord.ext.commands import Converter
 
 

@@ -14,15 +14,14 @@ lyricsgenius = "*"
 numpy = "*"
 wand = "*"
 spotify-client = "*"
-pymongo = "*"
 dnspython = "*"
 beautifulsoup4 = "*"
 rich = "*"
+motor = "*"
 
 [dev-packages]
 black = "*"
 pre-commit = "*"
-pylint = "*"
 pipenv-to-requirements = "*"
 
 [requires]

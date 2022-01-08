@@ -1,19 +1,21 @@
-from pymongo import MongoClient
-from pymongo.database import Database
+from motor.motor_asyncio import AsyncIOMotorClient
 
 from config.main import DB_NAME, MDB_SRV
 
 
-def get_connection() -> Database:
+# TODO: rewrite your mdb helper client and mongodb connection to use this function
+
+
+def async_db_connection():
 
     """
-    A function useful for getting a connection to a mongo database.
+    A function that establishes a connection through Motor to a mongodb database.
 
     Returns:
-        A Database instance connected to the SRV string loaded from the env.
+        A connected async client to a mongodb database.
 
     """
 
-    client = MongoClient(MDB_SRV)
+    client = AsyncIOMotorClient(MDB_SRV, serverSelectionTimeoutMS=5000)
 
     return client[DB_NAME]
