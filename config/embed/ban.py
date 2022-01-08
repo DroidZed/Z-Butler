@@ -1,5 +1,3 @@
-# pylint: skip-file
-
 from util.colors import CROWN_COLOR
 
 ban_config = {

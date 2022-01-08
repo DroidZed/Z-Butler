@@ -23,7 +23,7 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
     async def __ban_user(ctx: Context, member: MemberConverter, reason: str, client: MongoDBHelperClient):
 
         async with ctx.typing():
-            client.delete_from_collection({"uid": member.id})
+            await client.delete_from_collection({"uid": member.id})
 
         await member.send(
             embed=create_embed(
@@ -38,15 +38,11 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
 
     @staticmethod
     async def __strike_user(
-        ctx: Context,
-        member: MemberConverter,
-        reason: str,
-        strikes: int,
-        client: MongoDBHelperClient,
+        ctx: Context, member: MemberConverter, reason: str, strikes: int, client: MongoDBHelperClient
     ):
 
         async with ctx.typing():
-            client.insert_into_collection([{"uid": member.id, "strike_count": 1, "reason": reason}])
+            await client.insert_into_collection([{"uid": member.id, "strike_count": 1, "reason": reason}])
 
         await member.send(
             embed=create_embed(
@@ -78,12 +74,14 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
 
             async with ctx.typing():
 
-                client.update_document(
+                await client.update_document(
                     {"uid": user["uid"]},
                     {"$set": {"reason": reason}, "$inc": {"strike_count": 1}},
                 )
 
-                nb_strikes = client.query_collection({"uid": user["uid"]})[0]["strike_count"]
+                query = await client.query_collection({"uid": user["uid"]})
+
+                nb_strikes = query[0]["strike_count"]
 
             await ModerationCog.__strike_user(ctx, member, reason, nb_strikes - 1, client)
 
@@ -101,11 +99,7 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
         description="Ban a user for a specific reason.",
     )
     @has_role(CROWN_ROLE_ID)
-    async def ban(self, ctx: Context, member: MemberConverter = None, *reason: str):
-
-        if not member or member == ctx.message.author:
-            await ctx.channel.send("No user provided 🙄 / You cannot ban yourself ⚓")
-            return
+    async def ban(self, ctx: Context, member: MemberConverter, *reason: str):
 
         await self.__ban_user(ctx, member, " ".join(reason), self.db_client)
 
@@ -115,11 +109,7 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
         description="Kick a user with a given reason.",
     )
     @has_role(CROWN_ROLE_ID)
-    async def kick(self, ctx: Context, member: MemberConverter = None, *reason: str):
-
-        if not member or member == ctx.message.author:
-            await ctx.channel.send(embed=create_embed(kick_config("You cannot kick yourself ⚓ you stupid...")))
-            return
+    async def kick(self, ctx: Context, member: MemberConverter, *reason: str):
 
         reason = " ".join(reason) if reason else "Nothing"
 
@@ -130,7 +120,7 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
 
         async with ctx.typing():
 
-            self.db_client.delete_from_collection({"uid": member.id})
+            await self.db_client.delete_from_collection({"uid": member.id})
 
         await ctx.guild.kick(member, reason=reason)
 
@@ -142,11 +132,7 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
         description="Give a strike to a naughty user.",
     )
     @has_role(CROWN_ROLE_ID)
-    async def strike(self, ctx: Context, member: MemberConverter = None, *reason: str):
-
-        if not member or member == ctx.message.author:
-            await ctx.channel.send("Why would you strike yourself 🙄 ?")
-            return
+    async def strike(self, ctx: Context, member: MemberConverter, *reason: str):
 
         await self.__strike_ban_user(ctx, member, " ".join(reason), self.db_client)
 

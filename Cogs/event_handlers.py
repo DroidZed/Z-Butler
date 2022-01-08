@@ -31,7 +31,6 @@ class EventHandlers(
     def __init__(self, bot: Bot):
         self.bot = bot
         self.out_channel = 696842023625424947
-        self.guild: Guild = bot.fetch_guild(GUILD_ID)
 
     @staticmethod
     def __get_seperator_roles(guild: Guild) -> list[Role]:
@@ -46,9 +45,11 @@ class EventHandlers(
     @Cog.listener()
     async def on_member_join(self, member: MemberConverter):
 
-        channel: GuildChannel = self.guild.get_channel(self.out_channel)
+        guild: Guild = self.bot.get_guild(GUILD_ID)
 
-        await member.add_roles(self.__get_seperator_roles(self.guild))
+        channel: GuildChannel = guild.get_channel(self.out_channel)
+
+        await member.add_roles(*self.__get_seperator_roles(guild))
 
         if channel:
             with BytesIO() as image_binary:
@@ -66,15 +67,15 @@ class EventHandlers(
     @Cog.listener()
     async def on_member_remove(self, member: MemberConverter):
 
-        channel: GuildChannel = self.guild.get_channel(self.out_channel)
+        channel: GuildChannel = self.bot.get_guild(GUILD_ID).get_channel(self.out_channel)
 
         client = MongoDBHelperClient("users")
 
         if not channel:
             return
 
-        if client.query_collection({"uid": member.id}):
-            client.delete_from_collection({"uid": member.id})
+        if await client.query_collection({"uid": member.id}):
+            await client.delete_from_collection({"uid": member.id})
 
         await channel.send(embed=create_embed(leave_config(member.name, member.id)))
 
