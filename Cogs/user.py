@@ -10,6 +10,9 @@ from discord.ext.commands import (
 )
 from discord.ext.tasks import loop
 
+from api.find_gif import find_gif
+from api.get_twitch_user import get_twitch_user_pfp
+from api.twitch_bearer import twitch_bearer
 from classes.twitch_client import TwitchClient
 from config.embed.activity import activity_config
 from config.embed.hello import hello_config
@@ -19,9 +22,6 @@ from config.embed.spotify import spotify_config
 from config.embed.streaming_act import streaming_activity_config
 from config.main import PREFIX
 from functions.embed_factory import create_embed
-from functions.find_gif import find_gif
-from functions.get_twitch_user import get_twitch_user_pfp
-from util.twitch_bearer import twitch_bearer
 
 
 class UserCog(Cog, name="User-Commands", description="👤 User commands for everyone"):

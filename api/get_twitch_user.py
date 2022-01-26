@@ -25,7 +25,7 @@ async def get_twitch_user_pfp(login: str) -> str | None:
 
         json = query.json()
 
-        if not json["data"]:
+        if not json["params"]:
             return
 
-        return query.json()["data"][0]["thumbnail_url"]
+        return query.json()["params"][0]["thumbnail_url"]

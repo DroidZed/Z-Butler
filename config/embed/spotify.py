@@ -16,7 +16,7 @@ def spotify_config(mention: str, song: str, album: str, artist: str, art: str, l
             "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif"
         },
         "footer": {
-            "text": "Songs data provided by Spotify 💚",
+            "text": "Songs params provided by Spotify 💚",
             "icon_url": "https://1000logos.net/wp-content/uploads/2017/08/Spotify-Logo.png",
         },
     }

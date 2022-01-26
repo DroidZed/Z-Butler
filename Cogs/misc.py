@@ -37,9 +37,7 @@ class Miscellaneous(
             await ctx.send("❌ Invalid input !!")
             return
 
-        groups = res.groups()
-
-        amount, base, target = groups[1], groups[0], groups[2]
+        base, amount, target = res.groups()
 
         await ctx.send(f"You're converting {amount} {base}(s) into {target}(s).")
 
