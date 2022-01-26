@@ -1,7 +1,9 @@
 from discord import Spotify, Forbidden
 from discord.ext.commands import Bot, BucketType, Cog, Context, command, cooldown
 
-from classes.Converters.song_metadata_converter import (
+from api.lyrics import lyrics
+from api.spotify_search import spotify_search
+from classes.converters.song_metadata_converter import (
     SongArtistConverter,
     SongNameConverter,
 )
@@ -9,8 +11,6 @@ from config.embed.lyrics import lyrics_config
 from config.embed.song import song_config
 from config.main import PREFIX
 from functions.embed_factory import create_embed
-from functions.lyrics import query_lyrics
-from functions.spotify_search import spotify_search_rest
 
 
 class MusicCog(Cog, name="Muse", description="🎶 Enjoy the bits and pieces of the music you like."):
@@ -20,7 +20,7 @@ class MusicCog(Cog, name="Muse", description="🎶 Enjoy the bits and pieces of 
     @staticmethod
     async def __send_lyrics(ctx: Context, title: str, artist: str) -> None:
         async with ctx.typing():
-            data = query_lyrics(title, artist)
+            data = await lyrics(title, artist)
 
         if not data["valid"]:
             await ctx.send("❌ Cannot find lyrics for the given song....")
@@ -38,9 +38,10 @@ class MusicCog(Cog, name="Muse", description="🎶 Enjoy the bits and pieces of 
 
     @command(
         name="lyrics",
-        description="Give the lyrics of a requested song.\nYou can also if you want, use the song you're currently "
-        "listening to on Spotify."
-        "To achieve that, simply run the command without arguments.",
+        description="Give the lyrics of a requested song."
+        "\nYou can also use the song you're currently listening to on Spotify."
+        "To achieve that, simply run the command without arguments."
+        "\n**DISCLAIMER**: not all songs are supported.",
         usage=f"{PREFIX}lyrics `song_name` (respect the _ !) `song_artist` | Nothing",
         aliases=["ly?"],
     )
@@ -74,7 +75,7 @@ class MusicCog(Cog, name="Muse", description="🎶 Enjoy the bits and pieces of 
     async def search_song(self, ctx: Context, title: SongNameConverter, artist: SongArtistConverter) -> None:
 
         async with ctx.typing():
-            res = spotify_search_rest(title, artist)
+            res = spotify_search(title, artist)
 
         if not res:
             await ctx.send("❌ Unable to find the song you're looking for...Try again later.")

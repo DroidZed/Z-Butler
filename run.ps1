@@ -1,1 +1,1 @@
-& C:/Users/ASUS/.virtualenvs/Z_Butler-XWmC8cTx/Scripts/Activate.ps1
+& C:\Users\ASUS\.virtualenvs\Z_Butler-pictbbmS\Scripts\activate.ps1

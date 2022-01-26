@@ -6,11 +6,10 @@ name = "pypi"
 [packages]
 python-decouple = "*"
 pillow = "*"
-httpx = "*"
+httpx = {extras = ["http2"], version = "*"}
 py-cord = { extras = ["voice"], version = "*" }
 pynacl = "*"
 gql = { extras = ["aiohttp"], version = "*" }
-lyricsgenius = "*"
 numpy = "*"
 wand = "*"
 spotify-client = "*"

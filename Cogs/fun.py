@@ -13,15 +13,15 @@ from discord.ext.commands import (
     cooldown,
 )
 
+from api.find_gif import find_gif
 from config.embed.eight_ball import eight_ball_config
 from config.embed.gif import gif_config
 from config.embed.how_gay import how_gay_config
 from config.embed.ping import ping_config
 from config.main import PREFIX
-from functions.eight_ball_api import eight_ball_answers
 from functions.embed_factory import create_embed
-from functions.find_gif import find_gif
-from functions.gay_commentary import gay_commentary
+from util.eight_ball_dataset import eight_ball_answers
+from util.gay_commentary import gay_commentary
 
 
 class FunCog(Cog, name="Fun", description="🎉 Fun commands from your trusty Z Butler 💙"):

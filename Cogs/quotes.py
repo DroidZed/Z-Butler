@@ -6,10 +6,10 @@ from discord.ext.commands.core import has_role
 from discord.ext.commands.errors import CommandError, MissingRole
 from discord.ext.tasks import loop
 
+from api.anime_quotes import anime_quotes
 from config.embed.quote import quotes_config
 from config.main import PREFIX, CROWN_ROLE_ID
 from functions.embed_factory import create_embed
-from functions.quotes_api import anime_quotes
 
 
 async def _grab_quote():

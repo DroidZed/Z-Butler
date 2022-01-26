@@ -10,11 +10,3 @@ repos:
         - id: end-of-file-fixer
         - id: trailing-whitespace
           args: [--markdown-linebreak-ext=md]
-    - repo: local
-      hooks:
-        - id: create requirements
-          name: create requirements
-          entry: pipenv run pipenv_to_requirements -f
-          language: system
-          always_run: true
-          pass_filenames: false

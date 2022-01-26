@@ -1,5 +1,5 @@
+from api.twitch_bearer import twitch_bearer
 from classes.singleton_class import SingletonClass
-from util.twitch_bearer import twitch_bearer
 
 
 class TwitchClient(metaclass=SingletonClass):
