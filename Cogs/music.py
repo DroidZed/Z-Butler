@@ -57,7 +57,11 @@ class MusicCog(Cog, name="Muse", description="🎶 Enjoy the bits and pieces of 
 
             acts = ctx.author.activities
 
-            act = (acts[1:])[0] if len(acts) > 1 else acts[0]
+            act = None
+
+            for a in acts:
+                if isinstance(a, Spotify):
+                    act = a
 
             if isinstance(act, Spotify):
                 title = act.title

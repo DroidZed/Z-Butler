@@ -17,3 +17,4 @@ test.py
 ### other ###
 *.zip
 *.mongodb
+run.ps1
