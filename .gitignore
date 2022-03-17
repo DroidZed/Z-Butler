@@ -1,9 +1,6 @@
 ### Compiled python files ###
 */**/__pycache__/
 
-### ENV VARS ###
-*.env
-
 ### IDES ###
 /.idea/
 .vscode/
