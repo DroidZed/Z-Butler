@@ -46,7 +46,7 @@ class ZedCog(Cog, name="Zed-Domain[WIP]", description="⚡ Domain expansion !"):
 
         await ctx.message.delete()
 
-        await ctx.send(f"{' '.join(msg)}")
+        await ctx.send(f"{' '.join(msg)} - *By {ctx.author.name}*")
 
     @command(
         name="python",
