@@ -40,9 +40,9 @@ async def on_ready():
     rch.print(f"    |       [b green]ONLINE[/]      [white]/[/]")
     print("     ------------------")
     rch.print(f"|[b]         [i]By: [purple]DroidZed[/purple][/i]{' ' * 17}|")
-    rch.print(f"|[b] Discord version: [u blue]{__version__}[/u blue]               |", end="\n")
+    rch.print(f"|[b] Discord version: [u blue]{__version__}[/u blue]{' ' * 15}|", end="\n")
     rch.print(
-        f"[b white]| Running under: [i yellow]Python v{python_version()}[/i yellow] :snake:      |",
+        f"[b white]| Running under: [i yellow]Python v{python_version()}[/i yellow] :snake:     |",
         end="\n",
     )  # Don't remove the extra space added after the snake emoji, it was added so the bars will align in the console
     # of the hosting.

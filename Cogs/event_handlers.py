@@ -18,6 +18,7 @@ from httpx import ReadTimeout
 
 from classes.mongo_db_helper_client import MongoDBHelperClient
 from config.embed.leave import leave_config
+from config.embed.welcome import welcome_config
 from config.main import GUILD_ID
 from functions.create_welcome_image import create_picture
 from functions.embed_factory import create_embed
@@ -33,13 +34,14 @@ class EventHandlers(
         self.out_channel = 696842023625424947
 
     @staticmethod
-    def __get_seperator_roles(guild: Guild) -> list[Role]:
+    def __get_initial_roles(guild: Guild) -> list[Role]:
 
         return [
-            guild.get_role(898875325923094528),
-            guild.get_role(898874934615482378),
-            guild.get_role(898874121222516736),
-            guild.get_role(898874538652225566),
+            guild.get_role(896349097391444029),  # silenced role
+            guild.get_role(898875325923094528),  # special roles
+            guild.get_role(898874934615482378),  # community roles
+            guild.get_role(898874121222516736),  # leveling roles
+            guild.get_role(898874538652225566),  # gaming roles
         ]
 
     @Cog.listener()
@@ -49,9 +51,12 @@ class EventHandlers(
 
         channel: GuildChannel = guild.get_channel(self.out_channel)
 
-        await member.add_roles(*self.__get_seperator_roles(guild))
+        await member.add_roles(*self.__get_initial_roles(guild))
 
         if channel:
+
+            await member.send(embed=create_embed(welcome_config()))
+
             with BytesIO() as image_binary:
                 create_picture(username=f"{member.name}", discriminator=f"{member.discriminator}").save(
                     image_binary, "PNG"
@@ -60,7 +65,7 @@ class EventHandlers(
                 image_binary.seek(0)
 
                 await channel.send(
-                    content=f"👋🏻 <@{member.id}> finally landed on Dragon's Heart !! Bring the beer 🍻",
+                    content=f"👋🏻 <@{member.id}> a new recruit has joined the guild !! Bring the beer 🍻",
                     file=File(fp=image_binary, filename=f"{member.name}-welcome.png"),
                 )
 

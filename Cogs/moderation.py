@@ -6,6 +6,7 @@ from discord.ext.commands.errors import CommandError, MissingRole
 from classes.mongo_db_helper_client import MongoDBHelperClient
 from config.embed.ban import ban_config
 from config.embed.kick import kick_config
+from config.embed.mute_unmute import mute_config, unmute_config
 from config.embed.no_perms import no_perms_config
 from config.embed.strike import strike_config
 from config.main import CROWN_ROLE_ID, PREFIX
@@ -93,6 +94,10 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
     def __silenced_role(ctx: Context) -> Role:
         return ctx.guild.get_role(896349097391444029)
 
+    @staticmethod
+    def __dragon_warrior_role(ctx: Context) -> Role:
+        return ctx.guild.get_role(969566082014785566)
+
     @command(
         name="ban",
         usage=f"{PREFIX}ban `username` `reason`",
@@ -149,13 +154,17 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
     @has_role(CROWN_ROLE_ID)
     async def mute(self, ctx: Context, member: MemberConverter):
 
-        if member.top_role == self.__silenced_role(ctx):
+        if self.__silenced_role(ctx) in member.roles:
             await ctx.message.reply("User already muted you dump fuck !", mention_author=True)
             return
 
+        await ctx.message.delete()
+
+        await member.remove_roles(self.__dragon_warrior_role(ctx))
+
         await member.add_roles(self.__silenced_role(ctx))
 
-        await ctx.send(f":white_check_mark: Muted {member.mention}. Take the time to seek help.")
+        await ctx.send(embed=create_embed(mute_config(member.id)))
 
     @command(
         name="!mute",
@@ -165,13 +174,17 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
     @has_role(CROWN_ROLE_ID)
     async def unmute(self, ctx: Context, member: MemberConverter):
 
-        if member.top_role != self.__silenced_role(ctx):
+        if self.__silenced_role(ctx) not in member.roles:
             await ctx.message.reply("User already unmuted...what a waste of time 🙄", mention_author=True)
             return
 
+        await ctx.message.delete()
+
         await member.remove_roles(self.__silenced_role(ctx))
 
-        await ctx.send(f":white_check_mark: {member.mention} was unmuted. Hopefully you've reflected on your actions.")
+        await member.add_roles(self.__dragon_warrior_role(ctx))
+
+        await ctx.send(embed=create_embed(unmute_config(member.id)))
 
     # error handlers
 
