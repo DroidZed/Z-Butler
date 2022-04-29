@@ -31,7 +31,7 @@ class StatsCog(Cog, name="Stats", description="Stats for nerds."):
         async with ctx.typing():
             guild: Guild = self.bot.get_guild(GUILD_ID)
 
-            roles, online_users_count, machines = extract_guild_data(ctx, guild)
+            roles_count, online_users_count, machines = extract_guild_data(guild)
 
             data = {
                 "Lord": "𝕯𝖗𝖔𝖎𝖉𝖅𝖊𝖉",
@@ -40,7 +40,7 @@ class StatsCog(Cog, name="Stats", description="Stats for nerds."):
                 "Established at": f"{guild.created_at.strftime('%b %d %Y %H:%M:%S')}",
                 "🟢 Alive": f"{online_users_count} (**{round((online_users_count / guild.member_count * 100))}%**)",
                 "🤖 Machines": f"{machines}",
-                "Ranks": " ".join(role.mention for role in roles[::-1]),
+                "Ranks": f"**{roles_count} roles**, too many I can't put them all here :p",
             }
 
             embed = create_embed(
