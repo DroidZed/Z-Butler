@@ -41,7 +41,8 @@ class EventHandlers(
             guild.get_role(898875325923094528),  # special roles
             guild.get_role(898874934615482378),  # community roles
             guild.get_role(898874121222516736),  # leveling roles
-            guild.get_role(898874538652225566),  # gaming roles
+            guild.get_role(969706983777263677),  # gaming roles
+            guild.get_role(969639120513163345),  # other roles
         ]
 
     @Cog.listener()
