@@ -17,6 +17,7 @@ beautifulsoup4 = "*"
 rich = "*"
 motor = "*"
 py-cord = "==1.7.3"
+tweepy = {extras = ["async"], version = "*"}
 
 [dev-packages]
 black = "*"

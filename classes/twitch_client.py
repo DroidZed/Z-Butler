@@ -3,7 +3,6 @@ from classes.singleton_class import SingletonClass
 
 
 class TwitchClient(metaclass=SingletonClass):
-
     """
     A wrapper Singleton around the twitch token, providing more
     tools for managing the state of the code like handling expiration date and expiring the token.

@@ -2,7 +2,7 @@ from io import BytesIO
 from sys import stderr
 from traceback import print_exception
 
-from discord import File, Guild, Role
+from discord import File, Guild, Role, Forbidden
 from discord.abc import GuildChannel
 from discord.ext.commands import Bot, Cog, Context, MemberConverter
 from discord.ext.commands.errors import (
@@ -38,7 +38,7 @@ class EventHandlers(
 
         return [
             guild.get_role(896349097391444029),  # silenced role
-            guild.get_role(898875325923094528),  # special roles
+            guild.get_role(980527744062464030),  # special roles
             guild.get_role(898874934615482378),  # community roles
             guild.get_role(898874121222516736),  # leveling roles
             guild.get_role(969706983777263677),  # gaming roles
@@ -55,15 +55,20 @@ class EventHandlers(
         await member.add_roles(*self.__get_initial_roles(guild))
 
         if channel:
-
-            await member.send(embed=create_embed(welcome_config()))
-
             with BytesIO() as image_binary:
                 create_picture(username=f"{member.name}", discriminator=f"{member.discriminator}").save(
                     image_binary, "PNG"
                 )
 
                 image_binary.seek(0)
+
+                try:
+                    await member.send(
+                        embed=create_embed(welcome_config()),
+                        file=File(fp=image_binary, filename=f"{member.name}-welcome.png"),
+                    )
+                except Forbidden:
+                    pass
 
                 await channel.send(
                     content=f"👋🏻 <@{member.id}> a new recruit has joined the guild !! Bring the beer 🍻",

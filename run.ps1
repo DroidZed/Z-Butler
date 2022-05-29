@@ -1,1 +1,1 @@
-& C:\Users\ASUS\.virtualenvs\Z_Butler-pictbbmS\Scripts\activate.ps1
+& ".\.venv\Scripts\activate.ps1"

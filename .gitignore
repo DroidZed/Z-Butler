@@ -1,10 +1,6 @@
 ### Compiled python files ###
 */**/__pycache__/
 
-### IDES ###
-/.idea/
-.vscode/
-
 ### DEV ###
 *.ps1
 *.bat

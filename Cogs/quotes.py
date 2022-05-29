@@ -49,7 +49,10 @@ class QuotesCog(Cog, name="Quotes", description="💭 Quoty quotes !"):
         confirmation = await self.bot.wait_for("reaction_add", check=check)
 
         if confirmation:
-            await ctx.author.send(embed=msg.embeds[0])
+            try:
+                await ctx.author.send(embed=msg.embeds[0])
+            except Forbidden:
+                await ctx.reply("Please open your DMs to get the quote !!", mention_author=True)
 
     @command(name="sdq", description="Starts the daily quote task.", usage=f"{PREFIX}sdq")
     @has_role(CROWN_ROLE_ID)
