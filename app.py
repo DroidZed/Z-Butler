@@ -41,7 +41,7 @@ async def on_ready():
     rch.print(f"    |       [b green]ONLINE[/]      [white]/[/]")
     print("     ------------------")
     rch.print(f"|[b]         [i]By: [purple]DroidZed[/purple][/i]{' ' * 17}|")
-    rch.print(f"|[b] Discord version: [u blue]{__version__}[/u blue]{' ' * 15}|", end="\n")
+    rch.print(f"|[b] Discord version: [u blue]{__version__}[/u blue]{' ' * 16}|", end="\n")
     rch.print(
         f"[b white]| Running under: [i yellow]Python v{python_version()}[/i yellow] :snake:     |",
         end="\n",
