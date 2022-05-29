@@ -41,12 +41,14 @@ class ZedCog(Cog, name="Zed-Domain[WIP]", description="⚡ Domain expansion !"):
 
         await ctx.send(embed=create_embed(env_config(), None, None))
 
-    @command(name="say", description="Say something :/", usage=f"{PREFIX}say `your message`")
-    async def say(self, ctx: Context, *msg: str):
+    @command(name="say", description="Say something :/", usage=f"{PREFIX}say `your message` `True` | `False`")
+    async def say(self, ctx: Context, with_author: bool = False, *msg: str):
 
         await ctx.message.delete()
 
-        await ctx.send(f"{' '.join(msg)} - *By {ctx.author.name}*")
+        auth = f"- *By {ctx.author.name}*" if with_author else ""
+
+        await ctx.send(f'{" ".join(msg)} {auth}')
 
     @command(
         name="python",

@@ -7,6 +7,7 @@ from discord.ext import commands
 
 from classes.help import ZedHelpCommand
 from classes.mongo_db_connection import MongoDBConnection
+from classes.tweepy_wrapper import TweepyWrapper
 from config.main import PREFIX, OWNER_ID, TOKEN
 
 # Intents
@@ -51,6 +52,8 @@ async def on_ready():
     await bot.change_presence(activity=Game(name=f"{bot.command_prefix}help - By DroidZed"))
 
     MongoDBConnection()
+
+    TweepyWrapper()
 
 
 bot.run(TOKEN)
