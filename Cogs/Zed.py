@@ -2,6 +2,7 @@ from random import choice
 
 from discord.ext.commands import Bot, Cog, Context, command, cooldown, BucketType
 
+from api.find_gif import find_gif
 from config.embed.env_cfg import env_config
 from config.main import PREFIX, OWNER_ID
 from functions.embed_factory import create_embed
@@ -19,7 +20,6 @@ class ZedCog(Cog, name="Zed-Domain[WIP]", description="⚡ Domain expansion !"):
     )
     @cooldown(1, 2.5, BucketType.user)
     async def zed(self, ctx: Context):
-
         replies = [
             "WHAT ?!",
             "What do you need ?",
@@ -38,12 +38,10 @@ class ZedCog(Cog, name="Zed-Domain[WIP]", description="⚡ Domain expansion !"):
 
     @command(name="env", description="Displays the bot's environment", usage=f"{PREFIX}env")
     async def env(self, ctx: Context):
+        await ctx.send(embed=create_embed(env_config()))
 
-        await ctx.send(embed=create_embed(env_config(), None, None))
-
-    @command(name="say", description="Say something :/", usage=f"{PREFIX}say `your message` `True` | `False`")
+    @command(name="say", description="Say something :/", usage=f"{PREFIX}say `True` | `False` `your message`")
     async def say(self, ctx: Context, with_author: bool = False, *msg: str):
-
         await ctx.message.delete()
 
         auth = f"- *By {ctx.author.name}*" if with_author else ""
@@ -57,15 +55,23 @@ class ZedCog(Cog, name="Zed-Domain[WIP]", description="⚡ Domain expansion !"):
         usage=f"{PREFIX}py",
     )
     async def python(self, ctx: Context):
-
         await ctx.message.delete()
+
+        async with ctx.typing():
+            gif = await find_gif("python")
 
         await ctx.send(
             choice(
                 [
-                    "https://tenor.com/view/python-gif-20799882",
-                    "https://tenor.com/view/java-python-fight-me-saber-tdfw-gif-16168791",
-                    "https://tenor.com/view/dark-shadows-snake-python-hiss-gif-5700618",
+                    gif["url"]
+                    if gif
+                    else choice(
+                        [
+                            "https://tenor.com/view/python-gif-20799882",
+                            "https://tenor.com/view/java-python-fight-me-saber-tdfw-gif-16168791",
+                            "https://tenor.com/view/dark-shadows-snake-python-hiss-gif-5700618",
+                        ]
+                    ),
                     "https://i.imgflip.com/44s4sh.jpg",
                     "https://i.imgflip.com/416iip.jpg",
                     "https://i.imgflip.com/1fv76g.jpg",

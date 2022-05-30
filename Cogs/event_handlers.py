@@ -52,7 +52,12 @@ class EventHandlers(
 
         channel: GuildChannel = guild.get_channel(self.out_channel)
 
-        await member.add_roles(*self.__get_initial_roles(guild))
+        for role in self.__get_initial_roles(guild):
+
+            try:
+                await member.add_roles(role)
+            except Forbidden:
+                print(f"error in role: {role.name}")
 
         if channel:
             with BytesIO() as image_binary:
@@ -63,10 +68,7 @@ class EventHandlers(
                 image_binary.seek(0)
 
                 try:
-                    await member.send(
-                        embed=create_embed(welcome_config()),
-                        file=File(fp=image_binary, filename=f"{member.name}-welcome.png"),
-                    )
+                    await member.send(embed=create_embed(welcome_config()))
                 except Forbidden:
                     pass
 
