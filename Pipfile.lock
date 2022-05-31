@@ -57,7 +57,7 @@
                 "sha256:fe60131d21b31fd1a14bd43e6bb88256f69dfc3188b3a89d736d6c71ed43ec95"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==3.7.4.post0"
+            "version": ">=3.7.4"
         },
         "anyio": {
             "hashes": [
