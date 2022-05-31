@@ -11,3 +11,6 @@ test.py
 *.zip
 *.mongodb
 run.ps1
+
+### ENV ###
+.env
