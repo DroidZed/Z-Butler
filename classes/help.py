@@ -1,8 +1,7 @@
-from discord.abc import Messageable
 from discord.ext.commands import HelpCommand, Cog, Command
 
-from config.embed.help import help_config
-from functions.embed_factory import create_embed
+from classes.embed_factory import EmbedFactory
+from config.colors import BOT_COLOR
 
 
 class ZedHelpCommand(HelpCommand):
@@ -12,52 +11,82 @@ class ZedHelpCommand(HelpCommand):
         super().__init__()
 
     async def send_bot_help(self, mapping):
-        dest: Messageable = self.get_destination()
-
         dic = {cog.qualified_name: " ".join(f"`{command.name}`" for command in mapping[cog]) for cog in mapping if cog}
 
         del dic["Event Handlers"]
 
-        embed = create_embed(config=help_config(), reason=None, cfg_type=None, **dic)
-
-        await dest.send(embed=embed)
+        await self.get_destination().send(
+            embed=EmbedFactory.create_embed(
+                config=EmbedFactory.create_config(
+                    title="Help Command",
+                    color=BOT_COLOR,
+                    description="Showing you the list of my powers, write Zhelp <command name> | <category name> for more info on those.",
+                    thumbnail={
+                        "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif"
+                    },
+                    author={
+                        "name": "The Z Butler",
+                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                    },
+                    footer={
+                        "text": "The power of The Z Butler 🔱",
+                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                    },
+                ),
+                **dic,
+            )
+        )
 
     async def send_cog_help(self, cog: Cog):
         if cog.qualified_name in {"Event Handlers"}:
             return
 
-        dest: Messageable = self.get_destination()
-
         cmds = cog.get_commands()
 
-        names: list[str] = [n.name for n in cmds]
-
-        descriptions: list[str] = [f"`{n.description}`" for n in cmds]
-
-        dic = dict(zip(names, descriptions))
-
-        embed = create_embed(
-            config=help_config(cog.qualified_name, cog.description),
-            reason=None,
-            cfg_type=None,
-            **dic,
+        await self.get_destination().send(
+            embed=EmbedFactory.create_embed(
+                config=EmbedFactory.create_config(
+                    title=cog.qualified_name,
+                    color=BOT_COLOR,
+                    description=cog.description,
+                    thumbnail={
+                        "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif"
+                    },
+                    author={
+                        "name": "The Z Butler",
+                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                    },
+                    footer={
+                        "text": "The power of The Z Butler 🔱",
+                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                    },
+                ),
+                **dict(zip([n.name for n in cmds], [f"`{n.description}`" for n in cmds])),
+            )
         )
-
-        await dest.send(embed=embed)
 
     async def send_command_help(self, command: Command):
-        dest: Messageable = self.get_destination()
-
-        dic = {
-            "Aliases": " | ".join(f"`{a}`" for a in command.aliases if a),
-            "Usage": command.usage,
-        }
-
-        embed = create_embed(
-            config=help_config(command.name, command.description),
-            reason=None,
-            cfg_type=None,
-            **dic,
+        await self.get_destination().send(
+            embed=EmbedFactory.create_embed(
+                config=EmbedFactory.create_config(
+                    title=command.name,
+                    color=BOT_COLOR,
+                    description=command.description,
+                    thumbnail={
+                        "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif"
+                    },
+                    author={
+                        "name": "The Z Butler",
+                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                    },
+                    footer={
+                        "text": "The power of The Z Butler 🔱",
+                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                    },
+                ),
+                **{
+                    "Aliases": " | ".join(f"`{a}`" for a in command.aliases if a),
+                    "Usage": command.usage,
+                },
+            )
         )
-
-        await dest.send(embed=embed)

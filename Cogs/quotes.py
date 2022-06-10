@@ -1,19 +1,16 @@
-from asyncio import sleep
-
-from discord import Message, Reaction, Member
 from discord.ext.commands import Bot, BucketType, Cog, Context, command, cooldown
 from discord.ext.commands.core import has_role
 from discord.ext.commands.errors import CommandError, MissingRole
 from discord.ext.tasks import loop
 
-from api.anime_quotes import anime_quotes
-from config.embed.quote import quotes_config
+from api.animes import quotes
+from classes.embed_factory import EmbedFactory
+from config.colors import BOT_COLOR
 from config.main import PREFIX, CROWN_ROLE_ID
-from functions.embed_factory import create_embed
 
 
 async def _grab_quote():
-    return await anime_quotes()
+    return await quotes()
 
 
 class QuotesCog(Cog, name="Quotes", description="💭 Quoty quotes !"):
@@ -32,27 +29,26 @@ class QuotesCog(Cog, name="Quotes", description="💭 Quoty quotes !"):
     )
     @cooldown(1, 5, BucketType.user)
     async def random_quote(self, ctx: Context):
+
         async with ctx.typing():
             quote = await _grab_quote()
 
-        msg: Message = await ctx.send(
-            embed=create_embed(quotes_config(f"{quote['character']} - {quote['anime']}", quote["quote"]))
+        await ctx.send(
+            embed=EmbedFactory.create_embed(
+                EmbedFactory.create_config(
+                    title=f"**{quote['character']} - {quote['anime']}**",
+                    color=BOT_COLOR,
+                    description=f"*{quote['quote']}*",
+                    author={
+                        "name": "The Z Butler",
+                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                    },
+                    thumbnail={
+                        "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif"
+                    },
+                )
+            )
         )
-
-        await sleep(1)
-
-        await msg.add_reaction("💖")
-
-        def check(reaction: Reaction, user: Member):
-            return user == ctx.author and str(reaction.emoji) in ["💖"] and reaction.message == msg
-
-        confirmation = await self.bot.wait_for("reaction_add", check=check)
-
-        if confirmation:
-            try:
-                await ctx.author.send(embed=msg.embeds[0])
-            except Forbidden:
-                await ctx.reply("Please open your DMs to get the quote !!", mention_author=True)
 
     @command(name="sdq", description="Starts the daily quote task.", usage=f"{PREFIX}sdq")
     @has_role(CROWN_ROLE_ID)
@@ -85,7 +81,20 @@ class QuotesCog(Cog, name="Quotes", description="💭 Quoty quotes !"):
         quote = await _grab_quote()
 
         await self.bot.get_channel(899278487792279622).send(
-            embed=create_embed(quotes_config(f"{quote['character']} - {quote['anime']}", quote["quote"]))
+            embed=EmbedFactory.create_embed(
+                EmbedFactory.create_config(
+                    title=f"**{quote['character']} - {quote['anime']}**",
+                    color=BOT_COLOR,
+                    description=f"*{quote['quote']}*",
+                    author={
+                        "name": "The Z Butler",
+                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                    },
+                    thumbnail={
+                        "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif"
+                    },
+                )
+            )
         )
 
     @daily_quote.before_loop

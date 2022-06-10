@@ -11,7 +11,6 @@ class Miscellaneous(
     description="Useful commands for the average user...WORK IN " "PROGRESS, not fully implemented YET !!",
 ):
     def __init__(self, bot: Bot):
-
         self.bot = bot
 
     @command(
@@ -26,10 +25,9 @@ class Miscellaneous(
     )
     @cooldown(1, 4.7, BucketType.user)
     async def crypto_converter(self, ctx: Context, *currency_message: str):
-
         currency_message = " ".join(currency_message)
 
-        rgx = compile("([a-zA-Z ]*?) ([0-9.0-9]+) ([a-zA-Z ]+)")
+        rgx = compile("([a-zA-Z ]*?) ([\\d.]+) ([a-zA-Z ]+)")
 
         res = rgx.match(currency_message)
 
@@ -43,5 +41,4 @@ class Miscellaneous(
 
 
 def setup(bot: Bot):
-
     bot.add_cog(Miscellaneous(bot))

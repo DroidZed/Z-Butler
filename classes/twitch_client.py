@@ -1,5 +1,16 @@
-from api.twitch_bearer import twitch_bearer
+from httpx import AsyncClient
+
 from classes.singleton_class import SingletonClass
+from config.main import TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET
+
+
+async def authenticate() -> dict:
+    params = {"client_id": TWITCH_CLIENT_ID, "client_secret": TWITCH_CLIENT_SECRET, "grant_type": "client_credentials"}
+
+    async with AsyncClient() as client:
+        data = await client.post(url="https://id.twitch.tv/oauth2/token", params=params)
+
+        return data.json()
 
 
 class TwitchClient(metaclass=SingletonClass):
@@ -49,7 +60,7 @@ class TwitchClient(metaclass=SingletonClass):
         self.__is_token_expired = state
 
     async def refresh_token(self):
-        self.__data = await twitch_bearer()
+        self.__data = await authenticate()
 
     def decrement_expiration(self):
 

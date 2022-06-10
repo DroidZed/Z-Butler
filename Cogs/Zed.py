@@ -1,23 +1,20 @@
+from platform import python_version
 from random import choice
 
-from discord.ext.commands import Bot, Cog, Context, command, cooldown, BucketType
+from discord import __version__
+from discord.ext.commands import Bot, Cog, Context, command, cooldown, BucketType, CommandError, BadBoolArgument
 
-from api.find_gif import find_gif
-from config.embed.env_cfg import env_config
+from api.images import find_gif
+from classes.embed_factory import EmbedFactory
+from config.colors import BOT_COLOR
 from config.main import PREFIX, OWNER_ID
-from functions.embed_factory import create_embed
 
 
 class ZedCog(Cog, name="Zed-Domain[WIP]", description="⚡ Domain expansion !"):
     def __init__(self, bot: Bot):
         self.bot = bot
 
-    @command(
-        name="Z",
-        description="Calls the bot. This command is a work in progress.",
-        usage=f"{PREFIX}",
-        aliases=[""],
-    )
+    @command(name="Z", description="Calls the bot. This command is a work in progress.", usage=f"{PREFIX}")
     @cooldown(1, 2.5, BucketType.user)
     async def zed(self, ctx: Context):
         replies = [
@@ -38,7 +35,25 @@ class ZedCog(Cog, name="Zed-Domain[WIP]", description="⚡ Domain expansion !"):
 
     @command(name="env", description="Displays the bot's environment", usage=f"{PREFIX}env")
     async def env(self, ctx: Context):
-        await ctx.send(embed=create_embed(env_config()))
+
+        await ctx.send(
+            embed=EmbedFactory.create_embed(
+                EmbedFactory.create_config(
+                    title="Working Environment",
+                    description="I'm working under the **latest** and **greatest** of"
+                    f"\n <:python:880768802885885973> `Python`: `{python_version()}`"
+                    f"\n <:pycord:895264837284790283> `Pycord`: `{__version__}`",
+                    color=BOT_COLOR,
+                    author={
+                        "name": "The Z Butler",
+                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                    },
+                    thumbnail={
+                        "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif"
+                    },
+                )
+            )
+        )
 
     @command(name="say", description="Say something :/", usage=f"{PREFIX}say `True` | `False` `your message`")
     async def say(self, ctx: Context, with_author: bool = False, *msg: str):
@@ -78,6 +93,15 @@ class ZedCog(Cog, name="Zed-Domain[WIP]", description="⚡ Domain expansion !"):
                 ]
             )
         )
+
+    @say.error
+    async def say_handler(self, ctx: Context, error: CommandError) -> None:
+
+        if isinstance(error, BadBoolArgument):
+            await ctx.reply("Please provive the correct argument for writing the signature.")
+
+        else:
+            await ctx.reply("Check the command's help page for the correct syntax.")
 
 
 def setup(bot: Bot):

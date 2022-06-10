@@ -10,18 +10,13 @@ from discord.ext.commands import (
 )
 from discord.ext.tasks import loop
 
-from api.find_gif import find_gif
-from api.get_twitch_user import get_twitch_user_pfp
-from api.twitch_bearer import twitch_bearer
-from classes.twitch_client import TwitchClient
-from config.embed.activity import activity_config
-from config.embed.hello import hello_config
-from config.embed.pfp import pfp_config
-from config.embed.playing_act import playing_activity_config
-from config.embed.spotify import spotify_config
-from config.embed.streaming_act import streaming_activity_config
-from config.main import PREFIX
-from functions.embed_factory import create_embed
+from api.images import find_gif
+from api.twitch import get_pfp
+from classes.embed_factory import EmbedFactory
+from classes.twitch_client import TwitchClient, authenticate
+from config.colors import BOT_COLOR
+from config.embed.activity import activity_config, streaming_activity_config, playing_activity_config, spotify_config
+from config.main import PREFIX, CROWN_ROLE_ID
 
 
 class UserCog(Cog, name="User-Commands", description="👤 User commands for everyone"):
@@ -43,17 +38,26 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
 
         member = member or ctx.author
 
-        async with ctx.typing():
-            embed = create_embed(
-                config=pfp_config(
-                    url=str(member.avatar_url),
-                    tag=f"{member.name}#{member.discriminator}",
-                    issuer=f"{ctx.message.author}",
-                    avatar_url=f"{ctx.message.author.avatar_url}",
+        await ctx.send(
+            embed=EmbedFactory.create_embed(
+                config=EmbedFactory.create_config(
+                    title=f"**{'Lord  👑 **𝕯𝖗𝖔𝖎𝖉𝖅𝖊𝖉** 👑' if member.id == CROWN_ROLE_ID else f'{member.name}#{member.discriminator}'}**'s Profile Picture",
+                    color=BOT_COLOR,
+                    image={"url": member.avatar_url},
+                    author={
+                        "name": "The Z Butler",
+                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                    },
+                    thumbnail={
+                        "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif"
+                    },
+                    footer={
+                        "text": f"Requested by {ctx.message.author} 💙",
+                        "icon_url": f"{ctx.message.author.avatar_url}",
+                    },
                 )
             )
-
-        await ctx.send(embed=embed)
+        )
 
     @command(
         name="greet",
@@ -69,16 +73,24 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
         async with ctx.typing():
             result_set = await find_gif("Hello")
 
-        if result_set:
-            await ctx.message.delete()
-            await ctx.send(
-                embed=create_embed(
-                    hello_config(
-                        message=f"Hello <@{member.id}>~ 👋🏻",
-                        url=result_set["media"][0]["gif"]["url"],
-                    )
+        await ctx.message.delete()
+        await ctx.send(
+            embed=EmbedFactory.create_embed(
+                EmbedFactory.create_config(
+                    title="Z Butler's Greeting",
+                    color=BOT_COLOR,
+                    description=f"Hello <@{member.id}>~ 👋🏻",
+                    image={"url": f"{result_set['media'][0]['gif']['url']}"},
+                    author={
+                        "name": "The Z Butler",
+                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                    },
+                    thumbnail={
+                        "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif"
+                    },
                 )
             )
+        )
 
     @command(
         name="status",
@@ -126,37 +138,37 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
             case Spotify():
                 async with ctx.typing():
                     config = spotify_config(
-                        member.mention,
-                        act.title,
-                        act.album,
-                        act.artist,
-                        act.album_cover_url,
-                        f"https://open.spotify.com/track/{act.track_id}",
+                        mention=member.mention,
+                        song=act.title,
+                        album=act.album,
+                        artist=act.artist,
+                        art=act.album_cover_url,
+                        link=f"https://open.spotify.com/track/{act.track_id}",
                     )
 
             case Game():
                 async with ctx.typing():
                     config = playing_activity_config(
-                        act.name,
-                        member.mention,
-                        ctx.author,
-                        ctx.message.author.avatar_url,
-                        act.start.strftime("%x %X") if act.start else None,
+                        name=act.name,
+                        mention=member.mention,
+                        issuer=ctx.author,
+                        avatar_url=ctx.message.author.avatar_url,
+                        since=act.start.strftime("%x %X") if act.start else None,
                     )
 
             case Streaming():
                 async with ctx.typing():
-                    streamer_image_url: str | None = await get_twitch_user_pfp(act.url[22:])
+                    streamer_image_url: str | None = await get_pfp(act.url[22:])
 
                     if not streamer_image_url.startswith("https://"):
                         streamer_image_url = None
 
                     config = streaming_activity_config(
-                        act.name,
-                        member.mention,
-                        ctx.author,
-                        ctx.message.author.avatar_url,
-                        act.platform,
+                        name=act.name,
+                        mention=member.mention,
+                        issuer=ctx.author,
+                        avatar_url=ctx.message.author.avatar_url,
+                        platform=act.platform,
                         stream_url=act.url,
                         streamed_game=act.game,
                         streamer_pfp=streamer_image_url,
@@ -165,19 +177,19 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
             case Activity():
                 async with ctx.typing():
                     config = activity_config(
-                        act.name,
-                        member.name,
-                        ctx.author,
-                        ctx.message.author.avatar_url,
-                        act.large_image_url,
-                        act.start.strftime("%x %X") if act.start else None,
+                        name=act.name,
+                        username=member.name,
+                        issuer=ctx.author,
+                        avatar_url=ctx.message.author.avatar_url,
+                        image_url=act.large_image_url,
+                        since=act.start.strftime("%x %X") if act.start else None,
                     )
 
         if not config:
             await ctx.send("Nothing, move along....")
             return
 
-        await ctx.send(embed=create_embed(config))
+        await ctx.send(embed=EmbedFactory.create_embed(config))
         return
 
     @loop(hours=24, reconnect=True)
@@ -188,7 +200,7 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
     @decrement_token_validity.before_loop
     async def before_token_decrement(self):
 
-        TwitchClient(await twitch_bearer())
+        TwitchClient(await authenticate())
 
         await self.bot.wait_until_ready()
 

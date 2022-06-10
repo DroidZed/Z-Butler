@@ -1,10 +1,10 @@
 from discord.ext.commands import Bot, BucketType, Cog, Context, command, cooldown, has_role
 
-from classes.tweepy_wrapper import TweepyWrapper
-from classes.tweet_model import TweetModel
-from config.embed.tweet import tweet_config
+from classes.embed_factory import EmbedFactory
+from classes.twitter_ import TweepyWrapper
+from classes.twitter_ import TweetModel
+from config.colors import TWITTER_COLOR
 from config.main import PREFIX, CROWN_ROLE_ID
-from functions.embed_factory import create_embed
 
 
 class LorkhanCommands(
@@ -25,7 +25,6 @@ class LorkhanCommands(
     async def tweet(self, ctx: Context, *message: str):
 
         async with ctx.typing():
-
             result: TweetModel = await TweepyWrapper().tweet(text=" ".join(_ for _ in message))
 
         if result.err:
@@ -34,7 +33,7 @@ class LorkhanCommands(
             )
             return
 
-        await ctx.send(embed=create_embed(tweet_config(result.text, result.t_id, "Droid7ed")))
+        await self.__send_tweet(ctx, result)
 
     @command(
         name="reply",
@@ -62,7 +61,31 @@ class LorkhanCommands(
             )
             return
 
-        await ctx.send(embed=create_embed(tweet_config(result.text, result.t_id, "Droid7ed")))
+        await self.__send_tweet(ctx, result)
+
+    @staticmethod
+    async def __send_tweet(ctx, result):
+        await ctx.send(
+            embed=EmbedFactory.create_embed(
+                EmbedFactory.create_config(
+                    title="The bird tweets",
+                    url=f"https://twitter.com/DroidZed/status/{result.t_id}",
+                    color=TWITTER_COLOR,
+                    description=result.text,
+                    author={
+                        "name": "The Z Butler",
+                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                    },
+                    thumbnail={
+                        "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif"
+                    },
+                    footer={
+                        "text": f"Tweeted by Droid7ed - id: {result.t_id}",
+                        "icon_url": "https://www.brandcolorcode.com/media/twitter-logo.png",
+                    },
+                )
+            )
+        )
 
 
 def setup(bot: Bot):

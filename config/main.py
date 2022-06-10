@@ -20,7 +20,7 @@ TWITCH_CLIENT_ID = config("TWITCH_CLIENT_ID")
 
 TWITCH_CLIENT_SECRET = config("TWITCH_CLIENT_SECRET")
 
-# ! Twitter credentials
+# Twitter credentials
 
 TWITTER_CONSUMER_KEY = config("TWITTER_CONSUMER_KEY")
 
