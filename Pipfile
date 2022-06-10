@@ -20,8 +20,8 @@ py-cord = "==1.7.3"
 tweepy = {extras = ["async"], version = "*"}
 
 [dev-packages]
-black = "*"
 pre-commit = "*"
+black = "*"
 
 [requires]
 python_version = "3.10"

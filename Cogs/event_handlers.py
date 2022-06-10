@@ -7,21 +7,20 @@ from discord.abc import GuildChannel
 from discord.ext.commands import Bot, Cog, Context, MemberConverter
 from discord.ext.commands.errors import (
     CommandError,
+    MemberNotFound,
     CommandNotFound,
     CommandOnCooldown,
-    MissingRole,
+    MissingPermissions,
     CommandInvokeError,
-    MemberNotFound,
     MissingRequiredArgument,
 )
 from httpx import ReadTimeout
 
-from classes.mongo_db_helper_client import MongoDBHelperClient
-from config.embed.leave import leave_config
-from config.embed.welcome import welcome_config
+from classes.embed_factory import EmbedFactory
+from classes.mongo_db_management import MongoDBHelperClient
+from config.colors import BOT_COLOR
 from config.main import GUILD_ID
-from functions.create_welcome_image import create_picture
-from functions.embed_factory import create_embed
+from functions.image_manipulation import create_welcome_picture
 
 
 class EventHandlers(
@@ -39,10 +38,11 @@ class EventHandlers(
         return [
             guild.get_role(896349097391444029),  # silenced role
             guild.get_role(980527744062464030),  # special roles
-            guild.get_role(898874934615482378),  # community roles
-            guild.get_role(898874121222516736),  # leveling roles
+            guild.get_role(898874934615482378),  # default Seperator role 1
+            guild.get_role(983415194967490641),  # default Seperator role 2
+            guild.get_role(898874121222516736),  # community roles
             guild.get_role(969706983777263677),  # gaming roles
-            guild.get_role(969639120513163345),  # other roles
+            guild.get_role(969639120513163345),  # newspaper roles
         ]
 
     @Cog.listener()
@@ -61,14 +61,33 @@ class EventHandlers(
 
         if channel:
             with BytesIO() as image_binary:
-                create_picture(username=f"{member.name}", discriminator=f"{member.discriminator}").save(
+                create_welcome_picture(username=f"{member.name}", discriminator=f"{member.discriminator}").save(
                     image_binary, "PNG"
                 )
 
                 image_binary.seek(0)
 
                 try:
-                    await member.send(embed=create_embed(welcome_config()))
+                    await member.send(
+                        embed=EmbedFactory.create_embed(
+                            EmbedFactory.create_config(
+                                title=f"Hello there fellow Dragon Warrior",
+                                color=BOT_COLOR,
+                                description="Welcome to **DRAGON'S HEART** !! Please open a ticket in <#778292937426731049> and a member of the staff team will be with you shortly",
+                                author={
+                                    "name": "The Z Butler",
+                                    "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                                },
+                                thumbnail={
+                                    "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif"
+                                },
+                                footer={
+                                    "text": "Your trusty bot Z 🔱",
+                                    "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                                },
+                            )
+                        )
+                    )
                 except Forbidden:
                     pass
 
@@ -90,55 +109,75 @@ class EventHandlers(
         if await client.query_collection({"uid": member.id}):
             await client.delete_from_collection({"uid": member.id})
 
-        await channel.send(embed=create_embed(leave_config(member.name, member.id)))
+        await channel.send(
+            embed=EmbedFactory.create_embed(
+                EmbedFactory.create_config(
+                    title=f"{member.name} Left us.",
+                    color=BOT_COLOR,
+                    description=f"<@{member.id}> "
+                    "got sucked into a black hole <a:black_hole:796434656605765632>, long forgotten.",
+                    author={
+                        "name": "The Z Butler",
+                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                    },
+                    thumbnail={
+                        "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif"
+                    },
+                    footer={
+                        "text": "We shall never remember those who left our cause.",
+                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                    },
+                )
+            )
+        )
 
     @Cog.listener()
     async def on_command_error(self, ctx: Context, error: CommandError):
 
-        if isinstance(error, MissingRole):
+        match error:
 
-            return
+            case MissingPermissions():
+                return
 
-        elif isinstance(error, MemberNotFound):
+            case MemberNotFound():
+                await ctx.reply(
+                    "¯\\_(ツ)_/¯ The user provided could not be found, try again...",
+                    mention_author=True,
+                )
 
-            await ctx.reply(
-                "¯\\_(ツ)_/¯ The user provided could not be found, try again...",
-                mention_author=True,
-            )
+            case CommandOnCooldown():
 
-        elif isinstance(error, CommandOnCooldown):
+                await ctx.reply(
+                    f"⏳ Hold your horses, this command is on cooldown, you can use it in {round(error.retry_after, 2)}s",
+                    mention_author=True,
+                )
 
-            await ctx.reply(
-                f"⏳ Hold your horses, this command is on cooldown, you can use it in {round(error.retry_after, 2)}s",
-                mention_author=True,
-            )
+            case CommandNotFound():
 
-        elif isinstance(error, CommandNotFound):
+                await ctx.send("Nope, no such command was found *sight* 💨", mention_author=True)
 
-            await ctx.reply("Nope, no such command was found *sight* 💨", mention_author=True)
+            case CommandInvokeError():
 
-        elif isinstance(error, CommandInvokeError):
+                await ctx.send(
+                    "❌ Internal anomaly, I wasn't able to handle your request invoker. Sorry for my incompetence.",
+                    mention_author=True,
+                )
+                print_exception(type(error), error, error.__traceback__, file=stderr)
 
-            await ctx.reply(
-                "❌ Internal anomaly, I wasn't able to handle your request invoker. Sorry for my incompetence.",
-                mention_author=True,
-            )
-            print_exception(type(error), error, error.__traceback__, file=stderr)
+            case MissingRequiredArgument():
 
-        elif isinstance(error, MissingRequiredArgument):
+                await ctx.reply(
+                    "You __***IDIOT***__ !! Don't you know when typing this command, YOU **MUST** provide "
+                    "ARGUMENTS ? I think you should go back to elementary school and learn how to read 🙄",
+                    mention_author=True,
+                )
 
-            await ctx.reply(
-                "You __***IDIOT***__ !! Don't you know when typing this command, YOU **MUST** provide "
-                "ARGUMENTS ? I think you should go back to elementary school and learn how to read 🙄",
-                mention_author=True,
-            )
+            case ReadTimeout():
 
-        elif isinstance(error, ReadTimeout):
+                await ctx.reply("Command timed out, please try again ❌", mention_author=True)
 
-            await ctx.reply("Command timed out, please try again ❌", mention_author=True)
-
-        else:
-            print_exception(type(error), error, error.__traceback__, file=stderr)
+            case _:
+                print_exception(type(error), error, error.__traceback__, file=stderr)
 
 
 def setup(bot: Bot):

@@ -6,8 +6,8 @@ from discord import Intents, Game, __version__
 from discord.ext import commands
 
 from classes.help import ZedHelpCommand
-from classes.mongo_db_connection import MongoDBConnection
-from classes.tweepy_wrapper import TweepyWrapper
+from classes.mongo_db_management import MongoDBConnection
+from classes.twitter_ import TweepyWrapper
 from config.main import PREFIX, OWNER_ID, TOKEN
 
 # Intents

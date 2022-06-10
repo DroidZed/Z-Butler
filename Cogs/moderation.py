@@ -1,16 +1,12 @@
 from discord import Role
 from discord.ext.commands import Bot, Cog, Context, MemberConverter, command
-from discord.ext.commands.core import has_role
-from discord.ext.commands.errors import CommandError, MissingRole
+from discord.ext.commands.core import has_guild_permissions
+from discord.ext.commands.errors import CommandError, MissingPermissions
 
-from classes.mongo_db_helper_client import MongoDBHelperClient
-from config.embed.ban import ban_config
-from config.embed.kick import kick_config
-from config.embed.mute_unmute import mute_config, unmute_config
-from config.embed.no_perms import no_perms_config
-from config.embed.strike import strike_config
-from config.main import CROWN_ROLE_ID, PREFIX
-from functions.embed_factory import create_embed
+from classes.embed_factory import EmbedFactory
+from classes.mongo_db_management import MongoDBHelperClient
+from config.embed.moderation import ban_config, kick_config, mute_config, unmute_config, no_perms_config, strike_config
+from config.main import PREFIX
 
 
 class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for **__Lord Lorkhan__** only."):
@@ -27,7 +23,7 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
             await client.delete_from_collection({"uid": member.id})
 
         await member.send(
-            embed=create_embed(
+            embed=EmbedFactory.create_embed(
                 config=ban_config,
                 reason=reason or "3 Strikes",
                 cfg_type="mod",
@@ -46,7 +42,7 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
             await client.insert_into_collection([{"uid": member.id, "strike_count": 1, "reason": reason}])
 
         await member.send(
-            embed=create_embed(
+            embed=EmbedFactory.create_embed(
                 config=strike_config(strikes),
                 reason=reason or "Nothing",
                 cfg_type="mod",
@@ -59,7 +55,7 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
     @staticmethod
     async def __strike_ban_user(ctx: Context, member: MemberConverter, reason: str, client: MongoDBHelperClient):
 
-        user_query: list[dict] = client.query_collection({"uid": member.id})
+        user_query: list[dict] = await client.query_collection({"uid": member.id})
 
         user = user_query[0] if user_query else {}
 
@@ -88,7 +84,7 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
 
     @staticmethod
     async def invalid_perms_embed(ctx: Context, action: str) -> None:
-        await ctx.send(embed=create_embed(config=no_perms_config(), cfg_type=action))
+        await ctx.send(embed=EmbedFactory.create_embed(config=no_perms_config(), cfg_type=action))
 
     @staticmethod
     def __silenced_role(ctx: Context) -> Role:
@@ -103,7 +99,7 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
         usage=f"{PREFIX}ban `username` `reason`",
         description="Ban a user for a specific reason.",
     )
-    @has_role(CROWN_ROLE_ID)
+    @has_guild_permissions(ban_members=True)
     async def ban(self, ctx: Context, member: MemberConverter, *reason: str):
 
         await self.__ban_user(ctx, member, " ".join(reason), self.db_client)
@@ -113,7 +109,7 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
         usage=f"{PREFIX}kick `username` `reason`",
         description="Kick a user with a given reason.",
     )
-    @has_role(CROWN_ROLE_ID)
+    @has_guild_permissions(kick_members=True)
     async def kick(self, ctx: Context, member: MemberConverter, *reason: str):
 
         reason = " ".join(reason) if reason else "Nothing"
@@ -124,19 +120,18 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
             msg = "Kicked without a reason, not that I care ¯\\_(ツ)_/¯"
 
         async with ctx.typing():
-
             await self.db_client.delete_from_collection({"uid": member.id})
 
         await ctx.guild.kick(member, reason=reason)
 
-        await ctx.send(embed=create_embed(kick_config(msg), reason, None))
+        await ctx.send(embed=EmbedFactory.create_embed(kick_config(msg), reason, None))
 
     @command(
         name="strike",
         usage=f"{PREFIX}strike `username` `reason`",
         description="Give a strike to a naughty user.",
     )
-    @has_role(CROWN_ROLE_ID)
+    @has_guild_permissions(kick_members=True)
     async def strike(self, ctx: Context, member: MemberConverter, *reason: str):
 
         await self.__strike_ban_user(ctx, member, " ".join(reason), self.db_client)
@@ -146,12 +141,12 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
         usage=f"{PREFIX}purge `amount`",
         description="Clears a certain amount of messages, can't delete those older than 14 days though.",
     )
-    @has_role(CROWN_ROLE_ID)
+    @has_guild_permissions(manage_messages=True)
     async def purge(self, ctx: Context, amount: int):
         await ctx.channel.purge(limit=amount)
 
     @command(name="mute", usage=f"{PREFIX}mute `username`", description="Mutes a member.")
-    @has_role(CROWN_ROLE_ID)
+    @has_guild_permissions(kick_members=True)
     async def mute(self, ctx: Context, member: MemberConverter):
 
         if self.__silenced_role(ctx) in member.roles:
@@ -164,14 +159,10 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
 
         await member.add_roles(self.__silenced_role(ctx))
 
-        await ctx.send(embed=create_embed(mute_config(member.id)))
+        await ctx.send(embed=EmbedFactory.create_embed(mute_config(member.id)))
 
-    @command(
-        name="!mute",
-        usage=f"{PREFIX}!mute `username`",
-        description="UNmutes a muted member.",
-    )
-    @has_role(CROWN_ROLE_ID)
+    @command(name="!mute", usage=f"{PREFIX}!mute `username`", description="UNmutes a muted member.")
+    @has_guild_permissions(kick_members=True)
     async def unmute(self, ctx: Context, member: MemberConverter):
 
         if self.__silenced_role(ctx) not in member.roles:
@@ -184,38 +175,38 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
 
         await member.add_roles(self.__dragon_warrior_role(ctx))
 
-        await ctx.send(embed=create_embed(unmute_config(member.id)))
+        await ctx.send(embed=EmbedFactory.create_embed(unmute_config(member.id)))
 
     # error handlers
 
     @purge.error
     async def purge_handler(self, ctx: Context, error: CommandError) -> None:
-        if isinstance(error, MissingRole):
+        if isinstance(error, MissingPermissions):
             await self.invalid_perms_embed(ctx, "purge")
 
     @ban.error
     async def ban_handler(self, ctx: Context, error: CommandError) -> None:
-        if isinstance(error, MissingRole):
+        if isinstance(error, MissingPermissions):
             await self.invalid_perms_embed(ctx, "ban")
 
     @kick.error
     async def kick_handler(self, ctx: Context, error: CommandError) -> None:
-        if isinstance(error, MissingRole):
+        if isinstance(error, MissingPermissions):
             await self.invalid_perms_embed(ctx, "kick")
 
     @strike.error
     async def strike_handler(self, ctx: Context, error: CommandError) -> None:
-        if isinstance(error, MissingRole):
+        if isinstance(error, MissingPermissions):
             await self.invalid_perms_embed(ctx, "strike")
 
     @mute.error
     async def mute_handler(self, ctx: Context, error: CommandError) -> None:
-        if isinstance(error, MissingRole):
+        if isinstance(error, MissingPermissions):
             await self.invalid_perms_embed(ctx, "mute")
 
     @unmute.error
     async def unmute_handler(self, ctx: Context, error: CommandError) -> None:
-        if isinstance(error, MissingRole):
+        if isinstance(error, MissingPermissions):
             await self.invalid_perms_embed(ctx, "unmute")
 
 

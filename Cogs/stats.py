@@ -1,4 +1,4 @@
-from discord import Guild, Embed
+from discord import Guild
 from discord.ext.commands import (
     Bot,
     Cog,
@@ -9,11 +9,10 @@ from discord.ext.commands import (
     BucketType,
 )
 
-from config.embed.server import server_stats_config
-from config.embed.user_stats import user_stats
-from config.main import GUILD_ID, PREFIX
-from functions.embed_factory import create_embed
-from functions.extract_guild_data import extract_guild_data
+from classes.embed_factory import EmbedFactory
+from config.colors import BOT_COLOR
+from config.main import GUILD_ID, PREFIX, OWNER_ID
+from functions.helpers import extract_guild_data
 
 
 class StatsCog(Cog, name="Stats", description="Stats for nerds."):
@@ -31,20 +30,32 @@ class StatsCog(Cog, name="Stats", description="Stats for nerds."):
         async with ctx.typing():
             guild: Guild = self.bot.get_guild(GUILD_ID)
 
-            roles_count, online_users_count, machines = extract_guild_data(guild)
+            roles_count, online_users_count, machines, desc = extract_guild_data(guild)
 
             data = {
-                "Lord": "𝕯𝖗𝖔𝖎𝖉𝖅𝖊𝖉",
-                "Heads Count": f"{guild.member_count - machines} dragons",
-                "Dens": f"💬 {len(guild.text_channels)} & 🎶 {len(guild.voice_channels)}",
-                "Established at": f"{guild.created_at.strftime('%b %d %Y %H:%M:%S')}",
-                "🟢 Alive": f"{online_users_count} (**{round((online_users_count / guild.member_count * 100))}%**)",
-                "🤖 Machines": f"{machines}",
-                "Ranks": f"**{roles_count} roles**, too many I can't put them all here :p",
+                "\u200b ": f"***🐲 Lord*** [𝕯𝖗𝖔𝖎𝖉𝖅𝖊𝖉](https://discord.com/users/{OWNER_ID})",
+                "\u200b  ": f"***🗿 Headcount*** {guild.member_count - machines}",
+                "\u200b   ": f"***🏘 Dens*** 💬 {len(guild.text_channels)} & 🎶 {len(guild.voice_channels)}",
+                "\u200b    ": f"***📅 Established at*** {guild.created_at.strftime('%b %d %Y')}",
+                "\u200b     ": f"🟢 ***Alive members*** {online_users_count} (**{round((online_users_count / guild.member_count * 100))}%**)",
+                "\u200b      ": f"***🤖 Machines*** {machines} ",
+                "\u200b       ": f"***🎖 Ranks*** {roles_count} ",
+                "\u200b": f"***😜 Emojis*** {len(self.bot.emojis)} ",
             }
 
-            embed = create_embed(
-                config=server_stats_config(title=guild.name),
+            embed = EmbedFactory.create_embed(
+                config=EmbedFactory.create_config(
+                    color=BOT_COLOR,
+                    description=desc,
+                    thumbnail={
+                        "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif"
+                    },
+                    author={"name": guild.name},
+                    footer={
+                        "text": "From the best bot ever, of the best server ever 💙",
+                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                    },
+                ),
                 reason=None,
                 cfg_type="stats",
                 **data,
@@ -62,22 +73,32 @@ class StatsCog(Cog, name="Stats", description="Stats for nerds."):
     async def user_stats(self, ctx: Context, member: MemberConverter = None) -> None:
         member = member or ctx.message.author
 
-        fields = {
-            "Created at": f"{member.created_at.strftime('%b %d %Y')}",
-            "Joined at": f"{member.joined_at.strftime('%b %d %Y')}",
-            "Nickname": f"{member.nick}",
-            "Top Rank": f"{member.top_role.mention}",
-            "Ranks": " ".join(r.mention for r in member.roles if not r.is_default()),
-        }
-
-        embed: Embed = create_embed(
-            user_stats(member.name, member.mention, str(str(member.avatar_url))),
-            None,
-            "stats",
-            **fields,
+        await ctx.send(
+            embed=EmbedFactory.create_embed(
+                config=EmbedFactory.create_config(
+                    title=f"**{member.name}**'s Stats",
+                    description=f"{member.mention}'s information.",
+                    color=BOT_COLOR,
+                    author={
+                        "name": "The Z Butler",
+                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                    },
+                    thumbnail={"url": member.avatar_url},
+                    footer={
+                        "text": "Delivered by your trusty bot, Z Butler 💙",
+                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                    },
+                ),
+                cfg_type="stats",
+                **{
+                    "Created at": f"{member.created_at.strftime('%b %d %Y')}",
+                    "Joined at": f"{member.joined_at.strftime('%b %d %Y')}",
+                    "Nickname": f"{member.nick}",
+                    "Top Rank": f"{member.top_role.mention}",
+                    "Ranks": " ".join(r.mention for r in member.roles if not r.is_default()),
+                },
+            )
         )
-
-        await ctx.send(embed=embed)
 
 
 def setup(bot: Bot):

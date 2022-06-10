@@ -1,8 +1,9 @@
 from random import choice
 
+from discord import Guild, Status
+
 
 def eight_ball_answers() -> str:
-
     answers = {
         "+": [
             "It is certain.",
@@ -40,3 +41,43 @@ def eight_ball_answers() -> str:
     }
 
     return choice(answers[choice(["+", "-", "/"])])
+
+
+def gay_commentary(rate: int) -> str:
+    rate *= -1 if rate < 0 else rate
+
+    match rate:
+
+        case 0:
+            return "That's a real human 😉"
+
+        case r if r < 10:
+            return "Need purifying 😬"
+
+        case r if r < 50:
+            return "What a shame...🙄"
+
+        case r if r < 65:
+            return "Utterly disgusting...🤮"
+
+        case _:
+            return "**YOU ARE AN ABOMINATION, YOU HAVE NO RIGHT TO LIVE !! DIE YOU MONSTER !!**"
+
+
+def extract_guild_data(guild: Guild) -> tuple[int, int, int, str]:
+    roles_count: int = len(guild.roles) - 1
+
+    desc: str = guild.description
+
+    online_users_count: int = len(
+        list(
+            filter(
+                lambda member: member.status != Status.offline and not member.bot,
+                guild.members,
+            )
+        )
+    )
+
+    machines_count: int = len(list(filter(lambda member: member.bot, guild.members)))
+
+    return roles_count, online_users_count, machines_count, desc
