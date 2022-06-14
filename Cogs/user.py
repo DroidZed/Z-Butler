@@ -43,7 +43,7 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
                 config=EmbedFactory.create_config(
                     title=f"**{'Lord  👑 **𝕯𝖗𝖔𝖎𝖉𝖅𝖊𝖉** 👑' if member.id == CROWN_ROLE_ID else f'{member.name}#{member.discriminator}'}**'s Profile Picture",
                     color=BOT_COLOR,
-                    image={"url": member.avatar_url},
+                    image={"url": f"{member.avatar_url}"},
                     author={
                         "name": "The Z Butler",
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
