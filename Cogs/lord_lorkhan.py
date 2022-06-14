@@ -71,7 +71,7 @@ class LorkhanCommands(
                     title="The bird tweets",
                     url=f"https://twitter.com/DroidZed/status/{result.t_id}",
                     color=TWITTER_COLOR,
-                    description=result.text,
+                    description=f"`{result.text}`",
                     author={
                         "name": "The Z Butler",
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
