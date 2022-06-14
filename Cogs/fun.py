@@ -246,7 +246,7 @@ class FunCog(Cog, name="Fun", description="🎉 Fun commands from your trusty Z 
                 EmbedFactory.create_config(
                     title=f"{member.name} I send you a hug by {ctx.author.name} ❤",
                     color=BOT_COLOR,
-                    image={"url": gif["media"][0]["gif"]["url"]},
+                    image={"url": f"{gif['media'][0]['gif']['url']}"},
                     author={
                         "name": "The Z Butler",
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
