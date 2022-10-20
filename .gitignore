@@ -13,4 +13,4 @@ test.py
 run.ps1
 
 ### ENV ###
-.env
+# .env
