@@ -2,7 +2,8 @@ import os
 from platform import python_version
 
 import rich as rch
-from discord import Intents, Game, __version__
+from discord import Intents, Game
+from discord import version_info
 from discord.ext import commands
 
 from classes.help import ZedHelpCommand
@@ -32,16 +33,16 @@ if __name__ == "__main__":
 async def on_ready():
     print("/" * 39)
     print(" ----------\\")
-    rch.print(f" |       [b cyan]*[/]  |         [white]/[/]\\")
+    rch.print(" |       [b cyan]*[/]  |         [white]/[/]\\")
     print(" --------   |        /  \\")
     print("       /   /         \\   \\")
     print("      /   /          /   /")
-    rch.print(f"     [white]/[/]   [white]/[/] [b blue]The Z Bot[/] \\   \\")
+    rch.print("     [white]/[/]   [white]/[/] [b blue]The Z Bot[/] \\   \\")
     print("    |   --------------   /")
-    rch.print(f"    |       [b green]ONLINE[/]      [white]/[/]")
+    rch.print("    |       [b green]ONLINE[/]      [white]/[/]")
     print("     ------------------")
     rch.print(f"|[b]         [i]By: [purple]DroidZed[/purple][/i]{' ' * 17}|")
-    rch.print(f"|[b] Discord version: [u blue]{__version__}[/u blue]{' ' * 15}|", end="\n")
+    rch.print(f"|[b] Discord version: [u blue]{version_info.build}[/u blue]{' ' * 15}|", end="\n")
     rch.print(
         f"[b white]| Running under: [i yellow]Python v{python_version()}[/i yellow] :snake:      |",
         end="\n",

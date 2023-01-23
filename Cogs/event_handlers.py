@@ -2,9 +2,8 @@ from io import BytesIO
 from sys import stderr
 from traceback import print_exception
 
-from discord import File, Guild, Role, Forbidden
-from discord.abc import GuildChannel
-from discord.ext.commands import Bot, Cog, Context, MemberConverter
+from discord import File, Guild, Role, Forbidden, TextChannel, Member
+from discord.ext.commands import Bot, Cog, Context
 from discord.ext.commands.errors import (
     CommandError,
     MemberNotFound,
@@ -14,11 +13,13 @@ from discord.ext.commands.errors import (
     CommandInvokeError,
     MissingRequiredArgument,
 )
+
 from httpx import ReadTimeout
 
 from classes.embed_factory import EmbedFactory
 from classes.mongo_db_management import MongoDBHelperClient
 from config.colors import BOT_COLOR
+from config.links import server_image
 from config.main import GUILD_ID
 from functions.image_manipulation import create_welcome_picture
 
@@ -46,11 +47,11 @@ class EventHandlers(
         ]
 
     @Cog.listener()
-    async def on_member_join(self, member: MemberConverter):
+    async def on_member_join(self, member: Member):
 
         guild: Guild = self.bot.get_guild(GUILD_ID)
 
-        channel: GuildChannel = guild.get_channel(self.out_channel)
+        channel: TextChannel = guild.get_channel(self.out_channel)
 
         for role in self.__get_initial_roles(guild):
 
@@ -73,17 +74,21 @@ class EventHandlers(
                             EmbedFactory.create_config(
                                 title=f"Hello there fellow Dragon Warrior",
                                 color=BOT_COLOR,
-                                description="Welcome to **DRAGON'S HEART** !! Please open a ticket in <#778292937426731049> and a member of the staff team will be with you shortly",
+                                description="Welcome to **DRAGON'S HEART** !! Please open a ticket in "
+                                            "<#778292937426731049> and a member of the staff team will be with you "
+                                            "shortly",
                                 author={
                                     "name": "The Z Butler",
-                                    "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                                    "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
+                                                "/bb7df4730c048faacd8db6dd99291cdb.jpg",
                                 },
                                 thumbnail={
-                                    "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif"
+                                    "url": server_image
                                 },
                                 footer={
                                     "text": "Your trusty bot Z 🔱",
-                                    "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                                    "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
+                                                "/bb7df4730c048faacd8db6dd99291cdb.jpg",
                                 },
                             )
                         )
@@ -97,9 +102,9 @@ class EventHandlers(
                 )
 
     @Cog.listener()
-    async def on_member_remove(self, member: MemberConverter):
+    async def on_member_remove(self, member: Member):
 
-        channel: GuildChannel = self.bot.get_guild(GUILD_ID).get_channel(self.out_channel)
+        channel: TextChannel = self.bot.get_guild(GUILD_ID).get_channel(self.out_channel)
 
         client = MongoDBHelperClient("users")
 
@@ -118,14 +123,16 @@ class EventHandlers(
                     "got sucked into a black hole <a:black_hole:796434656605765632>, long forgotten.",
                     author={
                         "name": "The Z Butler",
-                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
+                                    "/bb7df4730c048faacd8db6dd99291cdb.jpg",
                     },
                     thumbnail={
-                        "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif"
+                        "url": server_image
                     },
                     footer={
                         "text": "We shall never remember those who left our cause.",
-                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
+                                    "/bb7df4730c048faacd8db6dd99291cdb.jpg",
                     },
                 )
             )

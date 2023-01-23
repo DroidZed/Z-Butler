@@ -12,6 +12,7 @@ from api.music import fetch_lyrics, find_song
 from classes.converters.song_metadata_converter import SongArtistConverter, SongNameConverter
 from classes.embed_factory import EmbedFactory
 from config.colors import BOT_COLOR, SPOTIFY_COLOR
+from config.links import server_image
 from config.main import PREFIX
 
 
@@ -48,14 +49,16 @@ class MusicCog(Cog, name="Muse", description="🎶 Enjoy the bits and pieces of 
                         image={"url": f"{data['art_url']}"},
                         author={
                             "name": "The Z Butler",
-                            "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                            "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
+                                        "/bb7df4730c048faacd8db6dd99291cdb.jpg",
                         },
                         thumbnail={
-                            "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif"
+                            "url": server_image
                         },
                         footer={
                             "text": "Lyrics by Genius Lyrics 💙",
-                            "icon_url": "https://crypttv.com/wp-content/uploads/2020/10/59-598221_genius-lyrics-logo-transparent-clipart.png",
+                            "icon_url": "https://crypttv.com/wp-content/uploads/2020/10/59-598221_genius-lyrics-logo"
+                                        "-transparent-clipart.png",
                         },
                     )
                 )
@@ -118,7 +121,8 @@ class MusicCog(Cog, name="Muse", description="🎶 Enjoy the bits and pieces of 
                     title=f"**{data['track']}**",
                     url=data["href"],
                     color=SPOTIFY_COLOR,
-                    description=f"The song you've requested, by {' '.join(art for art in data['artists'])} from the album **{data['album']['name']}**",
+                    description=f"The song you've requested, by {' '.join(art for art in data['artists'])} from the "
+                                f"album **{data['album']['name']}**",
                     image={
                         "url": f"{data['album']['art']['url']}",
                         "width": data["album"]["art"]["width"],
@@ -126,10 +130,11 @@ class MusicCog(Cog, name="Muse", description="🎶 Enjoy the bits and pieces of 
                     },
                     author={
                         "name": "The Z Butler",
-                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
+                                    "/bb7df4730c048faacd8db6dd99291cdb.jpg",
                     },
                     thumbnail={
-                        "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif"
+                        "url": server_image
                     },
                     footer={
                         "text": "Songs params provided by Spotify 💚",

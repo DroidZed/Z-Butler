@@ -16,7 +16,10 @@ dnspython = "*"
 beautifulsoup4 = "*"
 rich = "*"
 motor = "*"
-py-cord = "==1.7.3"
+py-cord = "*"
+aiodns = "*"
+orjson = "*"
+coinpaprika-async = "*"
 tweepy = {extras = ["async"], version = "*"}
 
 [dev-packages]
@@ -24,7 +27,7 @@ pre-commit = "*"
 black = "*"
 
 [requires]
-python_version = "3.10"
+python_version = "3.11"
 
 [pipenv]
 allow_prereleases = false

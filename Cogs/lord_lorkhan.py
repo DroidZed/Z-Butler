@@ -4,6 +4,7 @@ from classes.embed_factory import EmbedFactory
 from classes.twitter_ import TweepyWrapper
 from classes.twitter_ import TweetModel
 from config.colors import TWITTER_COLOR
+from config.links import server_image
 from config.main import PREFIX, CROWN_ROLE_ID
 
 
@@ -77,7 +78,7 @@ class LorkhanCommands(
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
                     },
                     thumbnail={
-                        "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif"
+                        "url": server_image
                     },
                     footer={
                         "text": f"Tweeted by Droid7ed - id: {result.t_id}",

@@ -11,7 +11,7 @@ async def get_pfp(login: str) -> str | None:
     if twitch_bearer_data.is_token_expired:
         await twitch_bearer_data.refresh_token()
 
-        return get_pfp(login)
+        return await get_pfp(login)
 
     headers = {
         "Authorization": f"Bearer {twitch_bearer_data.token}",

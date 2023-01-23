@@ -1,5 +1,5 @@
-from discord import Role
-from discord.ext.commands import Bot, Cog, Context, MemberConverter, command
+from discord import Role, Member
+from discord.ext.commands import Bot, Cog, Context, command
 from discord.ext.commands.core import has_guild_permissions
 from discord.ext.commands.errors import CommandError, MissingPermissions
 
@@ -17,7 +17,7 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
     # ban kick warn purge mute & unmute
 
     @staticmethod
-    async def __ban_user(ctx: Context, member: MemberConverter, reason: str, client: MongoDBHelperClient):
+    async def __ban_user(ctx: Context, member: Member, reason: str, client: MongoDBHelperClient):
 
         async with ctx.typing():
             await client.delete_from_collection({"uid": member.id})
@@ -35,7 +35,7 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
 
     @staticmethod
     async def __strike_user(
-        ctx: Context, member: MemberConverter, reason: str, strikes: int, client: MongoDBHelperClient
+            ctx: Context, member: Member, reason: str, strikes: int, client: MongoDBHelperClient
     ):
 
         async with ctx.typing():
@@ -53,7 +53,7 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
         await ctx.send("The naughty user has been warned, hope he gets the message 😑")
 
     @staticmethod
-    async def __strike_ban_user(ctx: Context, member: MemberConverter, reason: str, client: MongoDBHelperClient):
+    async def __strike_ban_user(ctx: Context, member: Member, reason: str, client: MongoDBHelperClient):
 
         user_query: list[dict] = await client.query_collection({"uid": member.id})
 
@@ -100,7 +100,7 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
         description="Ban a user for a specific reason.",
     )
     @has_guild_permissions(ban_members=True)
-    async def ban(self, ctx: Context, member: MemberConverter, *reason: str):
+    async def ban(self, ctx: Context, member: Member, *reason: str):
 
         await self.__ban_user(ctx, member, " ".join(reason), self.db_client)
 
@@ -110,7 +110,7 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
         description="Kick a user with a given reason.",
     )
     @has_guild_permissions(kick_members=True)
-    async def kick(self, ctx: Context, member: MemberConverter, *reason: str):
+    async def kick(self, ctx: Context, member: Member, *reason: str):
 
         reason = " ".join(reason) if reason else "Nothing"
 
@@ -132,7 +132,7 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
         description="Give a strike to a naughty user.",
     )
     @has_guild_permissions(kick_members=True)
-    async def strike(self, ctx: Context, member: MemberConverter, *reason: str):
+    async def strike(self, ctx: Context, member: Member, *reason: str):
 
         await self.__strike_ban_user(ctx, member, " ".join(reason), self.db_client)
 
@@ -147,7 +147,7 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
 
     @command(name="mute", usage=f"{PREFIX}mute `username`", description="Mutes a member.")
     @has_guild_permissions(kick_members=True)
-    async def mute(self, ctx: Context, member: MemberConverter):
+    async def mute(self, ctx: Context, member: Member):
 
         if self.__silenced_role(ctx) in member.roles:
             await ctx.message.reply("User already muted you dump fuck !", mention_author=True)
@@ -163,7 +163,7 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
 
     @command(name="!mute", usage=f"{PREFIX}!mute `username`", description="UNmutes a muted member.")
     @has_guild_permissions(kick_members=True)
-    async def unmute(self, ctx: Context, member: MemberConverter):
+    async def unmute(self, ctx: Context, member: Member):
 
         if self.__silenced_role(ctx) not in member.roles:
             await ctx.message.reply("User already unmuted...what a waste of time 🙄", mention_author=True)

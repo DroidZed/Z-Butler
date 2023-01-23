@@ -17,7 +17,8 @@ class TheElderScrolls(Cog, name="The Elder Scrolls[WIP]", description="Everythin
             embed=EmbedFactory.create_embed(
                 EmbedFactory.create_config(
                     title="Skyrim Dragons Info",
-                    description="Use this command to inform yourself about the mesterious cratures tha tear the Northern skyies of Skyrim.",
+                    description="Use this command to inform yourself about the mysterious creatures tha tear the "
+                                "Northern skies of Skyrim.",
                 )
             )
         )

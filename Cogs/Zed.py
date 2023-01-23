@@ -46,10 +46,12 @@ class ZedCog(Cog, name="Zed-Domain[WIP]", description="⚡ Domain expansion !"):
                     color=BOT_COLOR,
                     author={
                         "name": "The Z Butler",
-                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
+                                    "/bb7df4730c048faacd8db6dd99291cdb.jpg",
                     },
                     thumbnail={
-                        "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif"
+                        "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc"
+                               "/tumblr_onv6j3by9b1uql2i0o1_500.gif "
                     },
                 )
             )
@@ -98,7 +100,7 @@ class ZedCog(Cog, name="Zed-Domain[WIP]", description="⚡ Domain expansion !"):
     async def say_handler(self, ctx: Context, error: CommandError) -> None:
 
         if isinstance(error, BadBoolArgument):
-            await ctx.reply("Please provive the correct argument for writing the signature.")
+            await ctx.reply("Please provide the correct argument for writing the signature.")
 
         else:
             await ctx.reply("Check the command's help page for the correct syntax.")

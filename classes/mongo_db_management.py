@@ -32,7 +32,7 @@ class MongoDBHelperClient:
                 A list of documents fetched from the database. None if nothing is present.
         """
 
-        return [c async for c in self._collection.find(payload, {"_id": 0})]
+        return [c async for c in self._collection.find(payload, {"_id": 0, "__v": 0})]
 
     async def insert_into_collection(self, payload: list[dict]) -> None:
         await self._collection.insert_many(payload)
@@ -40,5 +40,5 @@ class MongoDBHelperClient:
     async def delete_from_collection(self, payload: dict) -> None:
         await self._collection.delete_many(payload)
 
-    async def update_document(self, criteria: dict, payload: dict) -> None:
-        await self._collection.update_one(criteria, payload, upsert=True)
+    async def update_document(self, criteria: dict, payload: dict, upsert: bool = True) -> None:
+        await self._collection.update_one(criteria, payload, upsert=upsert)

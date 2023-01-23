@@ -3,7 +3,7 @@ from discord.ext.commands import (
     Bot,
     Cog,
     Context,
-    MemberConverter,
+    Member,
     command,
     cooldown,
     BucketType,
@@ -11,6 +11,7 @@ from discord.ext.commands import (
 
 from classes.embed_factory import EmbedFactory
 from config.colors import BOT_COLOR
+from config.links import server_image
 from config.main import GUILD_ID, PREFIX, OWNER_ID
 from functions.helpers import extract_guild_data
 
@@ -37,7 +38,8 @@ class StatsCog(Cog, name="Stats", description="Stats for nerds."):
                 "\u200b  ": f"***🗿 Headcount*** {guild.member_count - machines}",
                 "\u200b   ": f"***🏘 Dens*** 💬 {len(guild.text_channels)} & 🎶 {len(guild.voice_channels)}",
                 "\u200b    ": f"***📅 Established at*** {guild.created_at.strftime('%b %d %Y')}",
-                "\u200b     ": f"🟢 ***Alive members*** {online_users_count} (**{round((online_users_count / guild.member_count * 100))}%**)",
+                "\u200b     ": f"🟢 ***Alive members*** {online_users_count}"
+                               f" (**{round((online_users_count / guild.member_count * 100))}%**)",
                 "\u200b      ": f"***🤖 Machines*** {machines} ",
                 "\u200b       ": f"***🎖 Ranks*** {roles_count} ",
                 "\u200b": f"***😜 Emojis*** {len(self.bot.emojis)} ",
@@ -48,7 +50,7 @@ class StatsCog(Cog, name="Stats", description="Stats for nerds."):
                     color=BOT_COLOR,
                     description=desc,
                     thumbnail={
-                        "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif"
+                        "url": server_image
                     },
                     author={"name": guild.name},
                     footer={
@@ -70,7 +72,7 @@ class StatsCog(Cog, name="Stats", description="Stats for nerds."):
         aliases=["u?"],
     )
     @cooldown(1, 2, BucketType.user)
-    async def user_stats(self, ctx: Context, member: MemberConverter = None) -> None:
+    async def user_stats(self, ctx: Context, member: Member = None) -> None:
         member = member or ctx.message.author
 
         await ctx.send(
@@ -81,12 +83,14 @@ class StatsCog(Cog, name="Stats", description="Stats for nerds."):
                     color=BOT_COLOR,
                     author={
                         "name": "The Z Butler",
-                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
+                                    "/bb7df4730c048faacd8db6dd99291cdb.jpg",
                     },
                     thumbnail={"url": member.avatar_url},
                     footer={
                         "text": "Delivered by your trusty bot, Z Butler 💙",
-                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
+                                    "/bb7df4730c048faacd8db6dd99291cdb.jpg",
                     },
                 ),
                 cfg_type="stats",

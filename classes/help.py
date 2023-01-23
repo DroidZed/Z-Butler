@@ -22,7 +22,7 @@ class ZedHelpCommand(HelpCommand):
                     color=BOT_COLOR,
                     description="Showing you the list of my powers, write Zhelp <command name> | <category name> for more info on those.",
                     thumbnail={
-                        "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif"
+                        "url": server_image
                     },
                     author={
                         "name": "The Z Butler",
@@ -50,7 +50,7 @@ class ZedHelpCommand(HelpCommand):
                     color=BOT_COLOR,
                     description=cog.description,
                     thumbnail={
-                        "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif"
+                        "url": server_image
                     },
                     author={
                         "name": "The Z Butler",
@@ -73,7 +73,7 @@ class ZedHelpCommand(HelpCommand):
                     color=BOT_COLOR,
                     description=command.description,
                     thumbnail={
-                        "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif"
+                        "url": server_image
                     },
                     author={
                         "name": "The Z Butler",

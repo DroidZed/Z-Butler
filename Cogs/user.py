@@ -4,7 +4,7 @@ from discord.ext.commands import (
     BucketType,
     Cog,
     Context,
-    MemberConverter,
+    Member,
     command,
     cooldown,
 )
@@ -16,6 +16,7 @@ from classes.embed_factory import EmbedFactory
 from classes.twitch_client import TwitchClient, authenticate
 from config.colors import BOT_COLOR
 from config.embed.activity import activity_config, streaming_activity_config, playing_activity_config, spotify_config
+from config.links import server_image
 from config.main import PREFIX, CROWN_ROLE_ID
 
 
@@ -34,7 +35,7 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
         aliases=["pfp"],
     )
     @cooldown(1, 5, BucketType.user)
-    async def pfp(self, ctx: Context, member: MemberConverter = None):
+    async def pfp(self, ctx: Context, member: Member = None):
 
         member = member or ctx.author
 
@@ -49,7 +50,7 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
                     },
                     thumbnail={
-                        "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif"
+                        "url": server_image
                     },
                     footer={
                         "text": f"Requested by {ctx.message.author} 💙",
@@ -66,7 +67,7 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
         aliases=["grt"],
     )
     @cooldown(1, 3, BucketType.user)
-    async def hello(self, ctx: Context, *, member: MemberConverter = None):
+    async def hello(self, ctx: Context, *, member: Member = None):
 
         member = member or ctx.author
 
@@ -86,7 +87,7 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
                     },
                     thumbnail={
-                        "url": "https://64.media.tumblr.com/fbeaedb718f8f4c23d261b100bbf62cc/tumblr_onv6j3by9b1uql2i0o1_500.gif"
+                        "url": server_image
                     },
                 )
             )
@@ -100,7 +101,7 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
         aliases=["st?"],
     )
     @cooldown(1, 7, BucketType.user)
-    async def status(self, ctx: Context, member: MemberConverter = None) -> None:
+    async def status(self, ctx: Context, member: Member = None) -> None:
 
         member = member or ctx.author
 
