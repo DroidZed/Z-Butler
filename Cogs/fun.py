@@ -1,14 +1,12 @@
 import time
 from asyncio import sleep
-from random import randint as rdn
 
-from discord import Message
+from discord import Message, Member, User
 from discord.ext.commands import (
     Bot,
     BucketType,
     Cog,
     Context,
-    Member,
     command,
     cooldown,
 )
@@ -19,7 +17,7 @@ from classes.embed_factory import EmbedFactory
 from config.colors import BOT_COLOR
 from config.links import server_image
 from config.main import PREFIX
-from functions.helpers import gay_commentary, eight_ball_answers
+from functions.helpers import eight_ball_answers
 
 
 class FunCog(Cog, name="Fun", description="🎉 Fun commands from your trusty Z Butler 💙"):
@@ -33,7 +31,7 @@ class FunCog(Cog, name="Fun", description="🎉 Fun commands from your trusty Z 
         aliases=["sus", "amogus", "imposter"],
     )
     @cooldown(1, 5, BucketType.user)
-    async def sus(self, ctx: Context, member: Member = None) -> None:
+    async def sus(self, ctx: Context, member: Member | User | None = None) -> None:
         member = member or ctx.message.author
 
         await ctx.send(
@@ -69,11 +67,11 @@ class FunCog(Cog, name="Fun", description="🎉 Fun commands from your trusty Z 
                         author={
                             "name": "The Z Butler",
                             "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
-                                        "/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                            "/bb7df4730c048faacd8db6dd99291cdb.jpg",
                         },
                         footer={
                             "text": f"Requested by {ctx.message.author.name} 💙",
-                            "icon_url": f"{ctx.message.author.avatar_url}",
+                            "icon_url": f"{ctx.message.author.display_avatar.url}",
                         },
                     )
                 )
@@ -101,11 +99,9 @@ class FunCog(Cog, name="Fun", description="🎉 Fun commands from your trusty Z 
                     author={
                         "name": "The Z Butler",
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
-                                    "/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                        "/bb7df4730c048faacd8db6dd99291cdb.jpg",
                     },
-                    thumbnail={
-                        "url": server_image
-                    },
+                    thumbnail={"url": server_image},
                 ),
             )
         )
@@ -123,56 +119,14 @@ class FunCog(Cog, name="Fun", description="🎉 Fun commands from your trusty Z 
                     author={
                         "name": "The Z Butler",
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
-                                    "/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                        "/bb7df4730c048faacd8db6dd99291cdb.jpg",
                     },
-                    thumbnail={
-                        "url": server_image
-                    },
+                    thumbnail={"url": server_image},
                 ),
                 **{
                     "API": f"`{round((end_time - start_time) * 1000)}ms`",
                     "Bot Latency": f"`{round(self.bot.latency * 1000)}ms`",
                 },
-            )
-        )
-
-    @command(
-        name="howgay",
-        usage=f"{PREFIX}howgay `username`",
-        description="Checks how gay a user is, ew...",
-        aliases=["hg", "hg?"],
-    )
-    async def how_gay(self, ctx: Context, member: Member = None) -> None:
-
-        member = member or ctx.author
-
-        async with ctx.typing():
-            rate = rdn(0, 100)
-
-            msg = gay_commentary(rate)
-
-        await ctx.send(
-            embed=EmbedFactory.create_embed(
-                config=EmbedFactory.create_config(
-                    title=f"{member.name}'s Gay Level",
-                    color=BOT_COLOR,
-                    description=f"**{member.mention} is {rate}% gay** 🏳️‍🌈\n{msg}",
-                    image={
-                        "url": (
-                            "https://tenor.com/view/disappointed-zac-efron-im-not-mad-upset-hurt-gif-14717203"
-                            if rate < 69
-                            else "https://c.tenor.com/GTjxHh4xr2kAAAAC/you-are-an-abomination-creature.gif"
-                        )
-                    },
-                    thumbnail={
-                        "url": server_image
-                    },
-                    author={
-                        "name": "The Z Butler",
-                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
-                                    "/bb7df4730c048faacd8db6dd99291cdb.jpg",
-                    },
-                )
             )
         )
 
@@ -199,12 +153,12 @@ class FunCog(Cog, name="Fun", description="🎉 Fun commands from your trusty Z 
                     author={
                         "name": "The Z Butler",
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
-                                    "/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                        "/bb7df4730c048faacd8db6dd99291cdb.jpg",
                     },
                     footer={
                         "text": "Requested by Z Butler 💙",
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
-                                    "/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                        "/bb7df4730c048faacd8db6dd99291cdb.jpg",
                     },
                 )
             )
@@ -223,11 +177,9 @@ class FunCog(Cog, name="Fun", description="🎉 Fun commands from your trusty Z 
                     author={
                         "name": "The Z Butler",
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
-                                    "/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                        "/bb7df4730c048faacd8db6dd99291cdb.jpg",
                     },
-                    thumbnail={
-                        "url": server_image
-                    },
+                    thumbnail={"url": server_image},
                 )
             )
         )
@@ -238,7 +190,7 @@ class FunCog(Cog, name="Fun", description="🎉 Fun commands from your trusty Z 
         description="Give someone some a hug !!",
     )
     @cooldown(1, 2, BucketType.user)
-    async def hug(self, ctx: Context, member: Member = None) -> None:
+    async def hug(self, ctx: Context, member: Member | User | None = None) -> None:
 
         member = member or ctx.author
 
@@ -258,11 +210,11 @@ class FunCog(Cog, name="Fun", description="🎉 Fun commands from your trusty Z 
                     author={
                         "name": "The Z Butler",
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
-                                    "/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                        "/bb7df4730c048faacd8db6dd99291cdb.jpg",
                     },
                     footer={
                         "text": f"Requested by {ctx.message.author.name} 💙",
-                        "icon_url": f"{ctx.message.author.avatar_url}",
+                        "icon_url": f"{ctx.message.author.display_avatar.url}",
                     },
                 )
             )
@@ -287,11 +239,9 @@ class FunCog(Cog, name="Fun", description="🎉 Fun commands from your trusty Z 
                     author={
                         "name": "Random cat facts by The Z Butler",
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
-                                    "/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                        "/bb7df4730c048faacd8db6dd99291cdb.jpg",
                     },
-                    thumbnail={
-                        "url": server_image
-                    },
+                    thumbnail={"url": server_image},
                 )
             )
         )
@@ -315,11 +265,9 @@ class FunCog(Cog, name="Fun", description="🎉 Fun commands from your trusty Z 
                     author={
                         "name": "Random doggo pics by The Z Butler",
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
-                                    "/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                        "/bb7df4730c048faacd8db6dd99291cdb.jpg",
                     },
-                    thumbnail={
-                        "url": server_image
-                    },
+                    thumbnail={"url": server_image},
                 )
             )
         )

@@ -42,32 +42,10 @@ def eight_ball_answers() -> str:
 
     return choice(answers[choice(["+", "-", "/"])])
 
-
-def gay_commentary(rate: int) -> str:
-    rate *= -1 if rate < 0 else rate
-
-    match rate:
-
-        case 0:
-            return "That's a real human 😉"
-
-        case r if r < 10:
-            return "Need purifying 😬"
-
-        case r if r < 50:
-            return "What a shame...🙄"
-
-        case r if r < 65:
-            return "Utterly disgusting...🤮"
-
-        case _:
-            return "**YOU ARE AN ABOMINATION, YOU HAVE NO RIGHT TO LIVE !! DIE YOU MONSTER !!**"
-
-
-def extract_guild_data(guild: Guild) -> tuple[int, int, int, str]:
+def extract_guild_data(guild: Guild):
     roles_count: int = len(guild.roles) - 1
 
-    desc: str = guild.description
+    desc = guild.description
 
     online_users_count: int = len(
         list(

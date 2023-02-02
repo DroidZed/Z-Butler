@@ -7,7 +7,7 @@ class EmbedFactory:
         return {k: v for k, v in kwargs.items()}
 
     @staticmethod
-    def create_admin_embed(config: dict, reason: str = None, cfg_type: str = None, **fields: dict) -> Embed:
+    def create_admin_embed(config: dict, reason: str | None = None, cfg_type: str | None = None, **fields: dict) -> Embed:
 
         cfg = ["mod", "ping", "mute", "strike", "ban"]
 
@@ -39,7 +39,7 @@ class EmbedFactory:
         return Embed.from_dict(config)
 
     @staticmethod
-    def create_embed(config: dict, cfg_type: str = None, **fields: dict) -> Embed:
+    def create_embed(config: dict, cfg_type: str | None = None, **fields: dict) -> Embed:
 
         cfg = ["mod", "ping", "mute", "strike", "ban"]
 

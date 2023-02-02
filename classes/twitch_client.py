@@ -21,7 +21,7 @@ class TwitchClient(metaclass=SingletonClass):
 
     __slots__ = ["__data", "__token", "__expiration_day", "__is_token_expired"]
 
-    def __init__(self, bearer: dict | None = None):
+    def __init__(self, bearer: dict):
 
         self.__data = bearer
         self.__token = self.__data["access_token"]

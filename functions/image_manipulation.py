@@ -8,7 +8,7 @@ def _create_font(font_name: str) -> FreeTypeFont:
     return ImageFont.truetype(font=font_name, size=87, encoding="utf-8")
 
 
-def create_welcome_picture(username: str, discriminator: str) -> Image:
+def create_welcome_picture(username: str, discriminator: str):
     with Image.open("./assets/img/bg.png") as i:
         font = _create_font("./assets/fonts/CabinSketch-Regular.ttf")
 

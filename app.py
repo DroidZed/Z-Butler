@@ -9,17 +9,17 @@ from discord.ext import commands
 from classes.help import ZedHelpCommand
 from classes.mongo_db_management import MongoDBConnection
 from classes.twitter_ import TweepyWrapper
-from config.main import PREFIX, OWNER_ID, TOKEN
+from config.main import OWNER_ID, PREFIX, TOKEN
 
 # Intents
-
 intents = Intents.all()
+
 # The bot
 bot = commands.Bot(
-    command_prefix=PREFIX,
+    command_prefix=commands.when_mentioned_or(PREFIX),
     intents=intents,
     owner_id=OWNER_ID,
-    help_command=ZedHelpCommand(),
+    help_command=ZedHelpCommand()
 )
 
 # Load cogs

@@ -3,6 +3,8 @@ from discord.ext.commands import HelpCommand, Cog, Command
 from classes.embed_factory import EmbedFactory
 from config.colors import BOT_COLOR
 
+from config.links import server_image
+
 
 class ZedHelpCommand(HelpCommand):
     """Help command for those seeking the power of Z"""

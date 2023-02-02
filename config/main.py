@@ -10,9 +10,9 @@ RAPID_API_KEY = config("RAPID_API_KEY")
 
 # Spotify credentials
 
-SPOTIFY_CLIENT_SECRET = config("SPOTIPY_CLIENT_SECRET")
+SPOTIFY_CLIENT_SECRET = str(config("SPOTIPY_CLIENT_SECRET", default='', cast=str))
 
-SPOTIFY_CLIENT_ID = config("SPOTIPY_CLIENT_ID")
+SPOTIFY_CLIENT_ID = str(config("SPOTIPY_CLIENT_ID", default='', cast=str))
 
 # Twitch credentials
 
@@ -34,7 +34,7 @@ TWITTER_BEARER_TOKEN = config("TWITTER_BEARER_TOKEN")
 
 # Default bot config
 
-PREFIX = "Z"
+PREFIX:str  = "Z"
 
 OWNER_ID = 443064096124960779
 

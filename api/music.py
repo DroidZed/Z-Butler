@@ -6,7 +6,6 @@ from config.main import SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET
 
 def find_song(title: str, artist: str) -> dict:
     client = SpotifyClient(SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, identifier="Z-Bot-Singleton")
-
     res = client.search(f"{title} {artist}", search_types=["track"], limit=1)
 
     data = res["tracks"]["items"][0]
@@ -22,8 +21,8 @@ def find_song(title: str, artist: str) -> dict:
     }
 
 
-async def fetch_lyrics(title: str, artist: str = None) -> dict:
-    artist = artist.replace(" ", "%20")
+async def fetch_lyrics(title: str, artist: str | None = None) -> dict:
+    artist = artist.replace(" ", "%20") if artist else None
 
     title = title.replace(" ", "%20")
 

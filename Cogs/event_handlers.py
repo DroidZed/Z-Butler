@@ -1,6 +1,7 @@
 from io import BytesIO
 from sys import stderr
 from traceback import print_exception
+from typing import Optional
 
 from discord import File, Guild, Role, Forbidden, TextChannel, Member
 from discord.ext.commands import Bot, Cog, Context
@@ -34,31 +35,33 @@ class EventHandlers(
         self.out_channel = 696842023625424947
 
     @staticmethod
-    def __get_initial_roles(guild: Guild) -> list[Role]:
+    def __get_initial_roles(guild: Optional[Guild]):
 
-        return [
-            guild.get_role(896349097391444029),  # silenced role
-            guild.get_role(980527744062464030),  # special roles
-            guild.get_role(898874934615482378),  # default Seperator role 1
-            guild.get_role(983415194967490641),  # default Seperator role 2
-            guild.get_role(898874121222516736),  # community roles
-            guild.get_role(969706983777263677),  # gaming roles
-            guild.get_role(969639120513163345),  # newspaper roles
-        ]
+        return (
+            [
+                guild.get_role(896349097391444029),  # silenced role
+                guild.get_role(980527744062464030),  # special roles
+                guild.get_role(898874934615482378),  # default Seperator role 1
+                guild.get_role(983415194967490641),  # default Seperator role 2
+                guild.get_role(898874121222516736),  # community roles
+                guild.get_role(969706983777263677),  # gaming roles
+                guild.get_role(969639120513163345),  # newspaper roles
+            ]
+            if guild
+            else []
+        )
 
     @Cog.listener()
     async def on_member_join(self, member: Member):
 
-        guild: Guild = self.bot.get_guild(GUILD_ID)
+        guild = self.bot.get_guild(GUILD_ID)
 
-        channel: TextChannel = guild.get_channel(self.out_channel)
+        channel: TextChannel | None = guild.get_channel(self.out_channel) if guild != None else None
 
-        for role in self.__get_initial_roles(guild):
-
-            try:
-                await member.add_roles(role)
-            except Forbidden:
-                print(f"error in role: {role.name}")
+        try:
+            await member.add_roles(self.__get_initial_roles(guild), reason = "Starter roles", atomic = True)
+        except Forbidden as e:
+            print(f"error in role: {e!repr}")
 
         if channel:
             with BytesIO() as image_binary:
@@ -75,20 +78,18 @@ class EventHandlers(
                                 title=f"Hello there fellow Dragon Warrior",
                                 color=BOT_COLOR,
                                 description="Welcome to **DRAGON'S HEART** !! Please open a ticket in "
-                                            "<#778292937426731049> and a member of the staff team will be with you "
-                                            "shortly",
+                                "<#778292937426731049> and a member of the staff team will be with you "
+                                "shortly",
                                 author={
                                     "name": "The Z Butler",
                                     "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
-                                                "/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                                    "/bb7df4730c048faacd8db6dd99291cdb.jpg",
                                 },
-                                thumbnail={
-                                    "url": server_image
-                                },
+                                thumbnail={"url": server_image},
                                 footer={
                                     "text": "Your trusty bot Z 🔱",
                                     "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
-                                                "/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                                    "/bb7df4730c048faacd8db6dd99291cdb.jpg",
                                 },
                             )
                         )
@@ -124,15 +125,13 @@ class EventHandlers(
                     author={
                         "name": "The Z Butler",
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
-                                    "/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                        "/bb7df4730c048faacd8db6dd99291cdb.jpg",
                     },
-                    thumbnail={
-                        "url": server_image
-                    },
+                    thumbnail={"url": server_image},
                     footer={
                         "text": "We shall never remember those who left our cause.",
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
-                                    "/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                        "/bb7df4730c048faacd8db6dd99291cdb.jpg",
                     },
                 )
             )

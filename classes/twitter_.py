@@ -2,6 +2,7 @@ from tweepy import BadRequest, Forbidden
 from tweepy.asynchronous import AsyncClient
 
 from classes.singleton_class import SingletonClass
+
 from config.main import (
     TWITTER_BEARER_TOKEN,
     TWITTER_ACCESS_TOKEN,
@@ -18,10 +19,10 @@ class TweetModel:
 
     __slots__ = ["__t_id", "__text", "__err"]
 
-    def __init__(self, t_id: str = "", text: str = "", err=""):
-        self.__t_id: int = t_id
-        self.__text: str = text
-        self.__err: str = err
+    def __init__(self, t_id: str = "", text: str = "", err: str | None = None):
+        self.__t_id = t_id
+        self.__text = text
+        self.__err = err
 
     @property
     def t_id(self):
@@ -51,10 +52,10 @@ class TweetModel:
         return {"id": self.t_id, "text": self.__text}
 
     def __str__(self):
-        return "tweet:{'id': '" + self.t_id + "', 'text': '" + self.text + "'}"
+        return "tweet:{'id': '" + str(self.t_id) + "', 'text': '" + self.text + "'}"
 
     def __repr__(self):
-        return "tweet:{'id': '" + self.t_id + "', 'text': '" + self.text + "'}"
+        return "tweet:{'id': '" + str(self.t_id) + "', 'text': '" + self.text + "'}"
 
 
 class TweepyWrapper(metaclass=SingletonClass):
