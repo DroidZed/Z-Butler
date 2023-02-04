@@ -3,8 +3,6 @@ from discord.ext.commands import HelpCommand, Cog, Command
 from classes.embed_factory import EmbedFactory
 from config.colors import BOT_COLOR
 
-from config.links import server_image
-
 
 class ZedHelpCommand(HelpCommand):
     """Help command for those seeking the power of Z"""
@@ -23,9 +21,6 @@ class ZedHelpCommand(HelpCommand):
                     title="Help Command",
                     color=BOT_COLOR,
                     description="Showing you the list of my powers, write Zhelp <command name> | <category name> for more info on those.",
-                    thumbnail={
-                        "url": server_image
-                    },
                     author={
                         "name": "The Z Butler",
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
@@ -51,9 +46,6 @@ class ZedHelpCommand(HelpCommand):
                     title=cog.qualified_name,
                     color=BOT_COLOR,
                     description=cog.description,
-                    thumbnail={
-                        "url": server_image
-                    },
                     author={
                         "name": "The Z Butler",
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
@@ -74,9 +66,6 @@ class ZedHelpCommand(HelpCommand):
                     title=command.name,
                     color=BOT_COLOR,
                     description=command.description,
-                    thumbnail={
-                        "url": server_image
-                    },
                     author={
                         "name": "The Z Butler",
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",

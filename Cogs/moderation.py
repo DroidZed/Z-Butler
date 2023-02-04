@@ -22,21 +22,18 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
         async with ctx.typing():
             await client.delete_from_collection({"uid": member.id})
 
-        await member.send(
-            embed=EmbedFactory.create_embed(
-                config=ban_config,
-                reason=reason or "3 Strikes",
-                cfg_type="mod",
-                Action="**BAN**",
-            )
-        )
+        await member.send(embed=EmbedFactory.create_embed(
+            config=ban_config(),
+            reason=reason or "3 Strikes",
+            cfg_type="mod",
+            Action="**BAN**",
+        ))
+        
         await ctx.send(f"User <@{member.id}> has been banned for {reason or '3 Strikes'} 🔨")
         await ctx.guild.ban(member, reason=reason or "3 Strikes")
 
     @staticmethod
-    async def __strike_user(
-            ctx: Context, member: Member, reason: str, strikes: int, client: MongoDBHelperClient
-    ):
+    async def __strike_user(ctx: Context, member: Member, reason: str, strikes: int, client: MongoDBHelperClient):
 
         async with ctx.typing():
             await client.insert_into_collection([{"uid": member.id, "strike_count": 1, "reason": reason}])

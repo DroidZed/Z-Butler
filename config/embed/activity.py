@@ -15,7 +15,6 @@ def spotify_config(mention: str, song: str, album: str, artist: str, art: str, l
             "name": "The Z Butler",
             "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
         },
-        "thumbnail": {"url": server_image},
         "footer": {
             "text": "Songs params provided by Spotify 💚",
             "icon_url": "https://1000logos.net/wp-content/uploads/2017/08/Spotify-Logo.png",
@@ -42,7 +41,6 @@ def streaming_activity_config(
             "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
         },
         "url": f"{stream_url}",
-        "thumbnail": {"url": server_image},
         "footer": {"text": f"Requested by {issuer} 💙", "icon_url": f"{avatar_url}"},
     }
 
@@ -80,7 +78,6 @@ def playing_activity_config(
             "name": "The Z Butler",
             "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
         },
-        "thumbnail": {"url": server_image},
         "footer": {"text": f"Requested by {issuer} 💙", "icon_url": f"{avatar_url}"},
     }
 
@@ -101,7 +98,6 @@ def activity_config(
             "name": "The Z Butler",
             "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
         },
-        "thumbnail": {"url": server_image},
         "footer": {"text": f"Requested by {issuer} 💙", "icon_url": f"{avatar_url}"},
     }
 

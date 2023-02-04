@@ -77,9 +77,6 @@ class LorkhanCommands(
                         "name": "The Z Butler",
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
                     },
-                    thumbnail={
-                        "url": server_image
-                    },
                     footer={
                         "text": f"Tweeted by Droid7ed - id: {result.t_id}",
                         "icon_url": "https://www.brandcolorcode.com/media/twitter-logo.png",

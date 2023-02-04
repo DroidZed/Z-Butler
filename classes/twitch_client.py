@@ -1,3 +1,4 @@
+from typing import Any, Optional
 from httpx import AsyncClient
 
 from classes.singleton_class import SingletonClass
@@ -21,12 +22,13 @@ class TwitchClient(metaclass=SingletonClass):
 
     __slots__ = ["__data", "__token", "__expiration_day", "__is_token_expired"]
 
-    def __init__(self, bearer: dict):
+    def __init__(self, bearer: Optional[dict[str, Any]] = None):
 
-        self.__data = bearer
-        self.__token = self.__data["access_token"]
-        self.__expiration_day = (self.__data["expires_in"] // (60 * 60 * 24)) + 1
-        self.__is_token_expired = False
+        if (bearer):
+            self.__data = bearer
+            self.__token = self.__data["access_token"]
+            self.__expiration_day = (self.__data["expires_in"] // (60 * 60 * 24)) + 1
+            self.__is_token_expired = False
 
     def __str__(self):
         return (

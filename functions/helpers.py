@@ -1,6 +1,9 @@
 from random import choice
 
-from discord import Guild, Status
+from platform import python_version
+
+import rich as rch
+from discord import version_info, Guild, Status
 
 
 def eight_ball_answers() -> str:
@@ -42,6 +45,7 @@ def eight_ball_answers() -> str:
 
     return choice(answers[choice(["+", "-", "/"])])
 
+
 def extract_guild_data(guild: Guild):
     roles_count: int = len(guild.roles) - 1
 
@@ -59,3 +63,27 @@ def extract_guild_data(guild: Guild):
     machines_count: int = len(list(filter(lambda member: member.bot, guild.members)))
 
     return roles_count, online_users_count, machines_count, desc
+
+
+def print_msg():
+    print("/" * 39)
+    print(" ----------\\")
+    rch.print(" |       [b cyan]*[/]  |         [white]/[/]\\")
+    print(" --------   |        /  \\")
+    print("       /   /         \\   \\")
+    print("      /   /          /   /")
+    rch.print("     [white]/[/]   [white]/[/] [b blue]The Z Bot[/] \\   \\")
+    print("    |   --------------   /")
+    rch.print("    |       [b green]ONLINE[/]      [white]/[/]")
+    print("     ------------------")
+    rch.print(f"|[b]         [i]By: [purple]DroidZed[/purple][/i]{' ' * 16}|")
+    rch.print(
+        f"|[b] Discord version: [u blue]{version_info.major}.{version_info.minor}.{version_info.micro}[/u blue]{' ' * 14}|",
+        end="\n",
+    )
+    rch.print(
+        f"[b white]| Running under: [i yellow]Python v{python_version()}[/i yellow] :snake:    |",
+        end="\n",
+    )  # Don't remove the extra space added after the snake emoji, it was added so the bars will align in the console
+    # of the hosting.
+    print("/" * 39)

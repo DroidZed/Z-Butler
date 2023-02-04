@@ -57,9 +57,6 @@ def unmute_config(member_id: int) -> dict:
             "name": "The Z Butler",
             "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
         },
-        "thumbnail": {
-            "url": server_image
-        },
         "footer": {
             "text": "Dragon's Heart Team.",
             "icon_url": server_image,
@@ -78,9 +75,6 @@ def strike_config(number_of_strikes_left: int):
             "name": "The Z Butler",
             "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
         },
-        "thumbnail": {
-            "url": server_image
-        },
         "footer": {
             "text": f"{number_of_strikes_left} Strikes and you're banned.",
             "icon_url": "https://emojis.slackmojis.com/emojis/images/1542340473/4982/watching-you.gif?1542340473",
@@ -98,9 +92,6 @@ def no_perms_config():
         "author": {
             "name": "The Z Butler",
             "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
-        },
-        "thumbnail": {
-            "url": server_image
         },
         "footer": {
             "ban": {

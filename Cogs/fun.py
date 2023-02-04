@@ -33,6 +33,8 @@ class FunCog(Cog, name="Fun", description="🎉 Fun commands from your trusty Z 
     @cooldown(1, 5, BucketType.user)
     async def sus(self, ctx: Context, member: Member | User | None = None) -> None:
         member = member or ctx.message.author
+        
+        await ctx.message.delete()
 
         await ctx.send(
             f""".      　。　　　　•　    　  ﾟ　　    。
@@ -100,8 +102,7 @@ class FunCog(Cog, name="Fun", description="🎉 Fun commands from your trusty Z 
                         "name": "The Z Butler",
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
                         "/bb7df4730c048faacd8db6dd99291cdb.jpg",
-                    },
-                    thumbnail={"url": server_image},
+                    }
                 ),
             )
         )
@@ -120,8 +121,7 @@ class FunCog(Cog, name="Fun", description="🎉 Fun commands from your trusty Z 
                         "name": "The Z Butler",
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
                         "/bb7df4730c048faacd8db6dd99291cdb.jpg",
-                    },
-                    thumbnail={"url": server_image},
+                    }
                 ),
                 **{
                     "API": f"`{round((end_time - start_time) * 1000)}ms`",
@@ -178,8 +178,7 @@ class FunCog(Cog, name="Fun", description="🎉 Fun commands from your trusty Z 
                         "name": "The Z Butler",
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
                         "/bb7df4730c048faacd8db6dd99291cdb.jpg",
-                    },
-                    thumbnail={"url": server_image},
+                    }
                 )
             )
         )
@@ -240,8 +239,7 @@ class FunCog(Cog, name="Fun", description="🎉 Fun commands from your trusty Z 
                         "name": "Random cat facts by The Z Butler",
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
                         "/bb7df4730c048faacd8db6dd99291cdb.jpg",
-                    },
-                    thumbnail={"url": server_image},
+                    }
                 )
             )
         )
@@ -266,8 +264,7 @@ class FunCog(Cog, name="Fun", description="🎉 Fun commands from your trusty Z 
                         "name": "Random doggo pics by The Z Butler",
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
                         "/bb7df4730c048faacd8db6dd99291cdb.jpg",
-                    },
-                    thumbnail={"url": server_image},
+                    }
                 )
             )
         )

@@ -3,7 +3,7 @@ from sys import stderr
 from traceback import print_exception
 from typing import Optional
 
-from discord import File, Guild, Role, Forbidden, TextChannel, Member
+from discord import File, Guild, Forbidden, TextChannel, Member, Role
 from discord.ext.commands import Bot, Cog, Context
 from discord.ext.commands.errors import (
     CommandError,
@@ -20,7 +20,7 @@ from httpx import ReadTimeout
 from classes.embed_factory import EmbedFactory
 from classes.mongo_db_management import MongoDBHelperClient
 from config.colors import BOT_COLOR
-from config.links import server_image
+from config.links import get_server_image
 from config.main import GUILD_ID
 from functions.image_manipulation import create_welcome_picture
 
@@ -32,38 +32,32 @@ class EventHandlers(
 ):
     def __init__(self, bot: Bot):
         self.bot = bot
-        self.out_channel = 696842023625424947
+        self.out_channel = 1005545745291681873
 
     @staticmethod
-    def __get_initial_roles(guild: Optional[Guild]):
+    def __get_initial_roles(guild: Optional[Guild]) -> list[Role]:
 
-        return (
-            [
-                guild.get_role(896349097391444029),  # silenced role
-                guild.get_role(980527744062464030),  # special roles
-                guild.get_role(898874934615482378),  # default Seperator role 1
-                guild.get_role(983415194967490641),  # default Seperator role 2
-                guild.get_role(898874121222516736),  # community roles
-                guild.get_role(969706983777263677),  # gaming roles
-                guild.get_role(969639120513163345),  # newspaper roles
-            ]
-            if guild
-            else []
-        )
+        lRoles = []
+
+        if guild:
+
+            lRoles.append(guild.get_role(1065632523507478598))  # Milk Drinker
+
+        return lRoles
 
     @Cog.listener()
     async def on_member_join(self, member: Member):
 
         guild = self.bot.get_guild(GUILD_ID)
 
-        channel: TextChannel | None = guild.get_channel(self.out_channel) if guild != None else None
+        channel = guild.get_channel(self.out_channel) if guild else None
 
         try:
-            await member.add_roles(self.__get_initial_roles(guild), reason = "Starter roles", atomic = True)
+            await member.add_roles(*self.__get_initial_roles(guild), reason="Starter roles", atomic=True)
         except Forbidden as e:
-            print(f"error in role: {e!repr}")
+            print(e)
 
-        if channel:
+        if channel and isinstance(channel, TextChannel):
             with BytesIO() as image_binary:
                 create_welcome_picture(username=f"{member.name}", discriminator=f"{member.discriminator}").save(
                     image_binary, "PNG"
@@ -85,7 +79,6 @@ class EventHandlers(
                                     "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
                                     "/bb7df4730c048faacd8db6dd99291cdb.jpg",
                                 },
-                                thumbnail={"url": server_image},
                                 footer={
                                     "text": "Your trusty bot Z 🔱",
                                     "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
@@ -105,11 +98,13 @@ class EventHandlers(
     @Cog.listener()
     async def on_member_remove(self, member: Member):
 
-        channel: TextChannel = self.bot.get_guild(GUILD_ID).get_channel(self.out_channel)
+        guild = self.bot.get_guild(GUILD_ID)
+
+        channel = guild.get_channel(self.out_channel) if guild else None
 
         client = MongoDBHelperClient("users")
 
-        if not channel:
+        if not (channel and isinstance(channel, TextChannel)):
             return
 
         if await client.query_collection({"uid": member.id}):
@@ -127,7 +122,7 @@ class EventHandlers(
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
                         "/bb7df4730c048faacd8db6dd99291cdb.jpg",
                     },
-                    thumbnail={"url": server_image},
+                    thumbnail={"url": get_server_image(guild)},
                     footer={
                         "text": "We shall never remember those who left our cause.",
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"

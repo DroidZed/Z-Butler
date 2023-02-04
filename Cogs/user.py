@@ -1,10 +1,9 @@
-from discord import Spotify, Game, Streaming, Activity, CustomActivity
+from discord import Spotify, Game, Streaming, Activity, CustomActivity, Member, User
 from discord.ext.commands import (
     Bot,
     BucketType,
     Cog,
     Context,
-    Member,
     command,
     cooldown,
 )
@@ -23,7 +22,7 @@ from config.main import PREFIX, CROWN_ROLE_ID
 class UserCog(Cog, name="User-Commands", description="👤 User commands for everyone"):
     def __init__(self, bot: Bot):
         self.bot = bot
-        self.decrement_token_validity.start()
+    #    self.decrement_token_validity.start()
 
     def cog_unload(self):
         self.decrement_token_validity.stop()
@@ -35,7 +34,7 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
         aliases=["pfp"],
     )
     @cooldown(1, 5, BucketType.user)
-    async def pfp(self, ctx: Context, member: Member = None):
+    async def pfp(self, ctx: Context, member: User | Member | None = None):
 
         member = member or ctx.author
 
@@ -44,18 +43,15 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
                 config=EmbedFactory.create_config(
                     title=f"**{'Lord  👑 **𝕯𝖗𝖔𝖎𝖉𝖅𝖊𝖉** 👑' if member.id == CROWN_ROLE_ID else f'{member.name}#{member.discriminator}'}**'s Profile Picture",
                     color=BOT_COLOR,
-                    image={"url": f"{member.avatar_url}"},
+                    image={"url": f"{member.avatar.url if member.avatar else ''}"},
                     author={
                         "name": "The Z Butler",
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
                     },
-                    thumbnail={
-                        "url": server_image
-                    },
                     footer={
                         "text": f"Requested by {ctx.message.author} 💙",
-                        "icon_url": f"{ctx.message.author.avatar_url}",
-                    },
+                        "icon_url": f"{ctx.message.author.avatar.url if ctx.message.author.avatar else ''}",
+                    }
                 )
             )
         )
@@ -67,7 +63,7 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
         aliases=["grt"],
     )
     @cooldown(1, 3, BucketType.user)
-    async def hello(self, ctx: Context, *, member: Member = None):
+    async def hello(self, ctx: Context, *, member: User | Member | None = None):
 
         member = member or ctx.author
 
@@ -85,10 +81,7 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
                     author={
                         "name": "The Z Butler",
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
-                    },
-                    thumbnail={
-                        "url": server_image
-                    },
+                    }
                 )
             )
         )
@@ -101,7 +94,7 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
         aliases=["st?"],
     )
     @cooldown(1, 7, BucketType.user)
-    async def status(self, ctx: Context, member: Member = None) -> None:
+    async def status(self, ctx: Context, member: User | Member | None = None) -> None:
 
         member = member or ctx.author
 
@@ -168,7 +161,7 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
                         name=act.name,
                         mention=member.mention,
                         issuer=ctx.author,
-                        avatar_url=ctx.message.author.avatar_url,
+                        avatar_url=ctx.message.author.avatar.url if ctx.message.author.avatar else '',
                         platform=act.platform,
                         stream_url=act.url,
                         streamed_game=act.game,
@@ -181,7 +174,7 @@ class UserCog(Cog, name="User-Commands", description="👤 User commands for eve
                         name=act.name,
                         username=member.name,
                         issuer=ctx.author,
-                        avatar_url=ctx.message.author.avatar_url,
+                        avatar_url=ctx.message.author.avatar.url if ctx.message.author.avatar else '',
                         image_url=act.large_image_url,
                         since=act.start.strftime("%x %X") if act.start else None,
                     )

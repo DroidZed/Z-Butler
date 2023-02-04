@@ -1,3 +1,5 @@
+from discord import TextChannel
+
 from discord.ext.commands import Bot, BucketType, Cog, Context, command, cooldown
 from discord.ext.commands.core import has_role
 from discord.ext.commands.errors import CommandError, MissingRole
@@ -7,6 +9,8 @@ from api.animes import quotes
 from classes.embed_factory import EmbedFactory
 from config.colors import BOT_COLOR
 from config.main import PREFIX, CROWN_ROLE_ID
+
+from config.links import server_image
 
 
 async def _grab_quote():
@@ -42,10 +46,7 @@ class QuotesCog(Cog, name="Quotes", description="💭 Quoty quotes !"):
                     author={
                         "name": "The Z Butler",
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
-                    },
-                    thumbnail={
-                        "url": server_image
-                    },
+                    }
                 )
             )
         )
@@ -80,22 +81,23 @@ class QuotesCog(Cog, name="Quotes", description="💭 Quoty quotes !"):
     async def daily_quote(self) -> None:
         quote = await _grab_quote()
 
-        await self.bot.get_channel(899278487792279622).send(
-            embed=EmbedFactory.create_embed(
-                EmbedFactory.create_config(
-                    title=f"**{quote['character']} - {quote['anime']}**",
-                    color=BOT_COLOR,
-                    description=f"*{quote['quote']}*",
-                    author={
-                        "name": "The Z Butler",
-                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
-                    },
-                    thumbnail={
-                        "url": server_image
-                    },
+        wisdom_channel = self.bot.get_channel(1071141767145082910)
+        
+        if (wisdom_channel and isinstance(wisdom_channel, TextChannel)):
+        
+            await wisdom_channel.send(
+                embed=EmbedFactory.create_embed(
+                    EmbedFactory.create_config(
+                        title=f"**{quote['character']} - {quote['anime']}**",
+                        color=BOT_COLOR,
+                        description=f"*{quote['quote']}*",
+                        author={
+                            "name": "The Z Butler",
+                            "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                        }
+                    )
                 )
             )
-        )
 
     @daily_quote.before_loop
     async def before_printer(self):

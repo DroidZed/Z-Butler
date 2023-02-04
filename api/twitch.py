@@ -25,7 +25,7 @@ async def get_pfp(login: str) -> str | None:
 
         json = query.json()
 
-        if not json["params"]:
+        if not json["data"]:
             return
 
-        return query.json()["params"][0]["thumbnail_url"]
+        return query.json()["data"][0]["thumbnail_url"]
