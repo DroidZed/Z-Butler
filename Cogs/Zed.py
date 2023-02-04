@@ -2,19 +2,42 @@ from platform import python_version
 from random import choice
 
 from discord import __version__
-from discord.ext.commands import Bot, Cog, Context, command, cooldown, BucketType, CommandError, BadBoolArgument
+from discord.ext.commands import (
+    Bot,
+    Cog,
+    Context,
+    command,
+    cooldown,
+    BucketType,
+    CommandError,
+    BadBoolArgument,
+)
 
 from api.images import find_gif
 from classes.embed_factory import EmbedFactory
 from config.colors import BOT_COLOR
 from config.main import PREFIX, OWNER_ID
 
+from classes.embedder_machine import (
+    EmbedderMachine,
+    Zembed,
+    ZembedField,
+)
 
-class ZedCog(Cog, name="Zed-Domain[WIP]", description="⚡ Domain expansion !"):
+
+class ZedCog(
+    Cog,
+    name="Zed-Domain[WIP]",
+    description="⚡ Domain expansion !",
+):
     def __init__(self, bot: Bot):
         self.bot = bot
 
-    @command(name="Z", description="Calls the bot. This command is a work in progress.", usage=f"{PREFIX}")
+    @command(
+        name="Z",
+        description="Calls the bot. This command is a work in progress.",
+        usage=f"{PREFIX}",
+    )
     @cooldown(1, 2.5, BucketType.user)
     async def zed(self, ctx: Context):
         replies = [
@@ -28,36 +51,56 @@ class ZedCog(Cog, name="Zed-Domain[WIP]", description="⚡ Domain expansion !"):
         ]
 
         if ctx.author.id == OWNER_ID:
-            await ctx.message.reply("Hello master 😍", mention_author=True)
+            await ctx.message.reply(
+                "Hello master 😍", mention_author=True
+            )
             return
 
-        await ctx.message.reply(choice([choice(replies), choice(replies)]), mention_author=True)
-
-    @command(name="env", description="Displays the bot's environment", usage=f"{PREFIX}env")
-    async def env(self, ctx: Context):
-
-        await ctx.send(
-            embed=EmbedFactory.create_embed(
-                EmbedFactory.create_config(
-                    title="Working Environment",
-                    description="I'm working under the **latest** and **greatest** of"
-                    f"\n <:python:1071060794759970867> `Python`: `{python_version()}`"
-                    f"\n <:pycord:1071060792721555538> `Pycord`: `{__version__}`",
-                    color=BOT_COLOR,
-                    author={
-                        "name": "The Z Butler",
-                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
-                                    "/bb7df4730c048faacd8db6dd99291cdb.jpg",
-                    }
-                )
-            )
+        await ctx.message.reply(
+            choice([choice(replies), choice(replies)]),
+            mention_author=True,
         )
 
-    @command(name="say", description="Say something :/", usage=f"{PREFIX}say `True` | `False` `your message`")
-    async def say(self, ctx: Context, with_author: bool = False, *msg: str):
+    @command(
+        name="env",
+        description="Displays the bot's environment",
+        usage=f"{PREFIX}env",
+    )
+    async def env(self, ctx: Context):
+
+        machine = EmbedderMachine()
+
+        machine.set_embed_components(
+            title="Working Environment",
+            color=BOT_COLOR,
+            description="I'm working under the **latest** and **greatest** of"
+            f"\n <:python:1071060794759970867> `Python`: `{python_version()}`"
+            f"\n <:pycord:1071060792721555538> `Pycord`: `{__version__}`",
+            author_name="The Z Butler",
+            author_image="https://cdn.discordapp.com/avatars/759844892443672586"
+            "/bb7df4730c048faacd8db6dd99291cdb.jpg",
+        )
+
+        await ctx.send(embed=machine.embed)
+
+    @command(
+        name="say",
+        description="Say something :/",
+        usage=f"{PREFIX}say `True` | `False` `your message`",
+    )
+    async def say(
+        self,
+        ctx: Context,
+        with_author: bool = False,
+        *msg: str,
+    ):
         await ctx.message.delete()
 
-        auth = f"- *By {ctx.author.name}*" if with_author else ""
+        auth = (
+            f"- *By {ctx.author.name}*"
+            if with_author
+            else ""
+        )
 
         await ctx.send(f'{" ".join(msg)} {auth}')
 
@@ -93,13 +136,19 @@ class ZedCog(Cog, name="Zed-Domain[WIP]", description="⚡ Domain expansion !"):
         )
 
     @say.error
-    async def say_handler(self, ctx: Context, error: CommandError) -> None:
+    async def say_handler(
+        self, ctx: Context, error: CommandError
+    ) -> None:
 
         if isinstance(error, BadBoolArgument):
-            await ctx.reply("Please provide the correct argument for writing the signature.")
+            await ctx.reply(
+                "Please provide the correct argument for writing the signature."
+            )
 
         else:
-            await ctx.reply("Check the command's help page for the correct syntax.")
+            await ctx.reply(
+                "Check the command's help page for the correct syntax."
+            )
 
 
 def setup(bot: Bot):
