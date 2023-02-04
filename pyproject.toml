@@ -1,5 +1,5 @@
 [tool.black]
-line-length = 120
+line-length = 60
 target-version = ['py310']
 include = '\.pyi?$'
 extend-exclude = '''
