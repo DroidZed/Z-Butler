@@ -15,13 +15,10 @@ class EmbedderMachine:
 
     def set_embed_components(
         self,
-        title: str,
-        color: int,
-        description: str,
-        author_name: str,
-        author_image: str,
+        title: Optional[str] = None,
+        description: Optional[str] = None,
+        color: Optional[int] = None,
         url: Optional[str] = None,
-        author_url: Optional[str] = None,
         thumbnail_url: Optional[str] = None,
         image_url: Optional[str] = None,
     ):
@@ -29,22 +26,22 @@ class EmbedderMachine:
         self.__embed.set_title(title).set_description(
             description
         ).set_author(
-            name=author_name,
-            icon_url=author_image,
-            url=author_url,
+            name="The Z Butler",
+            icon_url="https://cdn.discordapp.com/avatars/759844892443672586"
+            "/bb7df4730c048faacd8db6dd99291cdb.jpg",
         ).set_color(
             color
         ).set_url(
             url
-        ).set_thumbnail(
-            url=thumbnail_url
-        ).set_image(
-            url=image_url
+        ).add_thumbnail(
+            thumbnail_url
+        ).attach_image(
+            image_url
         )
 
         return self
 
-    def add_fields(self, fields: list[ZembedField]):
+    def add_fields(self, *fields: ZembedField):
 
         for field in fields:
             self.__embed.add_field(
@@ -63,4 +60,8 @@ class EmbedderMachine:
             text=footer_text, icon_url=footer_icon
         )
 
+        return self
+
+    def remove_image(self):
+        self.__embed.remove_image()
         return self

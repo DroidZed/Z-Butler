@@ -20,12 +20,12 @@ py-cord = "*"
 aiodns = "*"
 orjson = "*"
 coinpaprika-async = "*"
-tweepy = {extras = ["async"], version = "*"}
 
 [dev-packages]
 pre-commit = "*"
 black = "*"
 pylint = "*"
+isort = {extras = ["pipfile_deprecated_finder"], version = "*"}
 
 [requires]
 python_version = "3.11"

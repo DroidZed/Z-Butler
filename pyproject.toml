@@ -7,3 +7,5 @@ extend-exclude = '''
 # in the root of the project.
 ^/test.py  # exclude a file named test.py in the root of the project (in addition to the defaults)
 '''
+[tool.isort]
+profile = "black"
