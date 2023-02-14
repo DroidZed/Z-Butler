@@ -11,7 +11,6 @@ pynacl = "*"
 gql = { extras = ["aiohttp"], version = "*" }
 numpy = "*"
 wand = "*"
-spotify-client = "*"
 dnspython = "*"
 beautifulsoup4 = "*"
 rich = "*"

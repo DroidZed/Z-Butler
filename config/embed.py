@@ -1,6 +1,6 @@
 from typing import Optional
-from classes.ZembedField import ZembedField
-from classes.Zembed import Zembed
+from api.data.ZembedField import ZembedField
+from api.data.Zembed import Zembed
 
 from classes.embedder_machine import EmbedderMachine
 

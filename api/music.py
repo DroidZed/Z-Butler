@@ -1,7 +1,6 @@
 from httpx import AsyncClient
 from spotify_client import SpotifyClient
 
-from config.main import SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET
 
 
 def find_song(title: str, artist: str) -> dict:

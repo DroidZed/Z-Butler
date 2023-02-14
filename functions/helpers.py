@@ -1,4 +1,6 @@
 from random import choice
+from base64 import b64encode, b64decode
+
 
 from platform import python_version
 
@@ -87,3 +89,10 @@ def print_msg():
     )  # Don't remove the extra space added after the snake emoji, it was added so the bars will align in the console
     # of the hosting.
     print("/" * 39)
+
+
+def strToB64(s: str):
+    return b64encode(s.encode('utf-8'))
+
+def b64ToStr(b: str):
+    return b64decode(b).decode('utf-8')

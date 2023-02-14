@@ -4,7 +4,6 @@ from httpx import AsyncClient
 from classes.singleton_class import SingletonClass
 from config.main import TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET
 
-
 async def authenticate() -> dict:
     params = {"client_id": TWITCH_CLIENT_ID, "client_secret": TWITCH_CLIENT_SECRET, "grant_type": "client_credentials"}
 
@@ -22,10 +21,10 @@ class TwitchClient(metaclass=SingletonClass):
 
     __slots__ = ["__data", "__token", "__expiration_day", "__is_token_expired"]
 
-    def __init__(self, bearer: Optional[dict[str, Any]] = None):
+    def __init__(self, data: Optional[dict[str, Any]] = None):
 
-        if (bearer):
-            self.__data = bearer
+        if data:
+            self.__data = data
             self.__token = self.__data["access_token"]
             self.__expiration_day = (self.__data["expires_in"] // (60 * 60 * 24)) + 1
             self.__is_token_expired = False

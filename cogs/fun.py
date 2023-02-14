@@ -17,7 +17,7 @@ from api.animals import (
     get_random_dog_picture,
 )
 from api.images import find_gif
-from classes.ZembedField import ZembedField
+from api.data.ZembedField import ZembedField
 from classes.embedder_machine import EmbedderMachine
 from config.colors import BOT_COLOR
 from config.links import server_image
