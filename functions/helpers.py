@@ -56,29 +56,48 @@ def extract_guild_data(guild: Guild):
     online_users_count: int = len(
         list(
             filter(
-                lambda member: member.status != Status.offline and not member.bot,
+                lambda member: member.status
+                != Status.offline
+                and not member.bot,
                 guild.members,
             )
         )
     )
 
-    machines_count: int = len(list(filter(lambda member: member.bot, guild.members)))
+    machines_count: int = len(
+        list(
+            filter(lambda member: member.bot, guild.members)
+        )
+    )
 
-    return roles_count, online_users_count, machines_count, desc
+    return (
+        roles_count,
+        online_users_count,
+        machines_count,
+        desc,
+    )
 
 
 def print_msg():
     print("/" * 39)
     print(" ----------\\")
-    rch.print(" |       [b cyan]*[/]  |         [white]/[/]\\")
+    rch.print(
+        " |       [b cyan]*[/]  |         [white]/[/]\\"
+    )
     print(" --------   |        /  \\")
     print("       /   /         \\   \\")
     print("      /   /          /   /")
-    rch.print("     [white]/[/]   [white]/[/] [b blue]The Z Bot[/] \\   \\")
+    rch.print(
+        "     [white]/[/]   [white]/[/] [b blue]The Z Bot[/] \\   \\"
+    )
     print("    |   --------------   /")
-    rch.print("    |       [b green]ONLINE[/]      [white]/[/]")
+    rch.print(
+        "    |       [b green]ONLINE[/]      [white]/[/]"
+    )
     print("     ------------------")
-    rch.print(f"|[b]         [i]By: [purple]DroidZed[/purple][/i]{' ' * 16}|")
+    rch.print(
+        f"|[b]         [i]By: [purple]DroidZed[/purple][/i]{' ' * 16}|"
+    )
     rch.print(
         f"|[b] Discord version: [u blue]{version_info.major}.{version_info.minor}.{version_info.micro}[/u blue]{' ' * 14}|",
         end="\n",
@@ -92,7 +111,8 @@ def print_msg():
 
 
 def strToB64(s: str):
-    return b64encode(s.encode('utf-8'))
+    return b64encode(s.encode("utf-8"))
+
 
 def b64ToStr(b: str):
-    return b64decode(b).decode('utf-8')
+    return b64decode(b).decode("utf-8")

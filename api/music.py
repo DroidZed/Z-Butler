@@ -2,10 +2,15 @@ from httpx import AsyncClient
 from spotify_client import SpotifyClient
 
 
-
 def find_song(title: str, artist: str) -> dict:
-    client = SpotifyClient(SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, identifier="Z-Bot-Singleton")
-    res = client.search(f"{title} {artist}", search_types=["track"], limit=1)
+    client = SpotifyClient(
+        SPOTIFY_CLIENT_ID,
+        SPOTIFY_CLIENT_SECRET,
+        identifier="Z-Bot-Singleton",
+    )
+    res = client.search(
+        f"{title} {artist}", search_types=["track"], limit=1
+    )
 
     data = res["tracks"]["items"][0]
 
@@ -20,13 +25,17 @@ def find_song(title: str, artist: str) -> dict:
     }
 
 
-async def fetch_lyrics(title: str, artist: str | None = None) -> dict:
+async def fetch_lyrics(
+    title: str, artist: str | None = None
+) -> dict:
     artist = artist.replace(" ", "%20") if artist else None
 
     title = title.replace(" ", "%20")
 
     async with AsyncClient() as client:
-        res = await client.get(f"https://some-random-api.ml/lyrics?title={title}{'%20' + artist if artist else ''}")
+        res = await client.get(
+            f"https://some-random-api.ml/lyrics?title={title}{'%20' + artist if artist else ''}"
+        )
 
         data = res.json()
 
