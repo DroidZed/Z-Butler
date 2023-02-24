@@ -1,16 +1,18 @@
 from httpx import AsyncClient
-from spotify_client import SpotifyClient
+from modules.spotifyer.spotify_client import (
+    authenticate_client,
+)
+from spotifyer.spotify_client import SpotifyClient
 
 
-def find_song(title: str, artist: str) -> dict:
-    client = SpotifyClient(
-        SPOTIFY_CLIENT_ID,
-        SPOTIFY_CLIENT_SECRET,
-        identifier="Z-Bot-Singleton",
+async def find_song(title: str, artist: str):
+    client = SpotifyClient(await authenticate_client())
+    res = await client.search_song(
+        title=title, artist_name=artist
     )
-    res = client.search(
-        f"{title} {artist}", search_types=["track"], limit=1
-    )
+
+    if not res:
+        return None
 
     data = res["tracks"]["items"][0]
 

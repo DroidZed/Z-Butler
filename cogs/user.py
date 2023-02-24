@@ -10,9 +10,9 @@ from discord.ext.commands import (
 from discord.ext.tasks import loop
 
 from api.images import find_gif
-from api.twitch import get_pfp
+from modules.twitching.twitch import get_pfp
 from classes.embed_factory import EmbedFactory
-from classes.twitch_client import TwitchClient, authenticate
+from modules.twitching.twitch_client import TwitchClient, authenticate
 from config.colors import BOT_COLOR
 from config.embed.activity import activity_config, streaming_activity_config, playing_activity_config, spotify_config
 from config.links import server_image

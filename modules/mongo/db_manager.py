@@ -1,6 +1,6 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from classes.singleton_class import SingletonClass
+from utils.singleton_class import SingletonClass
 from config.main import DB_NAME, MDB_SRV
 
 

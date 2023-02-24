@@ -4,6 +4,15 @@ from discord import Embed
 from config.colors import BOT_COLOR
 
 
+class ZembedField:
+    def __init__(
+        self, name: str, value: str, inline: bool = False
+    ):
+        self.name = name
+        self.value = value
+        self.inline = inline
+
+
 class Zembed(Embed):
     def set_title(self, title: Optional[str]):
         if title:

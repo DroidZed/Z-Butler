@@ -1,7 +1,7 @@
 from httpx import AsyncClient
-from api.data.SpotiModels import ClientAuth
+from modules.spotifyer.spoti_models import ClientAuth
 
-from classes.singleton_class import SingletonClass
+from utils.singleton_class import SingletonClass
 from config.main import (
     SPOTIFY_CLIENT_ID,
     SPOTIFY_CLIENT_SECRET,
@@ -87,4 +87,4 @@ class SpotifyClient(metaclass=SingletonClass):
                 return json
 
             except:
-                return resp
+                return None

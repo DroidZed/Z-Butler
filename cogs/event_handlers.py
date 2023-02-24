@@ -25,7 +25,7 @@ from discord.ext.commands.errors import (
 from httpx import ReadTimeout
 
 from classes.embedder_machine import EmbedderMachine
-from classes.mongo_db_management import MongoDBHelperClient
+from modules.mongo.db_manager import MongoDBHelperClient
 from config.colors import BOT_COLOR
 from config.links import get_server_image
 from config.main import GUILD_ID

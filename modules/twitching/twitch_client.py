@@ -1,14 +1,52 @@
 from typing import Any, Optional
 from httpx import AsyncClient
 
-from classes.singleton_class import SingletonClass
-from config.main import TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET
+from utils.singleton_class import SingletonClass
+from config.main import (
+    TWITCH_CLIENT_ID,
+    TWITCH_CLIENT_SECRET,
+)
+
+
+async def get_pfp(login: str) -> str | None:
+    twitch_bearer_data = TwitchClient()
+
+    # if I'm past the expiration date, refresh the token
+    if twitch_bearer_data.is_token_expired:
+        await twitch_bearer_data.refresh_token()
+
+        return await get_pfp(login)
+
+    headers = {
+        "Authorization": f"Bearer {twitch_bearer_data.token}",
+        "Client-Id": TWITCH_CLIENT_ID,
+    }
+
+    url = f"https://api.twitch.tv/helix/search/channels?query={login}&live_only=true&first=2"
+
+    async with AsyncClient(headers=headers) as client:
+        query = await client.get(url)
+
+        json = query.json()
+
+        if not json["data"]:
+            return
+
+        return query.json()["data"][0]["thumbnail_url"]
+
 
 async def authenticate() -> dict:
-    params = {"client_id": TWITCH_CLIENT_ID, "client_secret": TWITCH_CLIENT_SECRET, "grant_type": "client_credentials"}
+    params = {
+        "client_id": TWITCH_CLIENT_ID,
+        "client_secret": TWITCH_CLIENT_SECRET,
+        "grant_type": "client_credentials",
+    }
 
     async with AsyncClient() as client:
-        data = await client.post(url="https://id.twitch.tv/oauth2/token", params=params)
+        data = await client.post(
+            url="https://id.twitch.tv/oauth2/token",
+            params=params,
+        )
 
         return data.json()
 
@@ -19,14 +57,23 @@ class TwitchClient(metaclass=SingletonClass):
     tools for managing the state of the code like handling expiration date and expiring the token.
     """
 
-    __slots__ = ["__data", "__token", "__expiration_day", "__is_token_expired"]
+    __slots__ = [
+        "__data",
+        "__token",
+        "__expiration_day",
+        "__is_token_expired",
+    ]
 
-    def __init__(self, data: Optional[dict[str, Any]] = None):
+    def __init__(
+        self, data: Optional[dict[str, Any]] = None
+    ):
 
         if data:
             self.__data = data
             self.__token = self.__data["access_token"]
-            self.__expiration_day = (self.__data["expires_in"] // (60 * 60 * 24)) + 1
+            self.__expiration_day = (
+                self.__data["expires_in"] // (60 * 60 * 24)
+            ) + 1
             self.__is_token_expired = False
 
     def __str__(self):

@@ -1,6 +1,6 @@
 from discord.ext.commands import HelpCommand, Cog, Command
 
-from classes.embed_factory import EmbedFactory
+
 from config.colors import BOT_COLOR
 
 

@@ -1,7 +1,6 @@
 from typing import Optional
 
-from api.data.Zembed import Zembed
-from api.data.ZembedField import ZembedField
+from zembed_models import Zembed, ZembedField
 
 
 class EmbedderMachine:
