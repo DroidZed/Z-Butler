@@ -12,17 +12,20 @@ from discord.ext.commands import (
     cooldown,
 )
 
-from api.animals import (
-    get_random_cat_facts,
-    get_random_dog_picture,
-)
-from api.images import find_gif
-from api.data.ZembedField import ZembedField
-from classes.embedder_machine import EmbedderMachine
+
 from config.colors import BOT_COLOR
 from config.links import server_image
 from config.main import PREFIX
 from functions.helpers import eight_ball_answers
+from modules.api.animals import (
+    get_random_cat_facts,
+    get_random_dog_picture,
+)
+from modules.api.images import find_gif
+from modules.embedder.embedder_machine import (
+    EmbedderMachine,
+)
+from modules.embedder.zembed_models import ZembedField
 
 
 class FunCog(
@@ -212,14 +215,19 @@ class FunCog(
             await ctx.send("Couldn't send the hug :(")
             return
 
-        await ctx.send(
-            embed=generate_embed(
-                title=f"{member.name} I send you a hug by {ctx.author.name} ❤",
-                image_url=f"{gif['media'][0]['gif']['url']}",
-                footer_text=f"Requested by {ctx.message.author.name} 💙",
-                footer_icon=f"{ctx.message.author.display_avatar.url}",
-            )
+        machine = EmbedderMachine()
+
+        machine.set_embed_components(
+            title=f"{member.name} I send you a hug by {ctx.author.name} ❤",
+            image_url=f"{gif['media'][0]['gif']['url']}",
         )
+
+        machine.add_footer(
+            footer_text=f"Requested by {ctx.message.author.name} 💙",
+            footer_icon=f"{ctx.message.author.display_avatar.url}",
+        )
+
+        await ctx.send(embed=machine.embed)
 
     @command(
         name="randomCatFact",
@@ -239,12 +247,14 @@ class FunCog(
             )
             return
 
-        await ctx.send(
-            embed=generate_embed(
-                title="Cat facts",
-                description=f"*{res['fact']}*",
-            )
+        machine = EmbedderMachine()
+
+        machine.set_embed_components(
+            title="Cat facts",
+            description=f"*{res['fact']}*",
         )
+
+        await ctx.send(embed=machine.embed)
 
     @command(
         name="doggoPics",
@@ -264,11 +274,13 @@ class FunCog(
                 )
                 return
 
-        await ctx.send(
-            embed=generate_embed(
-                image_url=f"{res['message']}"
-            )
+        machine = EmbedderMachine()
+
+        machine.set_embed_components(
+            image_url=f"{res['message']}"
         )
+
+        await ctx.send(embed=machine.embed)
 
 
 def setup(bot: Bot):
