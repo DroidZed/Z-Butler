@@ -3,7 +3,7 @@ import os
 from discord import Intents, Game
 from discord.ext import commands
 
-from classes.help import ZedHelpCommand
+from utils.help import ZedHelpCommand
 from modules.mongo.db_manager import MongoDBConnection
 from config.main import OWNER_ID, PREFIX, TOKEN
 from functions.helpers import print_msg

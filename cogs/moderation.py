@@ -147,7 +147,7 @@ class ModerationCog(Cog, name="Moderation", description="🏛 Mod commands for *
     async def mute(self, ctx: Context, member: Member):
 
         if self.__silenced_role(ctx) in member.roles:
-            await ctx.message.reply("User already muted you dump fuck !", mention_author=True)
+            await ctx.message.reply("User already muted you dumb fuck !", mention_author=True)
             return
 
         await ctx.message.delete()
