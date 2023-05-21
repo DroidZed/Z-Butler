@@ -1,6 +1,6 @@
 class PaginationHelper:
     """
-    ## Utility class for list pagination operations.
+    Utility class for list pagination operations.
 
     This class is helpful for managing large lists and dividing them into smaller chunks or pages.
 
@@ -16,6 +16,11 @@ class PaginationHelper:
         # Get the total number of pages
         pages_count = helper.pages_count
         print(pages_count)  # Output: 3
+
+        # Get the number of items on a specific page
+        page_index = 1
+        page_item_count = helper.page_item_count(page_index)
+        print(page_item_count)  # Output: 3
 
         # Get a specific page by its index
         page_index = 1
@@ -42,17 +47,17 @@ class PaginationHelper:
     """
 
     def __init__(
-        self, collection: list, items_per_page: int
+        self, collection: list, itemsPerPage: int
     ):
         """
         Initialize the PaginationHelper with a collection and items per page.
 
-        Args:
-            collection (list): The list to paginate.
-            items_per_page (int): The maximum size of each page.
+        ### Args:
+            1. collection (list): The list to paginate.
+            2. itemsPerPage (int): The maximum size of each page.
         """
         self._collection = collection
-        self._page_size = items_per_page
+        self._page_size = itemsPerPage
         self._paginate_list()
 
     def _paginate_list(self):
@@ -103,7 +108,7 @@ class PaginationHelper:
         Get a specific page by its index.
 
         Args:
-            page_index (int): The index of the desired page.
+            page_index (int): A zero-based index of the desired page.
 
         Returns:
             list: The list of items on the specified page.
@@ -112,12 +117,26 @@ class PaginationHelper:
             return self._paged_collection[page_index]
         return []
 
+    def page_item_count(self, page_index):
+        """
+        Returns the number of items on the given page.\n
+            
+        Args:
+            page_index (int): A zero-based index of the desired page.
+
+        Returns:
+            int: The number of items inside the page. -1 for page_index values that are out of range
+        """
+        if 0 <= page_index < len(self._paged_collection):
+            return len(self._paged_collection[page_index])
+        return -1
+
     def get_page_index(self, item_index: int) -> int:
         """
         Get the page index where a given item index is located.
 
         Args:
-            item_index (int): The index of the item.
+            item_index (int): A zero-based index of the item.
 
         Returns:
             int: The index of the page where the item is located.
