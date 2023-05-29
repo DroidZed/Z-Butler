@@ -1,8 +1,12 @@
 from typing import Optional
-from api.data.ZembedField import ZembedField
-from api.data.Zembed import Zembed
 
-from classes.embedder_machine import EmbedderMachine
+from modules.embedder.zembed_models import (
+    ZembedField,
+    Zembed,
+)
+from modules.embedder.embedder_machine import (
+    EmbedderMachine,
+)
 
 
 def generate_embed(
@@ -17,7 +21,6 @@ def generate_embed(
     rem_img=False,
     *fields: ZembedField,
 ) -> Zembed:
-
     machine = EmbedderMachine()
 
     machine.set_embed_components(
@@ -30,7 +33,6 @@ def generate_embed(
     )
 
     if footer_icon and footer_text:
-
         machine.add_footer(footer_icon, footer_text)
 
     machine.add_fields(*fields)

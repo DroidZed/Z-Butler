@@ -1,10 +1,22 @@
 from datetime import datetime
 
-from config.colors import TWITCH_PURPLE, BOT_COLOR, YOUTUBE_RED, SPOTIFY_COLOR
+from config.colors import (
+    TWITCH_PURPLE,
+    BOT_COLOR,
+    YOUTUBE_RED,
+    SPOTIFY_COLOR,
+)
 from config.links import server_image
 
 
-def spotify_config(mention: str, song: str, album: str, artist: str, art: str, link: str) -> dict:
+def spotify_config(
+    mention: str,
+    song: str,
+    album: str,
+    artist: str,
+    art: str,
+    link: str,
+) -> dict:
     return {
         "title": f"**{song}**",
         "color": SPOTIFY_COLOR,
@@ -41,14 +53,21 @@ def streaming_activity_config(
             "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
         },
         "url": f"{stream_url}",
-        "footer": {"text": f"Requested by {issuer} 💙", "icon_url": f"{avatar_url}"},
+        "footer": {
+            "text": f"Requested by {issuer} 💙",
+            "icon_url": f"{avatar_url}",
+        },
     }
 
     if stream_url:
-        dic["description"] += f"\nFollow this [link]({stream_url}) to catch them **LIVE** 🔴 on `{platform}` !"
+        dic[
+            "description"
+        ] += f"\nFollow this [link]({stream_url}) to catch them **LIVE** 🔴 on `{platform}` !"
 
     if streamed_game:
-        dic["description"] = dic["description"].replace("this", f"{streamed_game}")
+        dic["description"] = dic["description"].replace(
+            "this", f"{streamed_game}"
+        )
 
     if streamer_pfp:
         dic["image"] = {"url": f"{streamer_pfp}"}
@@ -58,7 +77,6 @@ def streaming_activity_config(
 
 def __change_platform_color(platform: str) -> int:
     match platform:
-
         case "Twitch":
             return TWITCH_PURPLE
         case "YouTube":
@@ -68,7 +86,11 @@ def __change_platform_color(platform: str) -> int:
 
 
 def playing_activity_config(
-    name: str, mention: str, issuer: str, avatar_url: str, since: datetime | None = None
+    name: str,
+    mention: str,
+    issuer: str,
+    avatar_url: str,
+    since: datetime | None = None,
 ) -> dict:
     return {
         "title": f"{name}",
@@ -78,7 +100,10 @@ def playing_activity_config(
             "name": "The Z Butler",
             "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
         },
-        "footer": {"text": f"Requested by {issuer} 💙", "icon_url": f"{avatar_url}"},
+        "footer": {
+            "text": f"Requested by {issuer} 💙",
+            "icon_url": f"{avatar_url}",
+        },
     }
 
 
@@ -98,7 +123,10 @@ def activity_config(
             "name": "The Z Butler",
             "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
         },
-        "footer": {"text": f"Requested by {issuer} 💙", "icon_url": f"{avatar_url}"},
+        "footer": {
+            "text": f"Requested by {issuer} 💙",
+            "icon_url": f"{avatar_url}",
+        },
     }
 
     if image_url:

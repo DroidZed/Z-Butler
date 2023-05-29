@@ -5,7 +5,6 @@ from zembed_models import Zembed, ZembedField
 
 class EmbedderMachine:
     def __init__(self):
-
         self.__embed = Zembed()
 
     @property
@@ -21,27 +20,18 @@ class EmbedderMachine:
         thumbnail_url: Optional[str] = None,
         image_url: Optional[str] = None,
     ):
-
-        self.__embed.set_title(title).set_description(
-            description
-        ).set_author(
-            name="The Z Butler",
-            icon_url="https://cdn.discordapp.com/avatars/759844892443672586"
-            "/bb7df4730c048faacd8db6dd99291cdb.jpg",
-        ).set_color(
-            color
-        ).set_url(
-            url
-        ).add_thumbnail(
-            thumbnail_url
-        ).attach_image(
-            image_url
-        )
+        self.__embed \
+        .set_title(title) \
+        .set_description(description) \
+        .set_author(name="The Z Butler",icon_url="https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg") \
+        .set_color(color) \
+        .set_url(url) \
+        .add_thumbnail(thumbnail_url) \
+        .attach_image(image_url) \
 
         return self
 
     def add_fields(self, *fields: ZembedField):
-
         for field in fields:
             self.__embed.add_field(
                 name=field.name,
