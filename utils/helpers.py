@@ -1,11 +1,62 @@
+from typing import Optional, List
 from random import choice
-from base64 import b64encode, b64decode
-
-
 from platform import python_version
 
 import rich as rch
-from discord import version_info, Guild, Status
+from discord import (
+    version_info,
+    Status,
+    Role,
+    Member,
+    Guild,
+)
+
+
+from modules.embedder.zembed_models import (
+    ZembedField,
+    Zembed,
+)
+from modules.embedder.embedder_machine import (
+    EmbedderMachine,
+)
+
+
+def get_server_image(g: Optional[Guild]) -> Optional[str]:
+    return g.icon.url if g and g.icon else None
+
+
+def generate_embed(
+    title: Optional[str] = None,
+    description: Optional[str] = None,
+    color: Optional[int] = None,
+    url: Optional[str] = None,
+    thumbnail_url: Optional[str] = None,
+    image_url: Optional[str] = None,
+    footer_icon: Optional[str] = None,
+    footer_text: Optional[str] = None,
+    rem_img=False,
+    *fields: ZembedField,
+) -> Zembed:
+    machine = EmbedderMachine()
+
+    machine.set_embed_components(
+        title,
+        description,
+        color,
+        url,
+        thumbnail_url,
+        image_url,
+    )
+
+    if footer_icon and footer_text:
+        machine.add_footer(footer_icon, footer_text)
+
+    machine.add_fields(*fields)
+
+    if rem_img:
+        machine.remove_image
+
+    return machine.embed
 
 
 def eight_ball_answers() -> str:
@@ -48,10 +99,12 @@ def eight_ball_answers() -> str:
     return choice(answers[choice(["+", "-", "/"])])
 
 
-def extract_guild_data(guild: Guild):
-    roles_count: int = len(guild.roles) - 1
-
-    desc = guild.description
+def extract_guild_data(
+    roles: List[Role],
+    members: List[Member],
+    description: str,
+):
+    roles_count: int = len(roles) - 1
 
     online_users_count: int = len(
         list(
@@ -59,22 +112,20 @@ def extract_guild_data(guild: Guild):
                 lambda member: member.status
                 != Status.offline
                 and not member.bot,
-                guild.members,
+                members,
             )
         )
     )
 
     machines_count: int = len(
-        list(
-            filter(lambda member: member.bot, guild.members)
-        )
+        list(filter(lambda member: member.bot, members))
     )
 
     return (
         roles_count,
         online_users_count,
         machines_count,
-        desc,
+        description,
     )
 
 
@@ -108,11 +159,3 @@ def print_msg():
     )  # Don't remove the extra space added after the snake emoji, it was added so the bars will align in the console
     # of the hosting.
     print("/" * 39)
-
-
-def strToB64(s: str):
-    return b64encode(s.encode("utf-8"))
-
-
-def b64ToStr(b: str):
-    return b64decode(b).decode("utf-8")

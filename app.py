@@ -3,19 +3,18 @@ import os
 from discord import Intents, Game
 from discord.ext import commands
 
-from utils.help import ZedHelpCommand
-from modules.mongo.db_manager import MongoDBConnection
-from config.main import OWNER_ID, PREFIX, TOKEN
-from functions.helpers import print_msg
+from .modules import ZedHelpCommand, MongoDBConnection
+from .utils import print_msg
+from .config import Env
 
 # Intents
 intents = Intents.all()
 
 # The bot
 bot = commands.Bot(
-    command_prefix=commands.when_mentioned_or(PREFIX), # type: ignore
+    command_prefix=commands.when_mentioned_or(PREFIX),  # type: ignore
     intents=intents,
-    owner_id=OWNER_ID,
+    owner_id=Env.OWNER_ID,
     help_command=ZedHelpCommand(),
 )
 
@@ -31,10 +30,12 @@ async def on_ready():
     print_msg()
 
     await bot.change_presence(
-        activity=Game(name=f"{PREFIX}help - By DroidZed")
+        activity=Game(
+            name=f"{Env.PREFIX}help - By DroidZed"
+        )
     )
 
     MongoDBConnection()
 
 
-bot.run(TOKEN)
+bot.run(Env.TOKEN)

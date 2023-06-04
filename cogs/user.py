@@ -14,7 +14,7 @@ from modules.twitching.twitch import get_pfp
 from classes.embed_factory import EmbedFactory
 from modules.twitching.twitch_client import TwitchClient, authenticate
 from config.colors import BOT_COLOR
-from config.embed.activity import activity_config, streaming_activity_config, playing_activity_config, spotify_config
+from config.embed.activity_embeds import activity_config, streaming_activity_config, playing_activity_config, spotify_config
 from config.links import server_image
 from config.main import PREFIX, CROWN_ROLE_ID
 

@@ -8,21 +8,23 @@ from discord.ext.commands import (
     cooldown,
 )
 
-from api.music import fetch_lyrics, find_song
-from classes.converters.song_metadata_converter import SongArtistConverter, SongNameConverter
-from classes.embed_factory import EmbedFactory
 from config.colors import BOT_COLOR, SPOTIFY_COLOR
 from config.links import server_image
 from config.main import PREFIX
 
 
-class MusicCog(Cog, name="Muse", description="🎶 Enjoy the bits and pieces of the music you like."):
+class MusicCog(
+    Cog,
+    name="Muse",
+    description="🎶 Enjoy the bits and pieces of the music you like.",
+):
     def __init__(self, bot: Bot):
         self.bot = bot
 
     @staticmethod
-    async def __send_lyrics(ctx: Context, title: str, artist: str) -> None:
-
+    async def __send_lyrics(
+        ctx: Context, title: str, artist: str
+    ) -> None:
         if title is None or artist is None:
             await ctx.send("❌ invalid input !!")
             return
@@ -31,7 +33,9 @@ class MusicCog(Cog, name="Muse", description="🎶 Enjoy the bits and pieces of 
             data = await fetch_lyrics(title, artist)
 
         if not data["valid"]:
-            await ctx.send("❌ Cannot find lyrics for the given song....")
+            await ctx.send(
+                "❌ Cannot find lyrics for the given song...."
+            )
             return
 
         try:
@@ -50,21 +54,22 @@ class MusicCog(Cog, name="Muse", description="🎶 Enjoy the bits and pieces of 
                         author={
                             "name": "The Z Butler",
                             "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
-                                        "/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                            "/bb7df4730c048faacd8db6dd99291cdb.jpg",
                         },
-                        thumbnail={
-                            "url": server_image
-                        },
+                        thumbnail={"url": server_image},
                         footer={
                             "text": "Lyrics by Genius Lyrics 💙",
                             "icon_url": "https://crypttv.com/wp-content/uploads/2020/10/59-598221_genius-lyrics-logo"
-                                        "-transparent-clipart.png",
+                            "-transparent-clipart.png",
                         },
                     )
                 )
             )
         except Forbidden:
-            await ctx.reply("Please open your DMs to get the lyrics !!", mention_author=True)
+            await ctx.reply(
+                "Please open your DMs to get the lyrics !!",
+                mention_author=True,
+            )
 
     @command(
         name="lyrics",
@@ -82,9 +87,7 @@ class MusicCog(Cog, name="Muse", description="🎶 Enjoy the bits and pieces of 
         title: SongNameConverter = None,
         artist: SongArtistConverter = None,
     ) -> None:
-
         if not title and not artist:
-
             acts = ctx.author.activities
 
             act = None
@@ -106,13 +109,19 @@ class MusicCog(Cog, name="Muse", description="🎶 Enjoy the bits and pieces of 
         aliases=["sg?"],
     )
     @cooldown(1, 5, BucketType.user)
-    async def search_song(self, ctx: Context, title: SongNameConverter, artist: SongArtistConverter) -> None:
-
+    async def search_song(
+        self,
+        ctx: Context,
+        title: SongNameConverter,
+        artist: SongArtistConverter,
+    ) -> None:
         async with ctx.typing():
             data = find_song(title, artist)
 
         if not data:
-            await ctx.send("❌ Unable to find the song you're looking for...Try again later.")
+            await ctx.send(
+                "❌ Unable to find the song you're looking for...Try again later."
+            )
             return
 
         await ctx.send(
@@ -122,20 +131,22 @@ class MusicCog(Cog, name="Muse", description="🎶 Enjoy the bits and pieces of 
                     url=data["href"],
                     color=SPOTIFY_COLOR,
                     description=f"The song you've requested, by {' '.join(art for art in data['artists'])} from the "
-                                f"album **{data['album']['name']}**",
+                    f"album **{data['album']['name']}**",
                     image={
                         "url": f"{data['album']['art']['url']}",
-                        "width": data["album"]["art"]["width"],
-                        "height": data["album"]["art"]["height"],
+                        "width": data["album"]["art"][
+                            "width"
+                        ],
+                        "height": data["album"]["art"][
+                            "height"
+                        ],
                     },
                     author={
                         "name": "The Z Butler",
                         "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
-                                    "/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                        "/bb7df4730c048faacd8db6dd99291cdb.jpg",
                     },
-                    thumbnail={
-                        "url": server_image
-                    },
+                    thumbnail={"url": server_image},
                     footer={
                         "text": "Songs params provided by Spotify 💚",
                         "icon_url": "https://1000logos.net/wp-content/uploads/2017/08/Spotify-Logo.png",

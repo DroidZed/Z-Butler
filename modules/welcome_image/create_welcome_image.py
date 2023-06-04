@@ -5,16 +5,39 @@ from PIL.ImageFont import FreeTypeFont
 
 
 def _create_font(font_name: str) -> FreeTypeFont:
-    return ImageFont.truetype(font=font_name, size=87, encoding="utf-8")
+    return ImageFont.truetype(
+        font=font_name, size=87, encoding="utf-8"
+    )
 
 
-def create_welcome_picture(username: str, discriminator: str):
+def _update_text_and_offset(
+    text: str, offset: int
+) -> tuple[str, int]:
+    name_length = len(text.split("#")[0])
+
+    if name_length >= 18:
+        offset += 65
+
+    if name_length > 8:
+        text = text.replace("#", "\n#")
+
+    return text, offset
+
+
+# TODO: remove the discriminator once the new username thing rolls out... Thanks discord 🤡
+def create_welcome_image(username: str, discriminator: str):
     with Image.open("./assets/img/bg.png") as i:
-        font = _create_font("./assets/fonts/CabinSketch-Regular.ttf")
+        font = _create_font(
+            "./assets/fonts/CabinSketch-Regular.ttf"
+        )
 
-        text, offset = _update_text_and_offset(f"{username}#{discriminator}", 305)
+        text, offset = _update_text_and_offset(
+            f"{username}#{discriminator}", 305
+        )
 
-        x_coordinate, y_coordinate = (i.size[0] // 2) - offset, 700
+        x_coordinate, y_coordinate = (
+            i.size[0] // 2
+        ) - offset, 700
 
         draw = ImageDraw.Draw(i)
 
@@ -41,15 +64,3 @@ def create_welcome_picture(username: str, discriminator: str):
         )
 
     return i
-
-
-def _update_text_and_offset(text: str, offset: int) -> tuple[str, int]:
-    name_length = len(text.split("#")[0])
-
-    if name_length >= 18:
-        offset += 65
-
-    if name_length > 8:
-        text = text.replace("#", "\n#")
-
-    return text, offset

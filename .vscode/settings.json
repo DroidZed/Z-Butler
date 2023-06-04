@@ -1,0 +1,8 @@
+{
+	"files.autoSave": "afterDelay",
+	"[python]": {
+		"editor.defaultFormatter": "ms-python.black-formatter",
+		"editor.formatOnType": true,
+	},
+	"python.analysis.typeCheckingMode": "basic",
+}

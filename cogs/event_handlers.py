@@ -31,8 +31,8 @@ from modules.mongo.db_manager import MongoDBHelperClient
 from config.colors import BOT_COLOR
 from config.links import get_server_image
 from config.main import GUILD_ID
-from functions.image_manipulation import (
-    create_welcome_picture,
+from modules.welcome_image.create_welcome_image import (
+    create_welcome_image,
 )
 
 
@@ -49,11 +49,9 @@ class EventHandlers(
     def __get_initial_roles(
         guild: Optional[Guild],
     ) -> list[Role]:
-
         lRoles = []
 
         if guild:
-
             lRoles.append(
                 guild.get_role(1071798806275969086)
             )  # Lost Soul
@@ -62,7 +60,6 @@ class EventHandlers(
 
     @Cog.listener()
     async def on_member_join(self, member: Member):
-
         guild = self.bot.get_guild(GUILD_ID)
 
         channel = (
@@ -82,7 +79,7 @@ class EventHandlers(
 
         if channel and isinstance(channel, TextChannel):
             with BytesIO() as image_binary:
-                create_welcome_picture(
+                create_welcome_image(
                     username=f"{member.name}",
                     discriminator=f"{member.discriminator}",
                 ).save(image_binary, "PNG")
@@ -90,7 +87,6 @@ class EventHandlers(
                 image_binary.seek(0)
 
                 try:
-
                     machine = EmbedderMachine()
 
                     machine.set_embed_components(
@@ -119,7 +115,6 @@ class EventHandlers(
 
     @Cog.listener()
     async def on_member_remove(self, member: Member):
-
         guild = self.bot.get_guild(GUILD_ID)
 
         channel = (
@@ -161,9 +156,7 @@ class EventHandlers(
     async def on_command_error(
         self, ctx: Context, error: CommandError
     ):
-
         match error:
-
             case MissingPermissions():
                 return
 
@@ -174,21 +167,18 @@ class EventHandlers(
                 )
 
             case CommandOnCooldown():
-
                 await ctx.reply(
                     f"⏳ Hold your horses, this command is on cooldown, you can use it in {round(error.retry_after, 2)}s",
                     mention_author=True,
                 )
 
             case CommandNotFound():
-
                 await ctx.send(
                     "Nope, no such command was found *sight* 💨",
                     mention_author=True,
                 )
 
             case CommandInvokeError():
-
                 await ctx.send(
                     "❌ Internal anomaly, I wasn't able to handle your request invoker. Sorry for my incompetence.",
                     mention_author=True,
@@ -201,7 +191,6 @@ class EventHandlers(
                 )
 
             case MissingRequiredArgument():
-
                 await ctx.reply(
                     "You __***IDIOT***__ !! Don't you know when typing this command, YOU **MUST** provide "
                     "ARGUMENTS ? I think you should go back to elementary school and learn how to read 🙄",
@@ -209,7 +198,6 @@ class EventHandlers(
                 )
 
             case ReadTimeout():
-
                 await ctx.reply(
                     "Command timed out, please try again ❌",
                     mention_author=True,

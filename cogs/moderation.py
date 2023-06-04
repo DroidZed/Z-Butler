@@ -5,7 +5,7 @@ from discord.ext.commands.errors import CommandError, MissingPermissions
 
 from classes.embed_factory import EmbedFactory
 from modules.mongo.db_manager import MongoDBHelperClient
-from config.embed.moderation import ban_config, kick_config, mute_config, unmute_config, no_perms_config, strike_config
+from config.embed.moderation_embeds import ban_config, kick_config, mute_config, unmute_config, no_perms_config, strike_config
 from config.main import PREFIX
 
 

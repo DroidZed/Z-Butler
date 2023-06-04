@@ -1,11 +1,10 @@
-from config.colors import BOT_COLOR, CROWN_COLOR
-from config.links import server_image
+from . import Env
 
 
 def kick_config(message: str) -> dict:
     return {
         "description": message,
-        "color": CROWN_COLOR,
+        "color": Env.CROWN_COLOR,
         "author": {
             "name": "The Z Butler",
             "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
@@ -16,7 +15,7 @@ def kick_config(message: str) -> dict:
 def mute_config(member_id: int) -> dict:
     return {
         "title": "The hammer has fallen",
-        "color": BOT_COLOR,
+        "color": Env.BOT_COLOR,
         "description": f"Muted <@{member_id}>. Take the time to seek help.",
         "author": {
             "name": "The Z Butler",
@@ -24,7 +23,7 @@ def mute_config(member_id: int) -> dict:
         },
         "footer": {
             "text": "Dragon's Heart Team.",
-            "icon_url": server_image,
+            "icon_url": Env.SERVER_IMAGE,
         },
     }
 
@@ -35,8 +34,10 @@ def ban_config():
         "url": "https://media1.tenor.com/images/0dcb84c900e10b6272152cd759eb1eab/tenor.gif",
         "description": "After the actions you've done in my server the admin decided to ban you for the safety of our "
         "community.",
-        "color": CROWN_COLOR,
-        "image": {"url": "https://media1.tenor.com/images/0dcb84c900e10b6272152cd759eb1eab/tenor.gif"},
+        "color": Env.CROWN_COLOR,
+        "image": {
+            "url": "https://media1.tenor.com/images/0dcb84c900e10b6272152cd759eb1eab/tenor.gif"
+        },
         "author": {
             "name": "The Z Butler",
             "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
@@ -51,7 +52,7 @@ def ban_config():
 def unmute_config(member_id: int) -> dict:
     return {
         "title": "Forgiveness is a choice",
-        "color": BOT_COLOR,
+        "color": Env.BOT_COLOR,
         "description": f"Unmuted <@{member_id}>. Hopefully you've reflected on your actions.",
         "author": {
             "name": "The Z Butler",
@@ -59,7 +60,7 @@ def unmute_config(member_id: int) -> dict:
         },
         "footer": {
             "text": "Dragon's Heart Team.",
-            "icon_url": server_image,
+            "icon_url": Env.SERVER_IMAGE,
         },
     }
 
@@ -69,8 +70,10 @@ def strike_config(number_of_strikes_left: int):
         "title": "YOU GOT A STRIKE, MIND YOUR OWN BUSINESS NEXT TIME.",
         "url": "https://c.tenor.com/ep6ztNAdFMcAAAAC/hank-schrider-sussy-baka.gif",
         "description": "HOLD UP THERE ! BAD THINGS ARE NOT ALLOWED HERE, DO IT ELSEWHERE OR FACE THE CONSEQUENCES !",
-        "color": CROWN_COLOR,
-        "image": {"url": "https://c.tenor.com/ep6ztNAdFMcAAAAC/hank-schrider-sussy-baka.gif"},
+        "color": Env.CROWN_COLOR,
+        "image": {
+            "url": "https://c.tenor.com/ep6ztNAdFMcAAAAC/hank-schrider-sussy-baka.gif"
+        },
         "author": {
             "name": "The Z Butler",
             "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
@@ -87,8 +90,10 @@ def no_perms_config():
         "title": "You SUSSY BAKA !",
         "url": "https://c.tenor.com/ep6ztNAdFMcAAAAC/hank-schrider-sussy-baka.gif",
         "description": "You're not powerful enough to use this command, how pitiful 😒",
-        "color": BOT_COLOR,
-        "image": {"url": "https://c.tenor.com/ep6ztNAdFMcAAAAC/hank-schrider-sussy-baka.gif"},
+        "color": Env.BOT_COLOR,
+        "image": {
+            "url": "https://c.tenor.com/ep6ztNAdFMcAAAAC/hank-schrider-sussy-baka.gif"
+        },
         "author": {
             "name": "The Z Butler",
             "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",

@@ -25,6 +25,8 @@ black = "*"
 pylint = "*"
 isort = {extras = ["pipfile_deprecated_finder"], version = "*"}
 pytest = "*"
+pytest-httpx = "*"
+pytest-asyncio = "*"
 
 [requires]
 python_version = "3.11"
