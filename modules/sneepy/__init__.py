@@ -1,1 +1,2 @@
-from .sneeper import Sneeper
+from .sneeper import *
+from .sneeps import *

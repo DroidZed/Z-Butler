@@ -1,4 +1,6 @@
-from utils.singleton_class import SingletonClass
+from utils import SingletonClass
+from networking import HttpAsyncClient
+from config import Env
 
 
 class Sneeper(metaclass=SingletonClass):

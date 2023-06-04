@@ -1,6 +1,6 @@
 from .help import ZedHelpCommand
 from .embedder import *
-from .http import *
+from .networking import *
 from .sneepy import *
 from .spotify_helper import *
 from .welcome_image import *

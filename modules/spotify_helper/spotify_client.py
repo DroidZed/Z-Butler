@@ -1,11 +1,7 @@
-from modules.http.http_async_client import HttpAsyncClient
+from networking import HttpAsyncClient
 
-from utils.singleton_class import SingletonClass
-from config.main import (
-    SPOTIFY_CLIENT_ID,
-    SPOTIFY_CLIENT_SECRET,
-)
-from utils.helpers import strToB64
+from config import Env
+from utils import strToB64, SingletonClass
 
 
 class SpotifyClient(metaclass=SingletonClass):
@@ -31,7 +27,7 @@ class SpotifyClient(metaclass=SingletonClass):
 
     async def authenticate_client(self):
         headers = {
-            "Authorization": f'Basic {strToB64(f"{SPOTIFY_CLIENT_ID}:{SPOTIFY_CLIENT_SECRET}").decode()}',
+            "Authorization": f'Basic {strToB64(f"{Env.SPOTIFY_CLIENT_ID}:{Env.SPOTIFY_CLIENT_SECRET}").decode()}',
             "Content-Type": "application/x-www-form-urlencoded",
             "Accept": "application/json",
         }
