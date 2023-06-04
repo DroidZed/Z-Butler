@@ -20,21 +20,16 @@ class EmbedderMachine:
         thumbnail_url: Optional[str] = None,
         image_url: Optional[str] = None,
     ):
-        self.__embed.set_title(title).set_description(
-            description
-        ).set_author(
+        self.__embed.set_title(title)
+        self.__embed.set_description(description)
+        self.__embed.set_author(
             name="The Z Butler",
             icon_url="https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
-        ).set_color(
-            color
-        ).set_url(
-            url
-        ).add_thumbnail(
-            thumbnail_url
-        ).attach_image(
-            image_url
         )
-        return self
+        self.__embed.set_color(color)
+        self.__embed.set_url(url)
+        self.__embed.add_thumbnail(thumbnail_url)
+        self.__embed.attach_image(image_url)
 
     def add_fields(self, *fields: ZembedField):
         for field in fields:
@@ -44,8 +39,6 @@ class EmbedderMachine:
                 inline=field.inline,
             )
 
-        return self
-
     def add_footer(
         self, footer_icon: str, footer_text: str
     ):
@@ -53,8 +46,39 @@ class EmbedderMachine:
             text=footer_text, icon_url=footer_icon
         )
 
-        return self
-
     def remove_image(self):
         self.__embed.remove_image()
-        return self
+
+
+def generate_embed(
+    title: Optional[str] = None,
+    description: Optional[str] = None,
+    color: Optional[int] = None,
+    url: Optional[str] = None,
+    thumbnail_url: Optional[str] = None,
+    image_url: Optional[str] = None,
+    footer_icon: Optional[str] = None,
+    footer_text: Optional[str] = None,
+    rem_img=False,
+    *fields: ZembedField,
+) -> Zembed:
+    machine = EmbedderMachine()
+
+    machine.set_embed_components(
+        title,
+        description,
+        color,
+        url,
+        thumbnail_url,
+        image_url,
+    )
+
+    if footer_icon and footer_text:
+        machine.add_footer(footer_icon, footer_text)
+
+    machine.add_fields(*fields)
+
+    if rem_img:
+        machine.remove_image
+
+    return machine.embed
