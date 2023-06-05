@@ -1,10 +1,12 @@
-from networking import HttpAsyncClient
+from modules.networking import HttpAsyncClient, RequestError
 
 from config import Env
 from utils import strToB64, SingletonClass
 
+from .melody_models import Album, Melody, Wave
 
-class SpotifyClient(metaclass=SingletonClass):
+
+class MelodyWave(metaclass=SingletonClass):
     def __init__(
         self,
         http: HttpAsyncClient = HttpAsyncClient(),
@@ -40,14 +42,16 @@ class SpotifyClient(metaclass=SingletonClass):
             headers=headers,
         )
 
-        if resp and isinstance(resp, dict):
-            self._token = resp["access_token"]
-            self._token_type = resp["token_type"]
-            self._expiry = resp["expires_in"]
+        data = resp.Data
+
+        if data:
+            self._token = data["access_token"]
+            self._token_type = data["token_type"]
+            self._expiry = data["expires_in"]
 
             return self
         else:
-            return
+            return resp.Error
 
     async def __search(
         self,
@@ -70,4 +74,42 @@ class SpotifyClient(metaclass=SingletonClass):
 
         url = "https://api.spotify.com/v1/search"
 
-        return await self._client.get(url, headers, params)
+        result = await self._client.get(
+            url, headers, params
+        )
+
+        if result.Data:
+            data = result.Data["tracks"]["items"][0]
+
+            return Melody(
+                track=data["name"],
+                artists=[
+                    art["name"] for art in data["artists"]
+                ],
+                album=Album(
+                    name=data["album"]["name"],
+                    art=data["album"]["images"][0],
+                ),
+                href=data["external_urls"]["spotify"],
+            )
+        else:
+            return result.Error
+
+    async def fetch_lyrics(
+        self, title: str, artist: str | None = None
+    ):
+        res = await self._client.get(
+            f"https://some-random-api.ml/lyrics?title={title}{'%20' + artist if artist else ''}"
+        )
+
+        data = res.Data
+        if data:
+            return Wave(
+                data["title"],
+                data["author"],
+                data["thumbnail"]["genius"],
+                data["links"]["genius"],
+                data["lyrics"],
+            )
+        else:
+            return res.Error

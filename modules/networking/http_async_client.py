@@ -1,11 +1,9 @@
-from typing import Dict, Optional, Any, List, Union
+from typing import Dict, Optional, Any
+from enum import Enum
 from httpx import AsyncClient, HTTPStatusError
 
 from .http_errors import RequestError
-
-Result = Union[
-    List[Dict[str, Any]], Dict[str, Any], RequestError
-]
+from .models import Result
 
 
 class HttpAsyncClient:
@@ -33,7 +31,8 @@ class HttpAsyncClient:
             url_params: Optional URL parameters to include in the request.
 
         Returns:
-            The JSON response body as a dictionary or list, or a RequestError if there was an error.
+            A Result instance representing either the JSON response body as a dictionary or list,
+            or a RequestError if there was an error.
 
         Raises:
             RequestError: If there was an error in the request.
@@ -55,12 +54,16 @@ class HttpAsyncClient:
                         params=url_params,
                     )
                 response.raise_for_status()
-                return response.json()
+                return Result(
+                    Data=response.json(), Error=None
+                )
         except HTTPStatusError as exec:
             error_message = (
                 f"Endpoint returned: {exec.response!r}\n"
             )
-            raise RequestError(error_message)
+            return Result(
+                Error=RequestError(error_message), Data=None
+            )
 
     async def get(
         self,

@@ -9,7 +9,7 @@ from discord.ext.commands import (
     BucketType,
 )
 
-from config.main import PREFIX
+from config import Env
 
 from coinpaprika_async import Client
 
@@ -25,7 +25,7 @@ class Miscellaneous(
 
     @command(
         name="convert",
-        usage=f"{PREFIX}convert `base` `amount` `target`",
+        usage=f"{Env.PREFIX}convert `base` `amount` `target`",
         description="""
              Converts the amount into the corresponding currency. Only abbreviations are supported.
              Here's a decent list including a large amount of acronyms to use with this command,
@@ -55,8 +55,21 @@ class Miscellaneous(
 
         client = Client()
 
+        res = await client.price_converter(
+            {
+                "base_currency_id": "btc-bitcoin",
+                "quote_currency_id": "usd-us-dollars",
+                "amount": 1337,
+            }
+        )
+
+        if res.status_code >= 400:
+            return await ctx.send(
+                "An error occurrent when converting the coins!"
+            )
+
         await ctx.send(
-            f"You're converting {amount} {base}(s) into {target}(s)."
+            f"You're converting {amount} {base}(s) into {target}(s).\nFinal value is {res.data}"
         )
 
 

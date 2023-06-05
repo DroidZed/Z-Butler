@@ -1,5 +1,5 @@
 from utils import SingletonClass
-from networking import HttpAsyncClient
+from modules.networking import HttpAsyncClient
 from config import Env
 
 

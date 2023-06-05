@@ -1,13 +1,10 @@
 import pytest
 
-from json import dumps
-from typing import Optional
-
-from modules.spotify_helper import SpotifyClient
+from modules.melody_wave import MelodyWave
 
 
-class TestSpotifyClientModule:
-    _client = SpotifyClient()
+class TestMelodyWaveModule:
+    _client = MelodyWave()
 
     @pytest.mark.asyncio
     async def test_should_provide_a_connected_instance(
@@ -15,9 +12,11 @@ class TestSpotifyClientModule:
     ):
         res = await self._client.authenticate_client()
 
-        assert res != None
+        assert isinstance(res, MelodyWave)
 
         self._client = res
+
+        print(self._client._token)
 
     @pytest.mark.asyncio
     async def test_should_consume_a_valid_song_data(

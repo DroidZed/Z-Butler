@@ -2,10 +2,7 @@ from typing import Any, Optional
 from httpx import AsyncClient
 
 from utils.singleton_class import SingletonClass
-from config.main import (
-    TWITCH_CLIENT_ID,
-    TWITCH_CLIENT_SECRET,
-)
+from config import Env
 
 
 async def get_pfp(login: str) -> str | None:
@@ -19,7 +16,7 @@ async def get_pfp(login: str) -> str | None:
 
     headers = {
         "Authorization": f"Bearer {twitch_bearer_data.token}",
-        "Client-Id": TWITCH_CLIENT_ID,
+        "Client-Id": Env.TWITCH_CLIENT_ID,
     }
 
     url = f"https://api.twitch.tv/helix/search/channels?query={login}&live_only=true&first=2"
@@ -37,8 +34,8 @@ async def get_pfp(login: str) -> str | None:
 
 async def authenticate() -> dict:
     params = {
-        "client_id": TWITCH_CLIENT_ID,
-        "client_secret": TWITCH_CLIENT_SECRET,
+        "client_id": Env.TWITCH_CLIENT_ID,
+        "client_secret": Env.TWITCH_CLIENT_SECRET,
         "grant_type": "client_credentials",
     }
 
@@ -67,7 +64,6 @@ class TwitchClient(metaclass=SingletonClass):
     def __init__(
         self, data: Optional[dict[str, Any]] = None
     ):
-
         if data:
             self.__data = data
             self.__token = self.__data["access_token"]
@@ -111,7 +107,6 @@ class TwitchClient(metaclass=SingletonClass):
         self.__data = await authenticate()
 
     def decrement_expiration(self):
-
         if self.__expiration_day > 0:
             self.__expiration_day -= 1
         else:

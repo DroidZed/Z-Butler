@@ -1,12 +1,12 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from utils.singleton_class import SingletonClass
-from config.main import DB_NAME, MDB_SRV
+from config import Env
 
 
 class MongoDBConnection(metaclass=SingletonClass):
     def __init__(self):
-        self.__db_connection = AsyncIOMotorClient(MDB_SRV, serverSelectionTimeoutMS=5000)[DB_NAME]
+        self.__db_connection = AsyncIOMotorClient(Env.MDB_SRV, serverSelectionTimeoutMS=5000)[Env.DB_NAME]
 
     @property
     def db_connection(self):

@@ -2,6 +2,7 @@ from io import BytesIO
 from sys import stderr
 from traceback import print_exception
 from typing import Optional
+from random import choice
 
 from discord import (
     File,
@@ -13,6 +14,7 @@ from discord import (
 )
 from discord.ext.commands import Bot, Cog, Context
 from discord.ext.commands.errors import (
+    CheckFailure,
     CommandError,
     MemberNotFound,
     CommandNotFound,
@@ -23,17 +25,12 @@ from discord.ext.commands.errors import (
 )
 
 from httpx import ReadTimeout
-from modules.embedder.embedder_machine import (
-    EmbedderMachine,
-)
 
-from modules.mongo.db_manager import MongoDBHelperClient
-from config.colors import BOT_COLOR
-from config.links import get_server_image
-from config.main import GUILD_ID
-from modules.welcome_image.create_welcome_image import (
-    create_welcome_image,
-)
+from config import Env
+from utils.helpers import get_server_image
+from modules.embedder import generate_embed
+from modules.mongo import MongoDBHelperClient
+from modules.welcome_image import create_welcome_image
 
 
 class EventHandlers(
@@ -60,7 +57,7 @@ class EventHandlers(
 
     @Cog.listener()
     async def on_member_join(self, member: Member):
-        guild = self.bot.get_guild(GUILD_ID)
+        guild = self.bot.get_guild(Env.GUILD_ID)
 
         channel = (
             guild.get_channel(self.out_channel)
@@ -86,25 +83,6 @@ class EventHandlers(
 
                 image_binary.seek(0)
 
-                try:
-                    machine = EmbedderMachine()
-
-                    machine.set_embed_components(
-                        title=f"Hello there fellow Dragon Warrior",
-                        description="Welcome to **DRAGON'S HEART** !! Please open a ticket in "
-                        "<#778292937426731049> and a member of the staff team will be with you "
-                        "shortly",
-                    )
-
-                    machine.add_footer(
-                        footer_text="Your trusty bot Z 🔱",
-                        footer_icon="https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
-                    )
-
-                    await member.send(embed=machine.embed)
-                except Forbidden:
-                    pass
-
                 await channel.send(
                     content=f"👋🏻 <@{member.id}> a new recruit has joined the guild !! Bring the beer 🍻",
                     file=File(
@@ -115,7 +93,7 @@ class EventHandlers(
 
     @Cog.listener()
     async def on_member_remove(self, member: Member):
-        guild = self.bot.get_guild(GUILD_ID)
+        guild = self.bot.get_guild(Env.GUILD_ID)
 
         channel = (
             guild.get_channel(self.out_channel)
@@ -137,20 +115,15 @@ class EventHandlers(
                 {"uid": member.id}
             )
 
-        machine = EmbedderMachine()
-
-        machine.set_embed_components(
-            title=f"{member.name} Left us.",
-            description=f"<@{member.id}> got sucked into a black hole <a:black_hole:1071059323482021929>, long forgotten.",
-            thumbnail_url=get_server_image(guild),
+        await channel.send(
+            embed=generate_embed(
+                title=f"{member.name} Left us.",
+                description=f"<@{member.id}> got sucked into a black hole <a:black_hole:1071059323482021929>, long forgotten.",
+                thumbnail_url=get_server_image(guild),
+                footer_icon="https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                footer_text="We shall never remember those who left our cause.",
+            )
         )
-
-        machine.add_footer(
-            footer_icon="https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
-            footer_text="We shall never remember those who left our cause.",
-        )
-
-        await channel.send(embed=machine.embed)
 
     @Cog.listener()
     async def on_command_error(
@@ -159,6 +132,17 @@ class EventHandlers(
         match error:
             case MissingPermissions():
                 return
+
+            case CheckFailure():
+                await ctx.reply(
+                    choice(
+                        [
+                            "Failing like the weak you are, go find a gf or do some training.",
+                            "Get a life you stupid fat fuck, talk to real life people instead of wasting my time, "
+                            "you're parents ain't proud of you.",
+                        ]
+                    )
+                )
 
             case MemberNotFound():
                 await ctx.reply(

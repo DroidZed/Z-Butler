@@ -12,11 +12,8 @@ from discord.ext.commands import (
     cooldown,
 )
 
-
-from config.colors import BOT_COLOR
-from config.links import server_image
-from config.main import PREFIX
-from functions.helpers import eight_ball_answers
+from config import Env
+from utils.helpers import eight_ball_answers
 from modules.api.animals import (
     get_random_cat_facts,
     get_random_dog_picture,
@@ -38,7 +35,7 @@ class FunCog(
 
     @command(
         name="SUS",
-        usage=f"{PREFIX}SUS `username`",
+        usage=f"{Env.PREFIX}SUS `username`",
         description="I think we got an imposter among us...",
         aliases=["sus", "amogus", "imposter"],
     )
@@ -63,7 +60,7 @@ class FunCog(
 
     @command(
         name="gif_search",
-        usage=f"{PREFIX}gif_search `query`",
+        usage=f"{Env.PREFIX}gif_search `query`",
         description="Look for a gif about a certain topic",
         aliases=["gif?"],
     )
@@ -101,7 +98,7 @@ class FunCog(
 
     @command(
         name="ping",
-        usage=f"{PREFIX}ping",
+        usage=f"{Env.PREFIX}ping",
         description="Show the bot's ping.",
     )
     @cooldown(1, 2, BucketType.member)
@@ -151,7 +148,7 @@ class FunCog(
 
     @command(
         name="8ball",
-        usage=f"{PREFIX}8ball `question`",
+        usage=f"{Env.PREFIX}8ball `question`",
         description="Ask the magical 8 ball about anything.",
         aliases=["8b"],
     )
@@ -196,7 +193,7 @@ class FunCog(
 
     @command(
         name="hug",
-        usage=f"{PREFIX}hug `username`",
+        usage=f"{Env.PREFIX}hug `username`",
         description="Give someone some a hug !!",
     )
     @cooldown(1, 2, BucketType.user)
@@ -231,7 +228,7 @@ class FunCog(
 
     @command(
         name="randomCatFact",
-        usage=f"{PREFIX}rcf",
+        usage=f"{Env.PREFIX}rcf",
         description="Sends a random cat fact",
         aliases=["rcf"],
     )
@@ -258,7 +255,7 @@ class FunCog(
 
     @command(
         name="doggoPics",
-        usage=f"{PREFIX}rdp",
+        usage=f"{Env.PREFIX}rdp",
         description="Sends a random dog pic",
         aliases=["rdp"],
     )

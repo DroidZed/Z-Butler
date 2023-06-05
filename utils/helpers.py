@@ -12,15 +12,6 @@ from discord import (
 )
 
 
-from modules.embedder.zembed_models import (
-    ZembedField,
-    Zembed,
-)
-from modules.embedder.embedder_machine import (
-    EmbedderMachine,
-)
-
-
 def get_server_image(g: Optional[Guild]) -> Optional[str]:
     return g.icon.url if g and g.icon else None
 

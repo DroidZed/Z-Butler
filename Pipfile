@@ -18,6 +18,7 @@ aiodns = "*"
 orjson = "*"
 brotlipy = "*"
 coinpaprika-async = "*"
+anime-api = "*"
 
 [dev-packages]
 pre-commit = "*"

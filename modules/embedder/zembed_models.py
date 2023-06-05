@@ -2,7 +2,7 @@ from typing import Optional, Any
 from dataclasses import dataclass
 from discord import Embed
 
-from config.colors import BOT_COLOR
+from config import Env
 
 
 @dataclass
@@ -22,7 +22,7 @@ class Zembed(Embed):
             self.description = description
 
     def set_color(self, color: Optional[int]):
-        self.color = color or BOT_COLOR
+        self.color = color or Env.BOT_COLOR
 
     def set_url(self, url: Optional[str]):
         if url:

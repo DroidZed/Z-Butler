@@ -3,16 +3,16 @@ import os
 from discord import Intents, Game
 from discord.ext import commands
 
-from .modules import ZedHelpCommand, MongoDBConnection
-from .utils import print_msg
-from .config import Env
+from modules import ZedHelpCommand, MongoDBConnection
+from utils import print_msg
+from config import Env
 
 # Intents
 intents = Intents.all()
 
 # The bot
 bot = commands.Bot(
-    command_prefix=commands.when_mentioned_or(PREFIX),  # type: ignore
+    command_prefix=commands.when_mentioned_or(Env.PREFIX),  # type: ignore
     intents=intents,
     owner_id=Env.OWNER_ID,
     help_command=ZedHelpCommand(),
