@@ -1,8 +1,6 @@
 from decouple import config
 from dataclasses import dataclass
 
-from utils.singleton_class import SingletonClass
-
 
 @dataclass
 class Env:

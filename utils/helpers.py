@@ -57,9 +57,7 @@ def eight_ball_answers() -> str:
 
 
 def extract_guild_data(
-    roles: List[Role],
-    members: List[Member],
-    description: str,
+    roles: List[Role], members: List[Member]
 ):
     roles_count: int = len(roles) - 1
 
@@ -82,7 +80,6 @@ def extract_guild_data(
         roles_count,
         online_users_count,
         machines_count,
-        description,
     )
 
 

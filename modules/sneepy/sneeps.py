@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-@dataclass
+@dataclass(repr=True)
 class Sneep:
     _id: str
     content: str

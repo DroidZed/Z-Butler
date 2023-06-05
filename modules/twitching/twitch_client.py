@@ -2,7 +2,7 @@ from typing import Any, Optional
 from httpx import AsyncClient
 
 from utils.singleton_class import SingletonClass
-from config import Env
+from utils import Env
 
 
 async def get_pfp(login: str) -> str | None:

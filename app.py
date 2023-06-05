@@ -3,9 +3,10 @@ import os
 from discord import Intents, Game
 from discord.ext import commands
 
-from modules import ZedHelpCommand, MongoDBConnection
+from modules import ZedHelpCommand
+from modules.mongo import MongoDBConnection
 from utils import print_msg
-from config import Env
+from utils import Env
 
 # Intents
 intents = Intents.all()

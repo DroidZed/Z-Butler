@@ -10,10 +10,13 @@ from discord.ext.commands import (
     cooldown,
 )
 
-from config import Env
-from modules.melody_wave import MelodyWave, Wave
+from utils import Env
+from modules.melody_wave import MelodyWave, Wave, Melody
 from modules.embedder import generate_embed
-from utils.converters import SongNameConverter, SongArtistConverter
+from utils.converters import (
+    SongNameConverter,
+    SongArtistConverter,
+)
 
 
 class MusicCog(
@@ -27,10 +30,9 @@ class MusicCog(
 
     async def __send_lyrics(
         self, ctx: Context, title: str, artist: str
-    ) -> None:
+    ):
         if not (title and artist):
-            await ctx.send("❌ invalid input !!")
-            return
+            return await ctx.send("❌ invalid input !!")
 
         async with ctx.typing():
             data = await self.melo.fetch_lyrics(
@@ -38,10 +40,9 @@ class MusicCog(
             )
 
         if not isinstance(data, Wave):
-            await ctx.send(
+            return await ctx.send(
                 "❌ Cannot find lyrics for the given song...."
             )
-            return
 
         else:
             try:
@@ -62,7 +63,7 @@ class MusicCog(
                     )
                 )
             except Forbidden:
-                await ctx.reply(
+                return await ctx.reply(
                     "Please open your DMs to get the lyrics !!",
                     mention_author=True,
                 )
@@ -82,23 +83,20 @@ class MusicCog(
         ctx: Context,
         title: Optional[SongNameConverter] = None,
         artist: Optional[SongArtistConverter] = None,
-    ) -> None:
+    ):
         if not title and not artist:
-            acts = ctx.author.activities
-
-            act = None
-
             raw_title, raw_artist = "", ""
+            acts = ctx.author.activities  # type: ignore
 
             for a in acts:
                 if isinstance(a, Spotify):
-                    act = a
+                    raw_title = a.title
+                    raw_artist = a.artist
 
-            if isinstance(act, Spotify):
-                raw_title = act.title
-                raw_artist = act.artist
-
-        await self.__send_lyrics(ctx, raw_title, raw_artist)
+            return await self.__send_lyrics(
+                ctx, raw_title, raw_artist
+            )
+        return await self.__send_lyrics(ctx, title, artist)  # type: ignore
 
     @command(
         name="song",
@@ -112,46 +110,31 @@ class MusicCog(
         ctx: Context,
         title: SongNameConverter,
         artist: SongArtistConverter,
-    ) -> None:
+    ):
         async with ctx.typing():
-            data = find_song(title, artist)
-
-        if not data:
-            await ctx.send(
-                "❌ Unable to find the song you're looking for...Try again later."
+            result = await self.melo.search_song(
+                title, artist  # type: ignore
             )
-            return
 
-        await ctx.send(
-            embed=EmbedFactory.create_embed(
-                EmbedFactory.create_config(
-                    title=f"**{data['track']}**",
-                    url=data["href"],
-                    color=Env.SPOTIFY_COLOR,
-                    description=f"The song you've requested, by {' '.join(art for art in data['artists'])} from the "
-                    f"album **{data['album']['name']}**",
-                    image={
-                        "url": f"{data['album']['art']['url']}",
-                        "width": data["album"]["art"][
-                            "width"
-                        ],
-                        "height": data["album"]["art"][
-                            "height"
-                        ],
-                    },
-                    author={
-                        "name": "The Z Butler",
-                        "icon_url": "https://cdn.discordapp.com/avatars/759844892443672586"
-                        "/bb7df4730c048faacd8db6dd99291cdb.jpg",
-                    },
-                    thumbnail={"url": Env.SERVER_IMAGE},
-                    footer={
-                        "text": "Songs params provided by Spotify 💚",
-                        "icon_url": "https://1000logos.net/wp-content/uploads/2017/08/Spotify-Logo.png",
-                    },
-                )
-            )
-        )
+            match result:
+                case Melody():
+                    embed = generate_embed(
+                        title=f"**{result.track}**",
+                        url=result.href,
+                        color=Env.SPOTIFY_COLOR,
+                        description=f"The song you've requested, by {' '.join(art for art in result.artists)} from the "
+                        f"album **{result.album.name}**",
+                        image_url=f"{result.album.art}",
+                        thumbnail_url=Env.SERVER_IMAGE,
+                        footer_icon="https://1000logos.net/wp-content/uploads/2017/08/Spotify-Logo.png",
+                        footer_text="Songs params provided by Spotify 💚",
+                    )
+                    return await ctx.send(embed=embed)
+
+                case _:
+                    return await ctx.send(
+                        "❌ Unable to find the song you're looking for...Try again later."
+                    )
 
 
 def setup(bot: Bot):

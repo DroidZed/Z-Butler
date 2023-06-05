@@ -1,4 +1,4 @@
-from .help import ZedHelpCommand
+from .z_help_command import *
 from .embedder import *
 from .networking import *
 from .sneepy import *
@@ -7,3 +7,5 @@ from .welcome_image import *
 from .twitching import *
 from .mongo import *
 from .japan_heaven import *
+from .animals_api import *
+from .tenor_api import *

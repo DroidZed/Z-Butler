@@ -2,14 +2,14 @@ from typing import Optional, Any
 from dataclasses import dataclass
 from discord import Embed
 
-from config import Env
+from utils import Env
 
 
 @dataclass
 class ZembedField:
     name: str
     value: Any
-    inline: bool
+    inline: bool = False
 
 
 class Zembed(Embed):

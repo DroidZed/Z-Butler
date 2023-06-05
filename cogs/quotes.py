@@ -1,5 +1,3 @@
-from typing import Any
-
 from discord import TextChannel
 
 from discord.ext.commands import (
@@ -14,17 +12,17 @@ from discord.ext.commands import (
 
 from discord.ext.tasks import loop
 
-from anime_api.apis.animechan import Quote
+from modules.japan_heaven.anime_quoter import AnimeQuote
 
-from config import Env
+from utils import Env
 from modules.japan_heaven import AnimeQuoter
 from modules.embedder import (
     generate_embed,
 )
 
 
-def _grab_quote():
-    return AnimeQuoter().random_anime_quote()
+async def _grab_quote():
+    return await AnimeQuoter().random_anime_quote()
 
 
 class QuotesCog(
@@ -38,7 +36,7 @@ class QuotesCog(
         self.daily_quote.stop()
 
     async def _send_quote(
-        self, destination: Context, quote: Quote
+        self, destination: Context, quote: AnimeQuote
     ):
         await destination.send(
             embed=generate_embed(
@@ -57,9 +55,21 @@ class QuotesCog(
     @cooldown(1, 5, BucketType.user)
     async def random_quote(self, ctx: Context):
         async with ctx.typing():
-            quote = _grab_quote()
+            result = await _grab_quote()
 
-        return await self._send_quote(ctx, quote)
+            match result:
+                case AnimeQuote():
+                    return await self._send_quote(
+                        ctx, result
+                    )
+                case _:
+                    return await ctx.send(
+                        embed=generate_embed(
+                            title="Quote - Error",
+                            description="No quotes for you...",
+                            color=Env.BOT_COLOR,
+                        )
+                    )
 
     @command(
         name="sdq",
@@ -68,11 +78,19 @@ class QuotesCog(
     )
     @is_owner()
     async def start_daily_quotes(self, ctx: Context):
-        await ctx.send(
-            "🏃 Starting the daily quote routine...",
-            delete_after=1.5,
-        )
-        self.daily_quote.start()
+        try:
+            await ctx.send(
+                "🏃 Starting the daily quote routine...",
+                delete_after=1.5,
+            )
+            self.daily_quote.start()
+        except RuntimeError:
+            return await ctx.send(
+                embed=generate_embed(
+                    title="Quoty - Error",
+                    description="Task already started!",
+                )
+            )
 
     @command(
         name="!sdq",
@@ -81,15 +99,26 @@ class QuotesCog(
     )
     @is_owner()
     async def stop_daily_quotes(self, ctx: Context):
-        await ctx.send(
-            "🛑 Ending the daily quote routine...",
-            delete_after=1.5,
-        )
-        self.daily_quote.cancel()
+        try:
+            await ctx.send(
+                embed=generate_embed(
+                    title="Quoty",
+                    description="🛑 Ending the daily quote routine...",
+                ),
+                delete_after=1.5,
+            )
+            self.daily_quote.cancel()
+        except RuntimeError:
+            return await ctx.send(
+                embed=generate_embed(
+                    title="Quoty - Error",
+                    description="Task already cancelled!",
+                )
+            )
 
     @loop(hours=24, reconnect=True)
-    async def daily_quote(self) -> None:
-        quote = _grab_quote()
+    async def daily_quote(self):
+        result = await _grab_quote()
 
         wisdom_channel = self.bot.get_channel(
             1071141767145082910
@@ -98,13 +127,22 @@ class QuotesCog(
         if wisdom_channel and isinstance(
             wisdom_channel, TextChannel
         ):
-            await wisdom_channel.send(
-                embed=generate_embed(
-                    title=f"**{quote.character} - {quote.anime}**",
-                    color=Env.BOT_COLOR,
-                    description=f"*{quote.quote}*",
-                )
-            )
+            match result:
+                case AnimeQuote():
+                    return await wisdom_channel.send(
+                        embed=generate_embed(
+                            title=f"**{result.character} - {result.anime}**",
+                            color=Env.BOT_COLOR,
+                            description=f"*{result.quote}*",
+                        )
+                    )
+                case _:
+                    return await wisdom_channel.send(
+                        embed=generate_embed(
+                            title="Quoty",
+                            description="No quotes for now...",
+                        )
+                    )
 
     @daily_quote.before_loop
     async def before_printer(self):

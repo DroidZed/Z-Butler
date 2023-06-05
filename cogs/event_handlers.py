@@ -26,7 +26,7 @@ from discord.ext.commands.errors import (
 
 from httpx import ReadTimeout
 
-from config import Env
+from utils import Env
 from utils.helpers import get_server_image
 from modules.embedder import generate_embed
 from modules.mongo import MongoDBHelperClient

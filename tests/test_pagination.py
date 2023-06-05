@@ -1,5 +1,4 @@
 from utils.pagination_helper import PaginationHelper
-import pytest
 
 
 class TestPagination:

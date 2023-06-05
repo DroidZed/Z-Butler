@@ -9,7 +9,7 @@ from discord.ext.commands import (
     BucketType,
 )
 
-from config import Env
+from utils import Env
 
 from coinpaprika_async import Client
 
@@ -49,17 +49,17 @@ class Miscellaneous(
             await ctx.send("❌ Invalid input !!")
             return
 
-        base = float(res.groups()[0])
+        base = res.groups()[0]
         amount = float(res.groups()[1])
-        target = float(res.groups()[2])
+        target = res.groups()[2]
 
         client = Client()
 
         res = await client.price_converter(
             {
-                "base_currency_id": "btc-bitcoin",
-                "quote_currency_id": "usd-us-dollars",
-                "amount": 1337,
+                "base_currency_id": base,
+                "quote_currency_id": target,
+                "amount": amount,
             }
         )
 

@@ -13,11 +13,10 @@ from discord.ext.commands import (
     BadBoolArgument,
 )
 
-from api.images import find_gif
-from config.colors import BOT_COLOR
-from config.main import PREFIX, OWNER_ID
+from utils import Env
 
-from classes.embedder_machine import EmbedderMachine
+from modules.tenor_api import TenorAPI
+from modules.embedder import generate_embed
 
 
 class ZedCog(
@@ -27,11 +26,12 @@ class ZedCog(
 ):
     def __init__(self, bot: Bot):
         self.bot = bot
+        self.tenor = TenorAPI()
 
     @command(
         name="Z",
         description="Calls the bot. This command is a work in progress.",
-        usage=f"{PREFIX}",
+        usage=f"{Env.PREFIX}",
     )
     @cooldown(1, 2.5, BucketType.user)
     async def zed(self, ctx: Context):
@@ -45,7 +45,7 @@ class ZedCog(
             "I bet your parents aren't proud of you and your gf/bf thinks you're a boring little clamp !",
         )
 
-        if ctx.author.id == OWNER_ID:
+        if ctx.author.id == Env.OWNER_ID:
             await ctx.message.reply(
                 "Hello master 😍", mention_author=True
             )
@@ -59,25 +59,22 @@ class ZedCog(
     @command(
         name="env",
         description="Displays the bot's environment",
-        usage=f"{PREFIX}env",
+        usage=f"{Env.PREFIX}env",
     )
     async def env(self, ctx: Context):
-
-        machine = EmbedderMachine()
-
-        machine.set_embed_components(
-            title="Working Environment",
-            description="I'm working under the **latest** and **greatest** of"
-            f"\n <:python:1071060794759970867> Python: `{python_version()}`"
-            f"\n <:pycord:1071060792721555538> Pycord: `{__version__}`",
+        return await ctx.send(
+            embed=generate_embed(
+                title="Working Environment",
+                description="I'm working under the **latest** and **greatest** of"
+                f"\n <:python:1071060794759970867> Python: `{python_version()}`"
+                f"\n <:pycord:1071060792721555538> Pycord: `{__version__}`",
+            )
         )
-
-        await ctx.send(embed=machine.embed)
 
     @command(
         name="say",
         description="Say something :/",
-        usage=f"{PREFIX}say `True` | `False` `your message`",
+        usage=f"{Env.PREFIX}say `True` | `False` `your message`",
     )
     async def say(
         self,
@@ -99,20 +96,22 @@ class ZedCog(
         name="python",
         aliases=["py"],
         description="Python is superior 🐍",
-        usage=f"{PREFIX}py",
+        usage=f"{Env.PREFIX}py",
     )
     async def python(self, ctx: Context):
         await ctx.message.delete()
 
         async with ctx.typing():
-            gif = await find_gif("python")
+            gif = await self.tenor.find_gif("python")
 
-        await ctx.send(
+        if not isinstance(gif, str):
+            return ctx.send("Couldn't find a gif for you!")
+
+        return await ctx.send(
             choice(
                 [
-                    gif["url"]
-                    if gif
-                    else choice(
+                    gif
+                    or choice(
                         [
                             "https://tenor.com/view/python-gif-20799882",
                             "https://tenor.com/view/java-python-fight-me-saber-tdfw-gif-16168791",
@@ -130,10 +129,9 @@ class ZedCog(
         name="emoji",
         aliases=["em"],
         description="Send info about an emoji",
-        usage=f"{PREFIX}em",
+        usage=f"{Env.PREFIX}em `emoji`",
     )
     async def emoji(self, ctx: Context, em: Emoji):
-
         await ctx.send(
             f"`Emoji: [name = '{em.name}', representation = {em}]`"
         )
@@ -150,7 +148,6 @@ class ZedCog(
     async def say_handler(
         self, ctx: Context, error: CommandError
     ):
-
         if isinstance(error, BadBoolArgument):
             await ctx.reply(
                 "Please provide the correct argument for writing the signature."

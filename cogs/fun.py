@@ -12,17 +12,19 @@ from discord.ext.commands import (
     cooldown,
 )
 
-from config import Env
+from utils import Env
 from utils.helpers import eight_ball_answers
-from modules.api.animals import (
-    get_random_cat_facts,
-    get_random_dog_picture,
+from modules.animals_api import (
+    AnimalsAPI,
+    CatFact,
+    DocPicture,
 )
-from modules.api.images import find_gif
-from modules.embedder.embedder_machine import (
+from modules.tenor_api import TenorAPI
+from modules.embedder import (
+    generate_embed,
+    ZembedField,
     EmbedderMachine,
 )
-from modules.embedder.zembed_models import ZembedField
 
 
 class FunCog(
@@ -32,6 +34,8 @@ class FunCog(
 ):
     def __init__(self, bot: Bot):
         self.bot = bot
+        self.tenor_api = TenorAPI()
+        self.animals_api = AnimalsAPI()
 
     @command(
         name="SUS",
@@ -44,7 +48,7 @@ class FunCog(
         self,
         ctx: Context,
         member: Optional[Member | User] = None,
-    ) -> None:
+    ):
         member = member or ctx.message.author
 
         await ctx.message.delete()
@@ -65,36 +69,26 @@ class FunCog(
         aliases=["gif?"],
     )
     @cooldown(1, 15, BucketType.user)
-    async def look_for_gif(
-        self, ctx: Context, *query: str
-    ) -> None:
-
+    async def look_for_gif(self, ctx: Context, *query: str):
         topic = " ".join(query)
 
         async with ctx.typing():
-            result_set = await find_gif(topic)
+            link = await self.tenor_api.find_gif(topic)
 
-        if result_set:
-
-            machine = EmbedderMachine()
-
-            machine.set_embed_components(
-                title=f"**{'NOICE 😏' if topic == '69' else topic}**",
-                image_url=f"{result_set['media'][0]['gif']['url']}",
+        if isinstance(link, str):
+            return await ctx.send(
+                embed=generate_embed(
+                    title=f"**{'NOICE 😏' if topic == '69' else topic}**",
+                    image_url=f"{link}",
+                    footer_text=f"Requested by {ctx.message.author.name} 💙",
+                    footer_icon=f"{ctx.message.author.display_avatar.url}",
+                )
             )
-
-            machine.add_footer(
-                footer_text=f"Requested by {ctx.message.author.name} 💙",
-                footer_icon=f"{ctx.message.author.display_avatar.url}",
-            )
-
-            await ctx.send(embed=machine.embed)
 
         else:
-            await ctx.send(
+            return await ctx.send(
                 content=f"No GIF found for the topic {topic}"
             )
-            return
 
     @command(
         name="ping",
@@ -102,8 +96,7 @@ class FunCog(
         description="Show the bot's ping.",
     )
     @cooldown(1, 2, BucketType.member)
-    async def ping(self, ctx: Context) -> None:
-
+    async def ping(self, ctx: Context):
         await ctx.message.delete()
 
         start_time = time.time()
@@ -144,7 +137,7 @@ class FunCog(
             ),
         )
 
-        await message.edit(embed=machine.embed)
+        return await message.edit(embed=machine.embed)
 
     @command(
         name="8ball",
@@ -153,13 +146,9 @@ class FunCog(
         aliases=["8b"],
     )
     @cooldown(1, 5, BucketType.member)
-    async def _8_ball(
-        self, ctx: Context, *question: str
-    ) -> None:
-
+    async def _8_ball(self, ctx: Context, *question: str):
         if not question:
-            await ctx.send("No question provided 🙄")
-            return
+            return await ctx.send("No question provided 🙄")
 
         machine = EmbedderMachine()
 
@@ -201,30 +190,25 @@ class FunCog(
         self,
         ctx: Context,
         member: Optional[Member | User] = None,
-    ) -> None:
-
+    ):
         member = member or ctx.author
 
         async with ctx.typing():
-            gif = await find_gif("hug anime")
+            gif = await self.tenor_api.find_gif("hug anime")
 
-        if not gif:
-            await ctx.send("Couldn't send the hug :(")
-            return
+        if not isinstance(gif, str):
+            return await ctx.send(
+                "Couldn't send the hug :("
+            )
 
-        machine = EmbedderMachine()
-
-        machine.set_embed_components(
-            title=f"{member.name} I send you a hug by {ctx.author.name} ❤",
-            image_url=f"{gif['media'][0]['gif']['url']}",
+        await ctx.send(
+            embed=generate_embed(
+                title=f"{member.name} I send you a hug by {ctx.author.name} ❤",
+                image_url=gif,
+                footer_text=f"Requested by {ctx.message.author.name} 💙",
+                footer_icon=f"{ctx.message.author.display_avatar.url}",
+            )
         )
-
-        machine.add_footer(
-            footer_text=f"Requested by {ctx.message.author.name} 💙",
-            footer_icon=f"{ctx.message.author.display_avatar.url}",
-        )
-
-        await ctx.send(embed=machine.embed)
 
     @command(
         name="randomCatFact",
@@ -234,24 +218,22 @@ class FunCog(
     )
     @cooldown(1, 2, BucketType.user)
     async def random_cat_facts(self, ctx: Context):
-
         async with ctx.typing():
-            res = await get_random_cat_facts()
+            res = (
+                await self.animals_api.get_random_cat_facts()
+            )
 
-        if not res:
-            await ctx.send(
+        if not isinstance(res, CatFact):
+            return await ctx.send(
                 "Unable to persue the request, the API failed."
             )
-            return
 
-        machine = EmbedderMachine()
-
-        machine.set_embed_components(
-            title="Cat facts",
-            description=f"*{res['fact']}*",
+        await ctx.send(
+            embed=generate_embed(
+                title="Cat facts",
+                description=f"*{res.fact}*",
+            )
         )
-
-        await ctx.send(embed=machine.embed)
 
     @command(
         name="doggoPics",
@@ -261,23 +243,22 @@ class FunCog(
     )
     @cooldown(1, 2, BucketType.user)
     async def random_dog_pics(self, ctx: Context):
-
         async with ctx.typing():
-            res = await get_random_dog_picture()
+            res = (
+                await self.animals_api.get_random_dog_picture()
+            )
 
-            if not res or res["status"] != "success":
-                await ctx.send(
-                    "Unable to persue the request, the API failed."
-                )
-                return
+        if (
+            not isinstance(res, DocPicture)
+            or res.status != "success"
+        ):
+            return await ctx.send(
+                "Unable to persue the request, the API failed."
+            )
 
-        machine = EmbedderMachine()
-
-        machine.set_embed_components(
-            image_url=f"{res['message']}"
+        await ctx.send(
+            embed=generate_embed(image_url=res.message)
         )
-
-        await ctx.send(embed=machine.embed)
 
 
 def setup(bot: Bot):

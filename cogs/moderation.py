@@ -8,7 +8,7 @@ from discord.ext.commands.errors import (
 
 from modules.embedder import ZembedField, generate_embed
 from modules.mongo.db_manager import MongoDBHelperClient
-from config import Env
+from utils import Env
 
 
 class ModerationCog(
@@ -294,7 +294,7 @@ class ModerationCog(
     )
     @has_guild_permissions(manage_messages=True)
     async def purge(self, ctx: Context, amount: int):
-        await ctx.channel.purge(limit=amount)
+        await ctx.channel.purge(limit=amount)  # type: ignore
 
     @command(
         name="mute",
@@ -370,42 +370,42 @@ class ModerationCog(
 
     # error handlers
 
-    @purge.error
+    @purge.error  # type: ignore
     async def purge_handler(
         self, ctx: Context, error: CommandError
     ) -> None:
         if isinstance(error, MissingPermissions):
             await self.invalid_perms_embed(ctx, "purge")
 
-    @ban.error
+    @ban.error  # type: ignore
     async def ban_handler(
         self, ctx: Context, error: CommandError
     ) -> None:
         if isinstance(error, MissingPermissions):
             await self.invalid_perms_embed(ctx, "ban")
 
-    @kick.error
+    @kick.error  # type: ignore
     async def kick_handler(
         self, ctx: Context, error: CommandError
     ) -> None:
         if isinstance(error, MissingPermissions):
             await self.invalid_perms_embed(ctx, "kick")
 
-    @strike.error
+    @strike.error  # type: ignore
     async def strike_handler(
         self, ctx: Context, error: CommandError
     ) -> None:
         if isinstance(error, MissingPermissions):
             await self.invalid_perms_embed(ctx, "strike")
 
-    @mute.error
+    @mute.error  # type: ignore
     async def mute_handler(
         self, ctx: Context, error: CommandError
     ) -> None:
         if isinstance(error, MissingPermissions):
             await self.invalid_perms_embed(ctx, "mute")
 
-    @unmute.error
+    @unmute.error  # type: ignore
     async def unmute_handler(
         self, ctx: Context, error: CommandError
     ) -> None:

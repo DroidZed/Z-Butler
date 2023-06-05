@@ -1,6 +1,6 @@
 from modules.networking import HttpAsyncClient, RequestError
 
-from config import Env
+from utils import Env
 from utils import strToB64, SingletonClass
 
 from .melody_models import Album, Melody, Wave
@@ -99,7 +99,7 @@ class MelodyWave(metaclass=SingletonClass):
         self, title: str, artist: str | None = None
     ):
         res = await self._client.get(
-            f"https://some-random-api.ml/lyrics?title={title}{'%20' + artist if artist else ''}"
+            f"https://some-random-api.com/others/lyrics?title={title}{f' {artist}' if artist else ''}"
         )
 
         data = res.Data
@@ -110,6 +110,8 @@ class MelodyWave(metaclass=SingletonClass):
                 data["thumbnail"]["genius"],
                 data["links"]["genius"],
                 data["lyrics"],
+                data["disclaimer"],
+                data["source"]
             )
         else:
             return res.Error

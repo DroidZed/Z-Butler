@@ -2,7 +2,7 @@ from typing import Mapping, Optional, List
 
 from discord.ext.commands import HelpCommand, Cog, Command
 
-from config import Env
+from utils import Env
 
 from modules.embedder import (
     ZembedField,
@@ -33,15 +33,21 @@ class ZedHelpCommand(HelpCommand):
             )
             for rep in mapping
             if rep
-            and rep.qualified_name != "Event Handlers"
+            and rep.qualified_name != "Event Handlers" and "WIP" not in rep.qualified_name
         )
 
         embed = generate_embed(
-            title="Help Command",
-            color=Env.BOT_COLOR,
-            description="Showing you the list of my powers, write Zhelp <command name> | <category name> for more info on those.",
-            footer_text=self._default_footer_text,
-            footer_icon=self._default_footer_img,
+            "Help Command",
+            "Showing you the list of my powers, write Zhelp <command name> | <category name> for more info on those.",
+            Env.BOT_COLOR,
+            None,
+            None,
+            None,
+            None,
+            None,
+            self._default_footer_img,
+            self._default_footer_text,
+            False,
             *commands,
         )
 
@@ -61,11 +67,17 @@ class ZedHelpCommand(HelpCommand):
         )
 
         embed = generate_embed(
-            title=cog.qualified_name,
-            color=Env.BOT_COLOR,
-            description=cog.description,
-            footer_text=self._default_footer_text,
-            footer_icon=self._default_footer_img,
+            cog.qualified_name,
+            cog.description,
+            Env.BOT_COLOR,
+            None,
+            None,
+            None,
+            None,
+            None,
+            self._default_footer_img,
+            self._default_footer_text,
+            False,
             *commands,
         )
 
@@ -84,11 +96,17 @@ class ZedHelpCommand(HelpCommand):
         ]
 
         embed = generate_embed(
-            title=command.name,
-            color=Env.BOT_COLOR,
-            description=command.description,
-            footer_text=self._default_footer_text,
-            footer_icon=self._default_footer_img,
+            command.name,
+            command.description,
+            Env.BOT_COLOR,
+            None,
+            None,
+            None,
+            None,
+            None,
+            self._default_footer_img,
+            self._default_footer_text,
+            False,
             *desc,
         )
 

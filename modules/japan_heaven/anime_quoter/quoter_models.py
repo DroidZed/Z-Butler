@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 
-@dataclass
+@dataclass(repr=True)
 class AnimeQuote:
     anime: str
     character: str
