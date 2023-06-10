@@ -1,5 +1,4 @@
 from typing import Dict, Optional, Any
-from enum import Enum
 from httpx import AsyncClient, HTTPStatusError
 
 from .http_errors import RequestError
@@ -17,7 +16,8 @@ class HttpAsyncClient:
         self,
         method: str,
         url: str,
-        body: Optional[Dict[str, Any]] = None,
+        data: Optional[Dict[str, Any]] = None,
+        json: Optional[Dict[str, Any]] = None,
         headers: Optional[Dict[str, str]] = None,
         url_params: Optional[Dict[str, Any]] = None,
     ) -> Result:
@@ -49,7 +49,8 @@ class HttpAsyncClient:
                 else:
                     response = await request_method(
                         url,
-                        json=body,
+                        data=data,
+                        json=json,
                         headers=headers,
                         params=url_params,
                     )
@@ -59,7 +60,7 @@ class HttpAsyncClient:
                 )
         except HTTPStatusError as exec:
             error_message = (
-                f"Endpoint returned: {exec.response!r}\n"
+                f"Endpoint returned: {exec.response.text}\n"
             )
             return Result(
                 Error=RequestError(error_message), Data=None
@@ -91,7 +92,8 @@ class HttpAsyncClient:
     async def post(
         self,
         url: str,
-        body: Dict[str, Any],
+        data: Optional[Dict[str, Any]] = None,
+        json: Optional[Dict[str, Any]] = None,
         headers: Optional[Dict[str, str]] = None,
         url_params: Optional[Dict[str, Any]] = None,
     ) -> Result:
@@ -109,7 +111,8 @@ class HttpAsyncClient:
         return await self.send_request(
             "post",
             url,
-            body=body,
+            data=data,
+            json=json,
             headers=headers,
             url_params=url_params,
         )
@@ -117,7 +120,8 @@ class HttpAsyncClient:
     async def put(
         self,
         url: str,
-        body: Dict[str, Any],
+        data: Optional[Dict[str, Any]] = None,
+        json: Optional[Dict[str, Any]] = None,
         headers: Optional[Dict[str, str]] = None,
         url_params: Optional[Dict[str, Any]] = None,
     ) -> Result:
@@ -135,7 +139,8 @@ class HttpAsyncClient:
         return await self.send_request(
             "put",
             url,
-            body=body,
+            data=data,
+            json=json,
             headers=headers,
             url_params=url_params,
         )
@@ -143,7 +148,8 @@ class HttpAsyncClient:
     async def patch(
         self,
         url: str,
-        body: Dict[str, Any],
+        data: Optional[Dict[str, Any]] = None,
+        json: Optional[Dict[str, Any]] = None,
         headers: Optional[Dict[str, str]] = None,
         url_params: Optional[Dict[str, Any]] = None,
     ) -> Result:
@@ -161,7 +167,8 @@ class HttpAsyncClient:
         return await self.send_request(
             "patch",
             url,
-            body=body,
+            data=data,
+            json=json,
             headers=headers,
             url_params=url_params,
         )

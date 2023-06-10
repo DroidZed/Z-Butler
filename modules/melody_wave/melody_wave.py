@@ -30,7 +30,6 @@ class MelodyWave(metaclass=SingletonClass):
     async def authenticate_client(self):
         headers = {
             "Authorization": f'Basic {strToB64(f"{Env.SPOTIFY_CLIENT_ID}:{Env.SPOTIFY_CLIENT_SECRET}").decode()}',
-            "Content-Type": "application/x-www-form-urlencoded",
             "Accept": "application/json",
         }
 
@@ -38,7 +37,7 @@ class MelodyWave(metaclass=SingletonClass):
 
         resp = await self._client.post(
             url="https://accounts.spotify.com/api/token",
-            body=data,
+            data=data,
             headers=headers,
         )
 
@@ -111,7 +110,7 @@ class MelodyWave(metaclass=SingletonClass):
                 data["links"]["genius"],
                 data["lyrics"],
                 data["disclaimer"],
-                data["source"]
+                data["source"],
             )
         else:
             return res.Error

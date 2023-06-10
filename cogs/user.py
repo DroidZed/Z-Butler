@@ -23,11 +23,7 @@ from utils import Env
 
 from modules.embedder import generate_embed
 from modules.tenor_api import TenorAPI
-from modules.twitching import (
-    TwitchClient,
-    authenticate,
-    get_pfp,
-)
+from modules.twitching import TwitchClient, TwitchAuthClient
 
 
 class UserCog(
@@ -38,8 +34,12 @@ class UserCog(
     def __init__(self, bot: Bot):
         self.bot = bot
         self.tenor_api = TenorAPI()
+        self.twitch_auth = TwitchAuthClient()
+        self.twitch_client = TwitchClient(
+            auth=self.twitch_auth
+        )
 
-    #    self.decrement_token_validity.start()
+        self.decrement_token_validity.start()
 
     def cog_unload(self):
         self.decrement_token_validity.stop()
@@ -201,13 +201,15 @@ class UserCog(
 
             case Streaming():
                 async with ctx.typing():
-                    streamer_image_url: str | None = (
-                        await get_pfp(act.url[22:])
+                    streamer_image_url = (
+                        await self.twitch_client.get_pfp(
+                            act.url[22:]
+                        )
                     )
 
                     if (
-                        streamer_image_url
-                        and not streamer_image_url.startswith(
+                        not isinstance(streamer_image_url, str)
+                        or not streamer_image_url.startswith(
                             "https://"
                         )
                     ):
@@ -251,11 +253,11 @@ class UserCog(
 
     @loop(hours=24, reconnect=True)
     async def decrement_token_validity(self):
-        TwitchClient().decrement_expiration()
+        self.twitch_auth.decrement_expiration()
 
     @decrement_token_validity.before_loop
     async def before_token_decrement(self):
-        TwitchClient(await authenticate())
+        await self.twitch_auth.refresh_token()
 
         await self.bot.wait_until_ready()
 

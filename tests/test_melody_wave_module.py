@@ -16,8 +16,6 @@ class TestMelodyWaveModule:
 
         self._client = res
 
-        print(self._client._token)
-
     @pytest.mark.asyncio
     async def test_should_consume_a_valid_song_data(
         self,
