@@ -1,4 +1,4 @@
-from networking import HttpAsyncClient
+from modules.networking import HttpAsyncClient
 
 from utils import SingletonClass
 from utils import Env

@@ -19,6 +19,7 @@ orjson = "*"
 brotlipy = "*"
 coinpaprika-async = "*"
 anime-api = "*"
+aiofiles = "*"
 
 [dev-packages]
 pre-commit = "*"

@@ -9,3 +9,4 @@ from .mongo import *
 from .japan_heaven import *
 from .animals_api import *
 from .tenor_api import *
+from .coinpaprika import *

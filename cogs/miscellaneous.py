@@ -11,7 +11,7 @@ from discord.ext.commands import (
 
 from utils import Env
 
-from coinpaprika_async import Client
+from modules.coinpaprika import CoinManager
 
 
 class Miscellaneous(
@@ -22,6 +22,7 @@ class Miscellaneous(
 ):
     def __init__(self, bot: Bot):
         self.bot = bot
+        self.coin_manager = CoinManager()
 
     @command(
         name="convert",
@@ -53,14 +54,10 @@ class Miscellaneous(
         amount = float(res.groups()[1])
         target = res.groups()[2]
 
-        client = Client()
-
-        res = await client.price_converter(
-            {
-                "base_currency_id": base,
-                "quote_currency_id": target,
-                "amount": amount,
-            }
+        res = await self.coin_manager.convert_coin(
+            base,
+            target,
+            amount,
         )
 
         if res.status_code >= 400:

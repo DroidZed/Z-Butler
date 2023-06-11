@@ -1,5 +1,5 @@
 from utils import Env
-from networking import HttpAsyncClient
+from modules.networking import HttpAsyncClient
 
 
 class TwitchAuthClient:
