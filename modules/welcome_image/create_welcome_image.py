@@ -64,9 +64,3 @@ def create_welcome_image(username: str):
         )
 
     return i
-
-
-if __name__ == "__main__":
-    i = create_welcome_image("Manoula")
-
-    i.save("test.png")
