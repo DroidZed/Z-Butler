@@ -9,6 +9,8 @@ from discord.ext.commands import (
     BucketType,
 )
 
+from coinpaprika_async import ApiError
+
 from utils import Env
 
 from modules.coinpaprika import CoinManager
@@ -51,7 +53,7 @@ class Miscellaneous(
             return
 
         base = res.groups()[0]
-        amount = float(res.groups()[1])
+        amount = int(res.groups()[1])
         target = res.groups()[2]
 
         res = await self.coin_manager.convert_coin(
@@ -60,13 +62,13 @@ class Miscellaneous(
             amount,
         )
 
-        if res.status_code >= 400:
+        if isinstance(res, ApiError):
             return await ctx.send(
                 "An error occurrent when converting the coins!"
             )
 
         await ctx.send(
-            f"You're converting {amount} {base}(s) into {target}(s).\nFinal value is {res.data}"
+            f"You're converting {amount} {base}(s) into {target}(s).\nFinal value is {res.price}"
         )
 
 

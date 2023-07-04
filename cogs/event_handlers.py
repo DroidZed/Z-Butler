@@ -77,8 +77,7 @@ class EventHandlers(
         if channel and isinstance(channel, TextChannel):
             with BytesIO() as image_binary:
                 create_welcome_image(
-                    username=f"{member.name}",
-                    discriminator=f"{member.discriminator}",
+                    username=f"{member.name}"
                 ).save(image_binary, "PNG")
 
                 image_binary.seek(0)

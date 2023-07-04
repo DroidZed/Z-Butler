@@ -65,7 +65,7 @@ class ZedCog(
         return await ctx.send(
             embed=generate_embed(
                 title="Working Environment",
-                description="I'm working under the **latest** and **greatest** of"
+                description="I'm working under the **latest** and **greatest** of:"
                 f"\n <:python:1071060794759970867> Python: `{python_version()}`"
                 f"\n <:pycord:1071060792721555538> Pycord: `{__version__}`",
             )

@@ -25,12 +25,12 @@ async def _grab_quote():
     return await AnimeQuoter().random_anime_quote()
 
 
+# FIXME: Find what happened to the quotes API !
 class QuotesCog(
     Cog, name="Quotes", description="💭 Quoty quotes !"
 ):
     def __init__(self, bot: Bot):
         self.bot = bot
-        self.daily_quote.start()
 
     def cog_unload(self):
         self.daily_quote.stop()
