@@ -1,11 +1,49 @@
+[tool.poetry]
+name = "z-butler"
+version = "3.17"
+description = "Z butler bot for your server"
+authors = ["DroidZed <41507665+DroidZed@users.noreply.github.com>"]
+license = "GPL-3.0-or-later"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+python-decouple = "^3.8"
+httpx = { extras = ["http2"], version = "^0.26.0" }
+numpy = "^1.26.3"
+beautifulsoup4 = "^4.12.2"
+rich = "^13.7.0"
+motor = "^3.3.2"
+py-cord = { extras = ["speed"], version = "^2.4.1" }
+aiodns = "^3.1.1"
+orjson = "^3.9.10"
+brotlipy = "^0.7.0"
+coinpaprika-async = "^3.0.2"
+anime-api = "^1.0.2"
+aiofiles = "^23.2.1"
+pillow = "^10.2.0"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.6.0"
+black = "^23.12.1"
+pylint = "^3.0.3"
+isort = "^5.13.2"
+pytest = "^7.4.4"
+pytest-httpx = "^0.28.0"
+pytest-asyncio = "^0.23.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
 [tool.black]
-line-length = 60
+line-length = 80
 target-version = ['py310']
 include = '\.pyi?$'
 extend-exclude = '''
 # A regex preceded with ^/ will apply only to files and directories
 # in the root of the project.
-^/test.py  # exclude a file named test.py in the root of the project (in addition to the defaults)
+^/src/test.py  # exclude a file named test.py in the root of the project (in addition to the defaults)
 '''
 [tool.isort]
 profile = "black"
