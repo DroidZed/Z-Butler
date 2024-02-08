@@ -13,6 +13,7 @@ from discord.ext.commands import (
 from discord.ext.tasks import loop
 
 from modules.japan_heaven.anime_quoter import AnimeQuote
+from modules.networking.http_errors import RequestError
 
 from utils import Env
 from modules.japan_heaven import AnimeQuoter
@@ -62,11 +63,19 @@ class QuotesCog(
                     return await self._send_quote(
                         ctx, result
                     )
+                case RequestError() as e:
+                    return await ctx.send(
+                        embed=generate_embed(
+                            title="Quote - Error",
+                            description=f"No quotes for you.\n Here's why: {e.message}",
+                            color=Env.BOT_COLOR,
+                        )
+                    )
                 case _:
                     return await ctx.send(
                         embed=generate_embed(
                             title="Quote - Error",
-                            description="No quotes for you...",
+                            description=f"No quotes for you...",
                             color=Env.BOT_COLOR,
                         )
                     )

@@ -7,7 +7,7 @@ license = "GPL-3.0-or-later"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.11"
 python-decouple = "^3.8"
 httpx = { extras = ["http2"], version = "^0.26.0" }
 numpy = "^1.26.3"

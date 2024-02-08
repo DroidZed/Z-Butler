@@ -56,25 +56,21 @@ def eight_ball_answers() -> str:
     return choice(answers[choice(["+", "-", "/"])])
 
 
-def extract_guild_data(
-    roles: List[Role], members: List[Member]
-):
+def extract_guild_data(roles: List[Role], members: List[Member]):
     roles_count: int = len(roles) - 1
 
     online_users_count: int = len(
         list(
             filter(
-                lambda member: member.status
-                != Status.offline
+                lambda member: member.status != Status.offline
+                and member.status != Status.invisible
                 and not member.bot,
                 members,
             )
         )
     )
 
-    machines_count: int = len(
-        list(filter(lambda member: member.bot, members))
-    )
+    machines_count: int = len(list(filter(lambda member: member.bot, members)))
 
     return (
         roles_count,
@@ -86,23 +82,15 @@ def extract_guild_data(
 def print_msg():
     print("/" * 39)
     print(" ----------\\")
-    rch.print(
-        " |       [b cyan]*[/]  |         [white]/[/]\\"
-    )
+    rch.print(" |       [b cyan]*[/]  |         [white]/[/]\\")
     print(" --------   |        /  \\")
     print("       /   /         \\   \\")
     print("      /   /          /   /")
-    rch.print(
-        "     [white]/[/]   [white]/[/] [b blue]The Z Bot[/] \\   \\"
-    )
+    rch.print("     [white]/[/]   [white]/[/] [b blue]The Z Bot[/] \\   \\")
     print("    |   --------------   /")
-    rch.print(
-        "    |       [b green]ONLINE[/]      [white]/[/]"
-    )
+    rch.print("    |       [b green]ONLINE[/]      [white]/[/]")
     print("     ------------------")
-    rch.print(
-        f"|[b]         [i]By: [purple]DroidZed[/purple][/i]{' ' * 16}|"
-    )
+    rch.print(f"|[b]         [i]By: [purple]DroidZed[/purple][/i]{' ' * 16}|")
     rch.print(
         f"|[b] Discord version: [u blue]{version_info.major}.{version_info.minor}.{version_info.micro}[/u blue]{' ' * 14}|",
         end="\n",

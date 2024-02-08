@@ -21,7 +21,7 @@ bot = commands.Bot(
 
 # Load cogs
 if __name__ == "__main__":
-    for filename in os.listdir("cogs"):
+    for filename in os.listdir("./src/cogs"):
         if filename.endswith(".py"):
             bot.load_extension(f"cogs.{filename[:-3]}")
 
@@ -31,9 +31,7 @@ async def on_ready():
     print_msg()
 
     await bot.change_presence(
-        activity=Game(
-            name=f"{Env.PREFIX}help - By DroidZed"
-        )
+        activity=Game(name=f"{Env.PREFIX}help - By DroidZed")
     )
 
     MongoDBConnection()

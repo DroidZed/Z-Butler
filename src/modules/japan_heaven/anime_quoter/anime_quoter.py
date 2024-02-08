@@ -9,7 +9,7 @@ class AnimeQuoter(metaclass=SingletonClass):
         self.client = HttpAsyncClient()
 
     async def random_anime_quote(self):
-        result = await self.client.get("http://chan.melosh.space/random")
+        result = await self.client.get("https://animechan.xyz/api/random")
 
         if result.Error:
             return result.Error
