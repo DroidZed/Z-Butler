@@ -12,6 +12,7 @@ from discord.ext.commands import (
     cooldown,
 )
 
+
 from utils import Env
 from utils.helpers import eight_ball_answers
 from modules.animals_api import (
@@ -86,9 +87,7 @@ class FunCog(
             )
 
         else:
-            return await ctx.send(
-                content=f"No GIF found for the topic {topic}"
-            )
+            return await ctx.send(content=f"No GIF found for the topic {topic}")
 
     @command(
         name="ping",
@@ -114,9 +113,7 @@ class FunCog(
             footer_icon=f"{ctx.message.author.display_avatar.url}",
         )
 
-        message: Message = await ctx.send(
-            embed=machine.embed
-        )
+        message: Message = await ctx.send(embed=machine.embed)
 
         end_time = time.time()
 
@@ -163,9 +160,7 @@ class FunCog(
             footer_text="8Ball by Z Butler 💙",
         )
 
-        message: Message = await ctx.send(
-            embed=machine.embed
-        )
+        message: Message = await ctx.send(embed=machine.embed)
 
         async with ctx.typing():
             answer = eight_ball_answers()
@@ -191,15 +186,13 @@ class FunCog(
         ctx: Context,
         member: Optional[Member | User] = None,
     ):
-        member = member or ctx.author
+        member = member or ctx.author()
 
         async with ctx.typing():
             gif = await self.tenor_api.find_gif("hug anime")
 
         if not isinstance(gif, str):
-            return await ctx.send(
-                "Couldn't send the hug :("
-            )
+            return await ctx.send("Couldn't send the hug :(")
 
         await ctx.send(
             embed=generate_embed(
@@ -219,13 +212,11 @@ class FunCog(
     @cooldown(1, 2, BucketType.user)
     async def random_cat_facts(self, ctx: Context):
         async with ctx.typing():
-            res = (
-                await self.animals_api.get_random_cat_facts()
-            )
+            res = await self.animals_api.get_random_cat_facts()
 
         if not isinstance(res, CatFact):
             return await ctx.send(
-                "Unable to persue the request, the API failed."
+                "Unable to pursue the request, the API failed."
             )
 
         await ctx.send(
@@ -244,21 +235,14 @@ class FunCog(
     @cooldown(1, 2, BucketType.user)
     async def random_dog_pics(self, ctx: Context):
         async with ctx.typing():
-            res = (
-                await self.animals_api.get_random_dog_picture()
-            )
+            res = await self.animals_api.get_random_dog_picture()
 
-        if (
-            not isinstance(res, DocPicture)
-            or res.status != "success"
-        ):
+        if not isinstance(res, DocPicture) or res.status != "success":
             return await ctx.send(
-                "Unable to persue the request, the API failed."
+                "Unable to pursue the request, the API failed."
             )
 
-        await ctx.send(
-            embed=generate_embed(image_url=res.message)
-        )
+        await ctx.send(embed=generate_embed(image_url=res.message))
 
 
 def setup(bot: Bot):

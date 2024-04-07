@@ -45,10 +45,8 @@ class ZedCog(
             "I bet your parents aren't proud of you and your gf/bf thinks you're a boring little clamp !",
         )
 
-        if ctx.author.id == Env.OWNER_ID:
-            await ctx.message.reply(
-                "Hello master 😍", mention_author=True
-            )
+        if ctx.author().id == Env.OWNER_ID:
+            await ctx.message.reply("Hello master 😍", mention_author=True)
             return
 
         await ctx.message.reply(
@@ -84,11 +82,7 @@ class ZedCog(
     ):
         await ctx.message.delete()
 
-        auth = (
-            f"- *By {ctx.author.name}*"
-            if with_author
-            else ""
-        )
+        auth = f"- *By {ctx.author().name}*" if with_author else ""
 
         await ctx.send(f'{" ".join(msg)} {auth}')
 
@@ -132,22 +126,16 @@ class ZedCog(
         usage=f"{Env.PREFIX}em `emoji`",
     )
     async def emoji(self, ctx: Context, em: Emoji):
-        await ctx.send(
-            f"`Emoji: [name = '{em.name}', representation = {em}]`"
-        )
+        await ctx.send(f"`Emoji: [name = '{em.name}', representation = {em}]`")
 
     @emoji.error  # type: ignore
-    async def emoji_handler(
-        self, ctx: Context, error: CommandError
-    ):
+    async def emoji_handler(self, ctx: Context, error: CommandError):
         await ctx.reply(
             "Please send a correct emoji that is *available* on the server !"
         )
 
     @say.error  # type: ignore
-    async def say_handler(
-        self, ctx: Context, error: CommandError
-    ):
+    async def say_handler(self, ctx: Context, error: CommandError):
         if isinstance(error, BadBoolArgument):
             await ctx.reply(
                 "Please provide the correct argument for writing the signature."

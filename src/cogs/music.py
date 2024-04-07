@@ -46,7 +46,7 @@ class MusicCog(
 
         else:
             try:
-                await ctx.author.send(
+                await ctx.author().send(
                     embed=generate_embed(
                         title=f"**{data.title}** by {data.artist}",
                         url=data.song_url,
@@ -86,7 +86,7 @@ class MusicCog(
     ):
         if not title and not artist:
             raw_title, raw_artist = "", ""
-            acts = ctx.author.activities  # type: ignore
+            acts = ctx.author().activities  # type: ignore
 
             for a in acts:
                 if isinstance(a, Spotify):

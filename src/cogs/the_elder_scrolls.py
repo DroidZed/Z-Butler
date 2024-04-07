@@ -21,17 +21,16 @@ class TheElderScrolls(
         self.bot = bot
 
     @command(
-        name="sky_drags",
-        usage=f"{Env.PREFIX}sky_drags",
-        description="Gives info about Skyrim Dragons",
-        alises=["skds"],
+        name="dragons",
+        usage=f"{Env.PREFIX}dragons",
+        description="Gives info about Elder Scrolls Dragons Dragons",
     )
     @cooldown(1, 2.5, BucketType.user)
-    async def skyrim_dragons(self, ctx: Context):
+    async def dragons(self, ctx: Context):
         await ctx.send(
             embed=generate_embed(
-                title="Skyrim Dragons Info",
-                description="Use this command to inform yourself about the mysterious creatures tha tear the northern skies of Skyrim.",
+                title="Elder Scrolls Dragons Info",
+                description="Use this command to inform yourself about the mysterious creatures tha tear the skies of Mundus, SoulCairn and Sovngarde!.",
             )
         )
 

@@ -7,9 +7,9 @@ class TwitchAuthClient:
         self, http: HttpAsyncClient = HttpAsyncClient()
     ):
         self._client = http
-        self.__token = ""
-        self.__expiration_day = 0
-        self.__is_token_expired = False
+        self.__token: str = ""
+        self.__expiration_day: int = 0
+        self.__is_token_expired: bool = False
 
     @property
     def token(self):

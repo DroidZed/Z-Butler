@@ -12,25 +12,26 @@ python-decouple = "^3.8"
 httpx = { extras = ["http2"], version = "^0.26.0" }
 numpy = "^1.26.3"
 beautifulsoup4 = "^4.12.2"
-rich = "^13.7.0"
-motor = "^3.3.2"
-py-cord = { extras = ["speed"], version = "^2.4.1" }
-aiodns = "^3.1.1"
-orjson = "^3.9.10"
+rich = "^13.7.1"
+motor = "^3.4.0"
+py-cord = { extras = ["speed"], version = "^2.5.0" }
+aiodns = "^3.2.0"
+orjson = "^3.10.0"
 brotlipy = "^0.7.0"
 coinpaprika-async = "^3.0.2"
 anime-api = "^1.0.2"
 aiofiles = "^23.2.1"
-pillow = "^10.2.0"
+pillow = "^10.3.0"
+redis = { extras = ["hiredis"], version = "^5.0.3" }
 
 [tool.poetry.group.dev.dependencies]
-pre-commit = "^3.6.0"
+pre-commit = "^3.7.0"
 black = "^23.12.1"
-pylint = "^3.0.3"
+pylint = "^3.1.0"
 isort = "^5.13.2"
 pytest = "^7.4.4"
 pytest-httpx = "^0.28.0"
-pytest-asyncio = "^0.23.3"
+pytest-asyncio = "^0.23.6"
 
 [build-system]
 requires = ["poetry-core"]

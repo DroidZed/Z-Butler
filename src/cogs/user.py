@@ -35,9 +35,7 @@ class UserCog(
         self.bot = bot
         self.tenor_api = TenorAPI()
         self.twitch_auth = TwitchAuthClient()
-        self.twitch_client = TwitchClient(
-            auth=self.twitch_auth
-        )
+        self.twitch_client = TwitchClient(auth=self.twitch_auth)
 
         self.decrement_token_validity.start()
 
@@ -56,7 +54,7 @@ class UserCog(
         ctx: Context,
         member: User | Member | None = None,
     ):
-        member = member or ctx.author
+        member = member or ctx.author()
 
         await ctx.send(
             embed=generate_embed(
@@ -81,7 +79,7 @@ class UserCog(
         *,
         member: User | Member | None = None,
     ):
-        member = member or ctx.author
+        member = member or ctx.author()
 
         await ctx.message.delete()
 
@@ -113,7 +111,7 @@ class UserCog(
         ctx: Context,
         member: User | Member | None = None,
     ):
-        member = member or ctx.author
+        member = member or ctx.author()
         acts = member.activities  # type: ignore
 
         def change_platform_color(platform: str):
@@ -135,9 +133,7 @@ class UserCog(
                 desc += f"\nFollow this [link]({stream_url}) to catch them **LIVE** 🔴 on `{platform}` !"
 
             if streamed_game:
-                desc = desc.replace(
-                    "this", f"{streamed_game}"
-                )
+                desc = desc.replace("this", f"{streamed_game}")
 
             return desc
 
@@ -149,7 +145,7 @@ class UserCog(
             )
 
         if not acts:
-            if member == ctx.author:
+            if member == ctx.author():
                 return await ctx.message.reply(
                     "https://pics.me.me/thumb_c-mon-do-something-me-irl-38375559.png",
                     mention_author=True,
@@ -160,7 +156,7 @@ class UserCog(
                 )
 
         if all(isinstance(e, CustomActivity) for e in acts):
-            if member == ctx.author:
+            if member == ctx.author():
                 return await ctx.message.reply(
                     "Try again later with someone who's actually doing something, "
                     "not a snob like you wasting his life energy instead of being a "
@@ -193,7 +189,7 @@ class UserCog(
                         title=f"{act.name}",
                         description=f"{member.mention} has been `playing` ***{act.name}*** since {act.start.strftime('%x %X') if act.start else ''} 🎮",
                         color=Env.BOT_COLOR,
-                        footer_text=f"Requested by {ctx.author} 💙",
+                        footer_text=f"Requested by {ctx.author()} 💙",
                         footer_icon=f"{ctx.message.author.display_avatar.url}",
                     )
 
@@ -201,18 +197,13 @@ class UserCog(
 
             case Streaming():
                 async with ctx.typing():
-                    streamer_image_url = (
-                        await self.twitch_client.get_pfp(
-                            act.url[22:]
-                        )
+                    streamer_image_url = await self.twitch_client.get_pfp(
+                        act.url[22:]
                     )
 
-                    if (
-                        not isinstance(streamer_image_url, str)
-                        or not streamer_image_url.startswith(
-                            "https://"
-                        )
-                    ):
+                    if not isinstance(
+                        streamer_image_url, str
+                    ) or not streamer_image_url.startswith("https://"):
                         streamer_image_url = None
 
                     embed = generate_embed(
@@ -228,7 +219,7 @@ class UserCog(
                             act.platform  # type: ignore
                         ),
                         url=f"{act.url}",
-                        footer_text=f"Requested by {ctx.author} 💙",
+                        footer_text=f"Requested by {ctx.author()} 💙",
                         footer_icon=f"{ctx.message.author.display_avatar.url}",
                     )
                 return await ctx.send(embed=embed)
@@ -238,18 +229,14 @@ class UserCog(
                     embed = generate_embed(
                         title=f"{member.display_name}'s Activity",
                         description=f"{act.name} since {act.start.strftime('%x %X') if act.start else ''}",
-                        image_url=resolve_image_url(
-                            act.large_image_url
-                        ),
+                        image_url=resolve_image_url(act.large_image_url),
                         color=Env.BOT_COLOR,
-                        footer_text=f"Requested by {ctx.author} 💙",
+                        footer_text=f"Requested by {ctx.author()} 💙",
                         footer_icon=ctx.message.author.display_avatar.url,
                     )
                 return await ctx.send(embed=embed)
             case _:
-                return await ctx.send(
-                    "Nothing, move along...."
-                )
+                return await ctx.send("Nothing, move along....")
 
     @loop(hours=24, reconnect=True)
     async def decrement_token_validity(self):

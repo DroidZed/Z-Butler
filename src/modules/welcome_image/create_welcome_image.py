@@ -64,3 +64,7 @@ def create_welcome_image(username: str):
         )
 
     return i
+
+
+if __name__ == "__main__":
+    create_welcome_image("Miukii").save("m.png")
