@@ -1,7 +1,6 @@
 from modules.networking import HttpAsyncClient, RequestError
 
-from utils import Env
-from utils import strToB64, SingletonClass
+from utils import Env, strToB64, SingletonClass
 
 from .melody_models import Album, Melody, Wave
 
@@ -73,18 +72,14 @@ class MelodyWave(metaclass=SingletonClass):
 
         url = "https://api.spotify.com/v1/search"
 
-        result = await self._client.get(
-            url, headers, params
-        )
+        result = await self._client.get(url, headers, params)
 
         if result.Data:
             data = result.Data["tracks"]["items"][0]
 
             return Melody(
                 track=data["name"],
-                artists=[
-                    art["name"] for art in data["artists"]
-                ],
+                artists=[art["name"] for art in data["artists"]],
                 album=Album(
                     name=data["album"]["name"],
                     art=data["album"]["images"][0],
@@ -94,9 +89,7 @@ class MelodyWave(metaclass=SingletonClass):
         else:
             return result.Error
 
-    async def fetch_lyrics(
-        self, title: str, artist: str | None = None
-    ):
+    async def fetch_lyrics(self, title: str, artist: str | None = None):
         res = await self._client.get(
             f"https://some-random-api.com/others/lyrics?title={title}{f' {artist}' if artist else ''}"
         )

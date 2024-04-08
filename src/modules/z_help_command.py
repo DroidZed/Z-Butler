@@ -15,9 +15,7 @@ class ZedHelpCommand(HelpCommand):
 
     def __init__(self):
         super().__init__()
-        self._default_footer_text = (
-            "The power of The Z Butler 🔱"
-        )
+        self._default_footer_text = "The power of The Z Butler 🔱"
         self._default_footer_img = "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg"
 
     async def send_bot_help(
@@ -26,14 +24,13 @@ class ZedHelpCommand(HelpCommand):
         commands = tuple(
             ZembedField(
                 rep.qualified_name,
-                " ".join(
-                    f"`{cmd}`" for cmd in rep.get_commands()
-                ),
+                " ".join(f"`{cmd}`" for cmd in rep.get_commands()),
                 False,
             )
             for rep in mapping
             if rep
-            and rep.qualified_name != "Event Handlers" and "WIP" not in rep.qualified_name
+            and rep.qualified_name != "Event Handlers"
+            and "WIP" not in rep.qualified_name
         )
 
         embed = generate_embed(
@@ -87,9 +84,7 @@ class ZedHelpCommand(HelpCommand):
         desc = [
             ZembedField(
                 "Aliases",
-                " | ".join(
-                    f"`{a}`" for a in command.aliases if a
-                ),
+                " | ".join(f"`{a}`" for a in command.aliases if a),
                 False,
             ),
             ZembedField("Usage", f"{command.usage}", False),

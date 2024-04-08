@@ -94,7 +94,7 @@ def print_msg():
         f"[b white]|[b]         [i]By: [purple]DroidZed[/purple][/i]{' ' * 16}|"
     )
     rch.print(
-        f"[b white]|[b] Discord version: [u blue]{version_info.major}.{version_info.minor}.{version_info.micro if version_info.micro else 0}[/u blue]{' ' * 11}|",
+        f"[b white]|[b] Discord version: [u blue]{version_info.major}.{version_info.minor}.{version_info.micro if version_info.micro else 0}[/u blue]{' ' * 14}|",
         end="\n",
     )
     rch.print(

@@ -28,7 +28,7 @@ class EmbedderMachine:
         self.__embed.set_author(
             name=author_name or "The Z Butler",
             icon_url=author_icon
-            or "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg"
+            or "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
         )
         self.__embed.set_color(color or Env.BOT_COLOR)
         self.__embed.set_url(url)
@@ -43,12 +43,8 @@ class EmbedderMachine:
                 inline=field.inline,
             )
 
-    def add_footer(
-        self, footer_icon: str, footer_text: str
-    ):
-        self.__embed.set_footer(
-            text=footer_text, icon_url=footer_icon
-        )
+    def add_footer(self, footer_icon: str, footer_text: str):
+        self.__embed.set_footer(text=footer_text, icon_url=footer_icon)
 
     def remove_image(self):
         self.__embed.remove_image()

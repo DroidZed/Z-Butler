@@ -27,18 +27,14 @@ async def _grab_quote():
 
 
 # FIXME: Find what happened to the quotes API !
-class QuotesCog(
-    Cog, name="Quotes", description="💭 Quoty quotes !"
-):
+class QuotesCog(Cog, name="Quotes", description="💭 Quoty quotes !"):
     def __init__(self, bot: Bot):
         self.bot = bot
 
     def cog_unload(self):
         self.daily_quote.stop()
 
-    async def _send_quote(
-        self, destination: Context, quote: AnimeQuote
-    ):
+    async def _send_quote(self, destination: Context, quote: AnimeQuote):
         await destination.send(
             embed=generate_embed(
                 title=f"**{quote.character} - {quote.anime}**",
@@ -60,9 +56,7 @@ class QuotesCog(
 
             match result:
                 case AnimeQuote():
-                    return await self._send_quote(
-                        ctx, result
-                    )
+                    return await self._send_quote(ctx, result)
                 case RequestError() as e:
                     return await ctx.send(
                         embed=generate_embed(
@@ -129,13 +123,9 @@ class QuotesCog(
     async def daily_quote(self):
         result = await _grab_quote()
 
-        wisdom_channel = self.bot.get_channel(
-            1071141767145082910
-        )
+        wisdom_channel = self.bot.get_channel(1071141767145082910)
 
-        if wisdom_channel and isinstance(
-            wisdom_channel, TextChannel
-        ):
+        if wisdom_channel and isinstance(wisdom_channel, TextChannel):
             match result:
                 case AnimeQuote():
                     return await wisdom_channel.send(

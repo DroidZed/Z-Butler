@@ -49,9 +49,7 @@ class EventHandlers(
         lRoles = []
 
         if guild:
-            lRoles.append(
-                guild.get_role(1071798806275969086)
-            )  # Lost Soul
+            lRoles.append(guild.get_role(1071798806275969086))  # Lost Soul
 
         return lRoles
 
@@ -59,11 +57,7 @@ class EventHandlers(
     async def on_member_join(self, member: Member):
         guild = self.bot.get_guild(Env.GUILD_ID)
 
-        channel = (
-            guild.get_channel(self.out_channel)
-            if guild
-            else None
-        )
+        channel = guild.get_channel(self.out_channel) if guild else None
 
         try:
             await member.add_roles(
@@ -76,9 +70,9 @@ class EventHandlers(
 
         if channel and isinstance(channel, TextChannel):
             with BytesIO() as image_binary:
-                create_welcome_image(
-                    username=f"{member.name}"
-                ).save(image_binary, "PNG")
+                create_welcome_image(username=f"{member.name}").save(
+                    image_binary, "PNG"
+                )
 
                 image_binary.seek(0)
 
@@ -94,25 +88,15 @@ class EventHandlers(
     async def on_member_remove(self, member: Member):
         guild = self.bot.get_guild(Env.GUILD_ID)
 
-        channel = (
-            guild.get_channel(self.out_channel)
-            if guild
-            else None
-        )
+        channel = guild.get_channel(self.out_channel) if guild else None
 
         client = MongoDBHelperClient("users")
 
-        if not (
-            channel and isinstance(channel, TextChannel)
-        ):
+        if not (channel and isinstance(channel, TextChannel)):
             return
 
-        if await client.query_collection(
-            {"uid": member.id}
-        ):
-            await client.delete_from_collection(
-                {"uid": member.id}
-            )
+        if await client.query_collection({"uid": member.id}):
+            await client.delete_from_collection({"uid": member.id})
 
         await channel.send(
             embed=generate_embed(
@@ -125,47 +109,48 @@ class EventHandlers(
         )
 
     @Cog.listener()
-    async def on_command_error(
-        self, ctx: Context, error: CommandError
-    ):
+    async def on_command_error(self, ctx: Context, error: CommandError):
         match error:
             case MissingPermissions():
-                return
+                return await ctx.reply(
+                    "You're not allowed to send invoke this command.",
+                    mention_author=True,
+                )
 
             case CheckFailure():
-                await ctx.reply(
+                return await ctx.reply(
                     choice(
                         [
                             "Failing like the weak you are, go find a gf or do some training.",
                             "Get a life you stupid fat fuck, talk to real life people instead of wasting my time, "
-                            "you're parents ain't proud of you.",
+                            "You're parents ain't proud of you.",
                         ]
-                    )
+                    ),
+                    mention_author=True,
                 )
 
             case MemberNotFound():
-                await ctx.reply(
+                return await ctx.reply(
                     "¯\\_(ツ)_/¯ The user provided could not be found, try again...",
                     mention_author=True,
+                    ephemeral=True,
                 )
 
             case CommandOnCooldown():
-                await ctx.reply(
+                return await ctx.reply(
                     f"⏳ Hold your horses, this command is on cooldown, you can use it in {round(error.retry_after, 2)}s",
                     mention_author=True,
+                    ephemeral=True,
                 )
 
             case CommandNotFound():
-                await ctx.send(
+                return await ctx.reply(
                     "Nope, no such command was found *sight* 💨",
                     mention_author=True,
+                    ephemeral=True,
                 )
 
             case CommandInvokeError():
-                await ctx.send(
-                    "❌ Internal anomaly, I wasn't able to handle your request invoker. Sorry for my incompetence.",
-                    mention_author=True,
-                )
                 print_exception(
                     type(error),
                     error,
@@ -173,17 +158,24 @@ class EventHandlers(
                     file=stderr,
                 )
 
+                return await ctx.reply(
+                    "❌ Internal anomaly, I wasn't able to handle your request invoker. Sorry for my incompetence.",
+                    mention_author=True,
+                    ephemeral=True,
+                )
+
             case MissingRequiredArgument():
-                await ctx.reply(
+                return await ctx.reply(
                     "You __***IDIOT***__ !! Don't you know when typing this command, YOU **MUST** provide "
                     "ARGUMENTS ? I think you should go back to elementary school and learn how to read 🙄",
                     mention_author=True,
                 )
 
             case ReadTimeout():
-                await ctx.reply(
+                return await ctx.reply(
                     "Command timed out, please try again ❌",
                     mention_author=True,
+                    ephemeral=True,
                 )
 
             case _:

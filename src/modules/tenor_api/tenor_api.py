@@ -1,15 +1,11 @@
 from random import choice
 
-from modules.networking import HttpAsyncClient
-from utils import SingletonClass
-
-from utils import Env
+from ..networking import HttpAsyncClient
+from utils import SingletonClass, Env
 
 
 class TenorAPI(metaclass=SingletonClass):
-    def __init__(
-        self, http: HttpAsyncClient = HttpAsyncClient()
-    ):
+    def __init__(self, http: HttpAsyncClient = HttpAsyncClient()):
         self.client = http
 
     async def find_gif(self, topic: str):
@@ -25,9 +21,7 @@ class TenorAPI(metaclass=SingletonClass):
         )
 
         if result.Data:
-            link: str = choice(result.Data["results"])[
-                "media"
-            ][0]["gif"]["url"]
+            link: str = choice(result.Data["results"])["media"][0]["gif"]["url"]
             return link
 
         else:

@@ -37,14 +37,10 @@ class Miscellaneous(
         aliases=["conv"],
     )
     @cooldown(1, 4.7, BucketType.user)
-    async def crypto_converter(
-        self, ctx: Context, *currency_message: str
-    ):
+    async def crypto_converter(self, ctx: Context, *currency_message: str):
         msg = " ".join(currency_message)
 
-        rgx = compile(
-            "([a-zA-Z ]*?) ([\\d.]+) ([a-zA-Z ]+)"
-        )
+        rgx = compile("([a-zA-Z ]*?) ([\\d.]+) ([a-zA-Z ]+)")
 
         res = rgx.match(msg)
 

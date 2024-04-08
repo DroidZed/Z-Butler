@@ -10,10 +10,11 @@ from discord.ext.commands import (
     cooldown,
 )
 
-from utils import Env
+
 from modules.melody_wave import MelodyWave, Wave, Melody
 from modules.embedder import generate_embed
-from utils.converters import (
+from utils import (
+    Env,
     SongNameConverter,
     SongArtistConverter,
 )
@@ -28,16 +29,12 @@ class MusicCog(
         self.bot = bot
         self.melo = MelodyWave()
 
-    async def __send_lyrics(
-        self, ctx: Context, title: str, artist: str
-    ):
+    async def __send_lyrics(self, ctx: Context, title: str, artist: str):
         if not (title and artist):
             return await ctx.send("❌ invalid input !!")
 
         async with ctx.typing():
-            data = await self.melo.fetch_lyrics(
-                title, artist
-            )
+            data = await self.melo.fetch_lyrics(title, artist)
 
         if not isinstance(data, Wave):
             return await ctx.send(
@@ -93,9 +90,7 @@ class MusicCog(
                     raw_title = a.title
                     raw_artist = a.artist
 
-            return await self.__send_lyrics(
-                ctx, raw_title, raw_artist
-            )
+            return await self.__send_lyrics(ctx, raw_title, raw_artist)
         return await self.__send_lyrics(ctx, title, artist)  # type: ignore
 
     @command(
@@ -112,9 +107,7 @@ class MusicCog(
         artist: SongArtistConverter,
     ):
         async with ctx.typing():
-            result = await self.melo.search_song(
-                title, artist  # type: ignore
-            )
+            result = await self.melo.search_song(title, artist)  # type: ignore
 
             match result:
                 case Melody():

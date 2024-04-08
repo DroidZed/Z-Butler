@@ -1,25 +1,20 @@
-from modules.networking import HttpAsyncClient
 from utils import SingletonClass
+
+from ..networking import HttpAsyncClient
 from .models import CatFact, DocPicture
 
 
 class AnimalsAPI(metaclass=SingletonClass):
-    def __init__(
-        self, http: HttpAsyncClient = HttpAsyncClient()
-    ):
+    def __init__(self, http: HttpAsyncClient = HttpAsyncClient()):
         self.client = http
 
     async def get_random_cat_facts(self):
-        result = await self.client.get(
-            "https://catfact.ninja/fact"
-        )
+        result = await self.client.get("https://catfact.ninja/fact")
 
         if result.Data:
             data = result.Data
 
-            return CatFact(
-                fact=data["fact"], length=data["length"]
-            )
+            return CatFact(fact=data["fact"], length=data["length"])
 
         else:
             return result.Error
@@ -39,3 +34,4 @@ class AnimalsAPI(metaclass=SingletonClass):
 
         else:
             return result.Error
+

@@ -21,16 +21,10 @@ class MongoDBHelperClient:
     """
 
     def __init__(self, collection_name: str):
-        self._mdb_connection = (
-            MongoDBConnection().db_connection
-        )
-        self._collection = self._mdb_connection[
-            collection_name
-        ]
+        self._mdb_connection = MongoDBConnection().db_connection
+        self._collection = self._mdb_connection[collection_name]
 
-    async def query_collection(
-        self, payload: dict
-    ) -> list[dict] | None:
+    async def query_collection(self, payload: dict) -> list[dict] | None:
         """
         A CRUD method used to query a specific collection using the payload given in arguments.
         Args:
@@ -42,19 +36,13 @@ class MongoDBHelperClient:
 
         return [
             c
-            async for c in self._collection.find(
-                payload, {"_id": 0, "__v": 0}
-            )
+            async for c in self._collection.find(payload, {"_id": 0, "__v": 0})
         ]
 
-    async def insert_into_collection(
-        self, payload: list[dict]
-    ) -> None:
+    async def insert_into_collection(self, payload: list[dict]) -> None:
         await self._collection.insert_many(payload)
 
-    async def delete_from_collection(
-        self, payload: dict
-    ) -> None:
+    async def delete_from_collection(self, payload: dict) -> None:
         await self._collection.delete_many(payload)
 
     async def update_document(
@@ -63,6 +51,4 @@ class MongoDBHelperClient:
         payload: dict,
         upsert: bool = True,
     ) -> None:
-        await self._collection.update_one(
-            criteria, payload, upsert=upsert
-        )
+        await self._collection.update_one(criteria, payload, upsert=upsert)

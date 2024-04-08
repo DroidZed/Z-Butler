@@ -1,8 +1,7 @@
 install:
 	poetry install --no-root
 
-
-dev:
+bot:
 	py .\src\app.py
 
 module:
@@ -14,3 +13,6 @@ module:
 	echo from .${MODULE_NAME} import * >> ./src/modules/__init__.py
 
 # Note: these ^^^ lines only work on windows !
+
+test:
+	py -m pytest -vs .

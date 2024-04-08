@@ -30,9 +30,7 @@ class ModerationCog(
         client: MongoDBHelperClient,
     ):
         async with ctx.typing():
-            await client.delete_from_collection(
-                {"uid": member.id}
-            )
+            await client.delete_from_collection({"uid": member.id})
 
         fields = [
             ZembedField(
@@ -40,9 +38,7 @@ class ModerationCog(
                 value=reason or "3 Strikes",
                 inline=True,
             ),
-            ZembedField(
-                name="Action", value="**BAN**", inline=True
-            ),
+            ZembedField(name="Action", value="**BAN**", inline=True),
         ]
 
         embed = generate_embed(
@@ -63,9 +59,7 @@ class ModerationCog(
             f"User <@{member.id}> has been banned for {reason or '3 Strikes'} 🔨"
         )
         if ctx.guild:
-            await ctx.guild.ban(
-                member, reason=reason or "3 Strikes"
-            )
+            await ctx.guild.ban(member, reason=reason or "3 Strikes")
 
     @staticmethod
     async def __strike_user(
@@ -123,23 +117,17 @@ class ModerationCog(
         reason: str,
         client: MongoDBHelperClient,
     ):
-        user_query = await client.query_collection(
-            {"uid": member.id}
-        )
+        user_query = await client.query_collection({"uid": member.id})
 
         nb_strikes = 0
 
         user = user_query[0] if user_query else {}
 
         if not user_query:
-            await ModerationCog.__strike_user(
-                ctx, member, reason, 2, client
-            )
+            await ModerationCog.__strike_user(ctx, member, reason, 2, client)
 
         elif user["strike_count"] == 2:
-            await ModerationCog.__ban_user(
-                ctx, member, reason, client
-            )
+            await ModerationCog.__ban_user(ctx, member, reason, client)
 
         else:
             async with ctx.typing():
@@ -151,14 +139,10 @@ class ModerationCog(
                     },
                 )
 
-                query = await client.query_collection(
-                    {"uid": user["uid"]}
-                )
+                query = await client.query_collection({"uid": user["uid"]})
 
                 if not query:
-                    return await ctx.send(
-                        "Couldn't find the user!"
-                    )
+                    return await ctx.send("Couldn't find the user!")
 
                 else:
                     nb_strikes = query[0]["strike_count"]
@@ -168,9 +152,7 @@ class ModerationCog(
             )
 
     @staticmethod
-    async def invalid_perms_embed(
-        ctx: Context, action: str
-    ) -> None:
+    async def invalid_perms_embed(ctx: Context, action: str) -> None:
         def resolve_footer():
             return {
                 "ban": {
@@ -206,28 +188,18 @@ class ModerationCog(
             color=Env.BOT_COLOR,
             image_url="https://c.tenor.com/ep6ztNAdFMcAAAAC/hank-schrider-sussy-baka.gif",
             footer_text=resolve_footer()[action]["text"],
-            footer_icon=resolve_footer()[action][
-                "icon_url"
-            ],
+            footer_icon=resolve_footer()[action]["icon_url"],
         )
 
         await ctx.send(embed=embed)
 
     @staticmethod
     def __silenced_role(ctx: Context):
-        return (
-            ctx.guild.get_role(896349097391444029)
-            if ctx.guild
-            else None
-        )
+        return ctx.guild.get_role(896349097391444029) if ctx.guild else None
 
     @staticmethod
     def __server_default_role(ctx: Context):
-        return (
-            ctx.guild.get_role(1065632523507478598)
-            if ctx.guild
-            else None
-        )
+        return ctx.guild.get_role(1065632523507478598) if ctx.guild else None
 
     @command(
         name="ban",
@@ -235,12 +207,8 @@ class ModerationCog(
         description="Ban a user for a specific reason.",
     )
     @has_guild_permissions(ban_members=True)
-    async def ban(
-        self, ctx: Context, member: Member, *reason: str
-    ):
-        await self.__ban_user(
-            ctx, member, " ".join(reason), self.db_client
-        )
+    async def ban(self, ctx: Context, member: Member, *reason: str):
+        await self.__ban_user(ctx, member, " ".join(reason), self.db_client)
 
     @command(
         name="kick",
@@ -248,9 +216,7 @@ class ModerationCog(
         description="Kick a user with a given reason.",
     )
     @has_guild_permissions(kick_members=True)
-    async def kick(
-        self, ctx: Context, member: Member, *reason: str
-    ):
+    async def kick(self, ctx: Context, member: Member, *reason: str):
         res = " ".join(reason) if reason else "Nothing"
 
         msg = f"<@{member.id}> has been kicked for {reason} <a:kick:880995293179555852>"
@@ -259,9 +225,7 @@ class ModerationCog(
             msg = "Kicked without a reason, not that I care ¯\\_(ツ)_/¯"
 
         async with ctx.typing():
-            await self.db_client.delete_from_collection(
-                {"uid": member.id}
-            )
+            await self.db_client.delete_from_collection({"uid": member.id})
 
         if ctx.guild:
             await ctx.guild.kick(member, reason=res)
@@ -280,9 +244,7 @@ class ModerationCog(
         description="Give a strike to a naughty user.",
     )
     @has_guild_permissions(kick_members=True)
-    async def strike(
-        self, ctx: Context, member: Member, *reason: str
-    ):
+    async def strike(self, ctx: Context, member: Member, *reason: str):
         await self.__strike_ban_user(
             ctx, member, " ".join(reason), self.db_client
         )
@@ -371,44 +333,32 @@ class ModerationCog(
     # error handlers
 
     @purge.error  # type: ignore
-    async def purge_handler(
-        self, ctx: Context, error: CommandError
-    ) -> None:
+    async def purge_handler(self, ctx: Context, error: CommandError) -> None:
         if isinstance(error, MissingPermissions):
             await self.invalid_perms_embed(ctx, "purge")
 
     @ban.error  # type: ignore
-    async def ban_handler(
-        self, ctx: Context, error: CommandError
-    ) -> None:
+    async def ban_handler(self, ctx: Context, error: CommandError) -> None:
         if isinstance(error, MissingPermissions):
             await self.invalid_perms_embed(ctx, "ban")
 
     @kick.error  # type: ignore
-    async def kick_handler(
-        self, ctx: Context, error: CommandError
-    ) -> None:
+    async def kick_handler(self, ctx: Context, error: CommandError) -> None:
         if isinstance(error, MissingPermissions):
             await self.invalid_perms_embed(ctx, "kick")
 
     @strike.error  # type: ignore
-    async def strike_handler(
-        self, ctx: Context, error: CommandError
-    ) -> None:
+    async def strike_handler(self, ctx: Context, error: CommandError) -> None:
         if isinstance(error, MissingPermissions):
             await self.invalid_perms_embed(ctx, "strike")
 
     @mute.error  # type: ignore
-    async def mute_handler(
-        self, ctx: Context, error: CommandError
-    ) -> None:
+    async def mute_handler(self, ctx: Context, error: CommandError) -> None:
         if isinstance(error, MissingPermissions):
             await self.invalid_perms_embed(ctx, "mute")
 
     @unmute.error  # type: ignore
-    async def unmute_handler(
-        self, ctx: Context, error: CommandError
-    ) -> None:
+    async def unmute_handler(self, ctx: Context, error: CommandError) -> None:
         if isinstance(error, MissingPermissions):
             await self.invalid_perms_embed(ctx, "unmute")
 

@@ -1,7 +1,7 @@
-# from anime_api.apis import AnimechanAPI
+from anime_api.apis import AnimechanAPI
 from utils import SingletonClass
 from modules.networking import HttpAsyncClient
-from .quoter_models import AnimeQuote
+from .models import AnimeQuote
 
 
 class AnimeQuoter(metaclass=SingletonClass):
@@ -12,12 +12,10 @@ class AnimeQuoter(metaclass=SingletonClass):
         result = await self.client.get("https://animechan.xyz/api/random")
 
         if result.Error:
-            return result.Error
+            raise result.Error
 
-        if result.Data:
-            data = result.Data
-            return AnimeQuote(
-                anime=data["anime"],
-                character=data["character"],
-                quote=data["quote"],
-            )
+        return AnimeQuote(
+            anime=result.Data["anime"],
+            character=result.Data["character"],
+            quote=result.Data["quote"],
+        )

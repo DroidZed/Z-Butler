@@ -3,9 +3,7 @@ from modules.networking import HttpAsyncClient
 
 
 class TwitchAuthClient:
-    def __init__(
-        self, http: HttpAsyncClient = HttpAsyncClient()
-    ):
+    def __init__(self, http: HttpAsyncClient = HttpAsyncClient()):
         self._client = http
         self.__token: str = ""
         self.__expiration_day: int = 0

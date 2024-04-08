@@ -1,14 +1,12 @@
-from coinpaprika_async import MiscelanousEndpoints
+from coinpaprika_async import MiscellaneousEndpoints
 from utils import SingletonClass
 
 
 class CoinManager(metaclass=SingletonClass):
-    def __init__(self, endpoint=MiscelanousEndpoints()):
+    def __init__(self, endpoint=MiscellaneousEndpoints()):
         self.endpoint = endpoint
 
-    async def convert_coin(
-        self, base: str, target: str, amount: int
-    ):
+    async def convert_coin(self, base: str, target: str, amount: int):
         return await self.endpoint.price_converter(
             base_currency_id=base,
             quote_currency_id=target,
