@@ -1,4 +1,3 @@
-from anime_api.apis import AnimechanAPI
 from utils import SingletonClass
 from modules.networking import HttpAsyncClient
 from .models import AnimeQuote
