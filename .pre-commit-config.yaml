@@ -3,22 +3,17 @@ repos:
     rev: 23.12.1
     hooks:
       - id: black
-        args: [ --target-version=py310 ]
-  - repo: local
-  hooks:
-    - id: pylint
-      name: pylint
-      entry: pylint
-      language: system
-      types: [python]
-      args:
-        [
-          "-rn", # Only display messages
-          "-sn", # Don't display the score
-          "--rcfile=pylintrc", # Link to your config file
-        ]
+        args: [--target-version=py311]
+
+  # - repo: https://github.com/pre-commit/mirrors-mypy
+  #   rev: v1.9.0 # Use the sha / tag you want to point at
+  #   hooks:
+  #     - id: mypy
+  #       args: [--strict, --ignore-missing-imports]
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
     hooks:
       - id: trailing-whitespace
-        args: [ --markdown-linebreak-ext=md ]
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer

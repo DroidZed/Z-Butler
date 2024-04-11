@@ -195,7 +195,7 @@ class ModerationCog(
 
     @staticmethod
     def __silenced_role(ctx: Context):
-        return ctx.guild.get_role(896349097391444029) if ctx.guild else None
+        return ctx.guild.get_role(1071065854265000016) if ctx.guild else None
 
     @staticmethod
     def __server_default_role(ctx: Context):
@@ -263,13 +263,12 @@ class ModerationCog(
         usage=f"{Env.PREFIX}mute `username`",
         description="Mutes a member.",
     )
-    @has_guild_permissions(kick_members=True)
     async def mute(self, ctx: Context, member: Member):
         silenced_role = self.__silenced_role(ctx)
         default_role = self.__server_default_role(ctx)
 
         if not silenced_role:
-            return await ctx.send("❌ Invaid role!")
+            return await ctx.send("❌ Invalid role!")
 
         else:
             if silenced_role in member.roles:

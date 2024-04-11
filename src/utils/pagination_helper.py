@@ -46,9 +46,7 @@ class PaginationHelper:
     ```
     """
 
-    def __init__(
-        self, collection: list, itemsPerPage: int
-    ):
+    def __init__(self, collection: list, itemsPerPage: int):
         """
         Initialize the PaginationHelper with a collection and items per page.
 
@@ -66,9 +64,7 @@ class PaginationHelper:
         """
         self._paged_collection = [
             self._collection[i : i + self._page_size]
-            for i in range(
-                0, len(self._collection), self._page_size
-            )
+            for i in range(0, len(self._collection), self._page_size)
         ]
         self._pages_count = len(self._paged_collection)
 
@@ -120,7 +116,7 @@ class PaginationHelper:
     def page_item_count(self, page_index):
         """
         Returns the number of items on the given page.\n
-            
+
         Args:
             page_index (int): A zero-based index of the desired page.
 

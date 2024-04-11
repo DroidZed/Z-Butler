@@ -9,7 +9,7 @@ from discord.ext.commands import (
     BucketType,
 )
 
-from coinpaprika_async import ApiError
+from coinpaprika_async_client import ApiError
 
 from utils import Env
 

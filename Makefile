@@ -1,3 +1,6 @@
+#IMAGE_TAG=latest
+include .env
+
 install:
 	poetry install --no-root
 
@@ -16,3 +19,12 @@ module:
 
 test:
 	py -m pytest -vs .
+
+build:
+	docker build -t droidzed/z-butler:$(IMAGE_TAG) .
+
+compose:
+	docker compose up -d
+
+decompose:
+	docker compose down

@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  zButlerBot:
+    build:
+      context: .
+    image: droidzed/z-butler:${IMAGE_TAG}
+    container_name: z-butler-bot
+    environment:
+      - API_TOKEN=${API_TOKEN}
+      - RAPID_API_KEY=${RAPID_API_KEY}
+      - TENOR_API_KEY=${TENOR_API_KEY}
+      - TWITTER_API_KEY=${TWITTER_API_KEY}
+      - TWITTER_SECRET_KEY=${TWITTER_SECRET_KEY}
+      - TWITTER_BEARER_TOKEN=${TWITTER_BEARER_TOKEN}
+      - TWITTER_OAUTH2_CLIENT_ID=${TWITTER_OAUTH2_CLIENT_ID}
+      - TWITTER_OAUTH2_CLIENT_SECRET=${TWITTER_OAUTH2_CLIENT_SECRET}
+      - SPOTIPY_CLIENT_SECRET=${SPOTIPY_CLIENT_SECRET}
+      - SPOTIPY_CLIENT_ID=${SPOTIPY_CLIENT_ID}
+      - TWITCH_CLIENT_ID=${TWITCH_CLIENT_ID}
+      - TWITCH_CLIENT_SECRET=${TWITCH_CLIENT_SECRET}
+      - DB_NAME=${DB_NAME}
+      - MDB_SRV=${MDB_SRV}
+      - MUSIXMATCH_KEY=${MUSIXMATCH_KEY}
+    networks:
+      - butler-network
+
+  #   depends_on:
+  #     zButlerDb:
+  #       condition: service_healthy
+
+  # zButlerDb:
+  #   image: mongo
+  #   container_name: z-butler-db
+  #   healthcheck:
+  #     test:
+  #       [
+  #         'CMD',
+  #         'mongosh',
+  #         '--eval',
+  #         \"db.runCommand('ping').ok\" --quiet"
+  #       ]
+  #     interval: 1m30s
+  #     timeout: 30s
+  #     retries: 5
+  #     start_period: 30s
+  #   ports:
+  #     - '27012:27017'
+  #   networks:
+  #     - butler-network
+  #   volumes:
+  #     - database:/var/lib/mongo/data
+
+volumes:
+  database:
+
+networks:
+  butler-network:
+    driver: bridge

@@ -1,4 +1,4 @@
-from coinpaprika_async import MiscellaneousEndpoints
+from coinpaprika_async_client import MiscellaneousEndpoints
 from utils import SingletonClass
 
 
