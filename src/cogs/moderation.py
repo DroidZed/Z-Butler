@@ -1,4 +1,5 @@
-from discord import Member
+from typing import Optional
+from discord import Member, Role
 from discord.ext.commands import Bot, Cog, Context, command
 from discord.ext.commands.core import has_guild_permissions
 from discord.ext.commands.errors import (
@@ -7,7 +8,7 @@ from discord.ext.commands.errors import (
 )
 
 from modules.embedder import ZembedField, generate_embed
-from modules.mongo.db_manager import MongoDBHelperClient
+from modules.mongo import MongoDBHelperClient
 from utils import Env
 
 
@@ -194,11 +195,11 @@ class ModerationCog(
         await ctx.send(embed=embed)
 
     @staticmethod
-    def __silenced_role(ctx: Context):
+    def __silenced_role(ctx: Context) -> Optional[Role]:
         return ctx.guild.get_role(1071065854265000016) if ctx.guild else None
 
     @staticmethod
-    def __server_default_role(ctx: Context):
+    def __server_default_role(ctx: Context) -> Optional[Role]:
         return ctx.guild.get_role(1065632523507478598) if ctx.guild else None
 
     @command(
@@ -231,8 +232,17 @@ class ModerationCog(
             await ctx.guild.kick(member, reason=res)
 
             embed = generate_embed(
+                title=None,
                 description=msg,
                 color=Env.CROWN_COLOR,
+                author_icon=None,
+                author_name=None,
+                footer_icon=None,
+                footer_text=None,
+                image_url=None,
+                rem_img=False,
+                thumbnail_url=None,
+                url=None,
                 *[ZembedField("Reason", reason, False)],
             )
 

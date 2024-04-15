@@ -35,6 +35,8 @@ class Env:
     MDB_SRV = config("MDB_SRV")
     DB_NAME = config("DB_NAME")
 
+    SERVER_URL = config("SERVER_URL")
+
     # Colors
     BOT_COLOR = 0x0027B3
     SPOTIFY_COLOR = 0x1DB954

@@ -12,3 +12,5 @@ from .tenor_api import *
 from .coinpaprika import *
 from .haiku import *
 from .views import *
+from .paginator import *
+from .logging import *

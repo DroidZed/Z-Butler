@@ -134,7 +134,7 @@ class ZedCog(
             "Please send a correct emoji that is *available* on the server !"
         )
 
-    @say.error  # type: ignore
+    @say.error
     async def say_handler(self, ctx: Context, error: CommandError):
         if isinstance(error, BadBoolArgument):
             await ctx.reply(

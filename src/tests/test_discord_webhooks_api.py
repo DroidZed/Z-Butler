@@ -13,6 +13,6 @@ class TestDiscordWebHooksApi:
             url, json={"content": "test test"}
         )
 
-        assert not isinstance(result, RequestError)
-
         print(result)
+
+        assert not isinstance(result, RequestError)

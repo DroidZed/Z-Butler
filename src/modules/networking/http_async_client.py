@@ -1,6 +1,7 @@
-from typing import Dict, Optional, Any
-from httpx import AsyncClient, HTTPStatusError
+from typing import Callable, Dict, Optional, Any
+from httpx import AsyncClient, HTTPStatusError, Response
 
+from ..logging import LoggerHelper
 from .http_errors import RequestError
 from .models import Result
 
@@ -39,13 +40,15 @@ class HttpAsyncClient:
         """
         try:
             async with AsyncClient() as client:
-                request_method = getattr(client, method)
+                request_method: Callable = getattr(client, method)
+
                 if method in {"get", "delete"}:
-                    response = await request_method(
+                    response: Response = await request_method(
                         url,
                         headers=headers,
                         params=url_params,
                     )
+
                 else:
                     response = await request_method(
                         url,
@@ -54,17 +57,18 @@ class HttpAsyncClient:
                         headers=headers,
                         params=url_params,
                     )
+
                 response.raise_for_status()
-                return Result(
-                    Data=response.json(), Error=None
-                )
+
+                if response.headers["content-type"] != "application/json":
+                    return Result(Data={"message": "Ok"}, Error=None)
+
+                return Result(Data=response.json(), Error=None)
+
         except HTTPStatusError as exec:
-            error_message = (
-                f"Endpoint returned: {exec.response.text}\n"
-            )
-            return Result(
-                Error=RequestError(error_message), Data=None
-            )
+            error_message = f"Endpoint returned: {exec.response.text}\n"
+
+            return Result(Error=RequestError(error_message), Data=None)
 
     async def get(
         self,
@@ -195,5 +199,3 @@ class HttpAsyncClient:
             headers=headers,
             url_params=url_params,
         )
-
-    

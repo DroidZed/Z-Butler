@@ -26,8 +26,10 @@ from discord.ext.commands.errors import (
 
 from httpx import ReadTimeout
 
+
 from utils import Env
 from utils.helpers import get_server_image
+from modules.logging import LoggerHelper
 from modules.embedder import generate_embed
 from modules.mongo import MongoDBHelperClient
 from modules.welcome_image import create_welcome_image
@@ -66,7 +68,9 @@ class EventHandlers(
                 atomic=True,
             )
         except Forbidden as e:
-            print(e)
+            LoggerHelper().exception(
+                f"Got forbidden for adding roles, because:\n{e.text}"
+            )
 
         if channel and isinstance(channel, TextChannel):
             with BytesIO() as image_binary:
@@ -179,11 +183,8 @@ class EventHandlers(
                 )
 
             case _:
-                print_exception(
-                    type(error),
-                    error,
-                    error.__traceback__,
-                    file=stderr,
+                LoggerHelper().exception(
+                    "Unexpected error occurred, logging..."
                 )
 
 

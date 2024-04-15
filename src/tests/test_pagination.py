@@ -1,4 +1,4 @@
-from utils.pagination_helper import PaginationHelper
+from modules.paginator import PaginationHelper
 
 
 class TestPagination:

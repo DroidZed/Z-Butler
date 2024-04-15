@@ -1,18 +1,23 @@
-from motor.motor_asyncio import AsyncIOMotorClient
+from typing import Any
+from motor.motor_asyncio import (
+    AsyncIOMotorClient,
+    AsyncIOMotorDatabase,
+    AsyncIOMotorCollection,
+)
 
 from utils.singleton_class import SingletonClass
 from utils import Env
 
 
 class MongoDBConnection(metaclass=SingletonClass):
-    def __init__(self):
-        self.__db_connection = AsyncIOMotorClient(
+    def __init__(self) -> None:
+        self.__db_connection: AsyncIOMotorClient = AsyncIOMotorClient(
             Env.MDB_SRV, serverSelectionTimeoutMS=5000
-        )[Env.DB_NAME]
+        )
 
     @property
-    def db_connection(self):
-        return self.__db_connection
+    def db_connection(self) -> AsyncIOMotorDatabase:
+        return self.__db_connection[Env.DB_NAME]
 
 
 class MongoDBHelperClient:
@@ -21,10 +26,16 @@ class MongoDBHelperClient:
     """
 
     def __init__(self, collection_name: str):
-        self._mdb_connection = MongoDBConnection().db_connection
-        self._collection = self._mdb_connection[collection_name]
+        self._mdb_connection: AsyncIOMotorDatabase = (
+            MongoDBConnection().db_connection
+        )
+        self._collection: AsyncIOMotorCollection = self._mdb_connection[
+            collection_name
+        ]
 
-    async def query_collection(self, payload: dict) -> list[dict] | None:
+    async def query_collection(
+        self, payload: dict[str, Any]
+    ) -> list[dict] | None:
         """
         A CRUD method used to query a specific collection using the payload given in arguments.
         Args:
@@ -38,6 +49,20 @@ class MongoDBHelperClient:
             c
             async for c in self._collection.find(payload, {"_id": 0, "__v": 0})
         ]
+
+    async def query_document(
+        self, payload: dict[str, Any]
+    ) -> dict[str, Any] | None:
+        """
+        A CRUD method used to query a specific document from a collection using the payload given in arguments.
+        Args:
+            payload: dict
+
+        Returns:
+                A list of documents fetched from the database. None if nothing is present.
+        """
+
+        return await self._collection.findOne(payload, {"_id": 0, "__v": 0})
 
     async def insert_into_collection(self, payload: list[dict]) -> None:
         await self._collection.insert_many(payload)

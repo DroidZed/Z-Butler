@@ -1,9 +1,9 @@
-import asyncio
 import os
 
 from discord import Intents, Game
 from discord.ext import commands
 
+from modules import LoggerHelper
 from utils import print_msg, Env
 from modules import ZedHelpCommand, MongoDBConnection
 
@@ -20,13 +20,14 @@ bot = commands.Bot(
 
 # Load cogs
 if __name__ == "__main__":
+    LoggerHelper()
     for filename in os.listdir("./src/cogs"):
         if filename.endswith(".py"):
             bot.load_extension(f"cogs.{filename[:-3]}")
 
 
 @bot.event
-async def on_ready():
+async def on_ready() -> None:
     print_msg()
 
     await bot.change_presence(
@@ -34,6 +35,8 @@ async def on_ready():
     )
 
     MongoDBConnection()
+
+    LoggerHelper().info("Bot started")
 
 
 bot.run(Env.TOKEN)
