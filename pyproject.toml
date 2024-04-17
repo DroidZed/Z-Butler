@@ -33,7 +33,6 @@ loguru = "^0.7.2"
 pre-commit = "^3.7.0"
 black = "^24.3.0"
 isort = "^5.13.2"
-pylance = "^0.10.13"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^8.1.1"
