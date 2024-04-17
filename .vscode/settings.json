@@ -18,6 +18,7 @@
     "offduty",
     "onduty",
     "pylint",
+    "pymongo",
     "Quoty",
     "repchannel",
     "repteam",

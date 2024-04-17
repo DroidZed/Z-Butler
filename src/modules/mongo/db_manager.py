@@ -1,8 +1,14 @@
-from typing import Any
+from typing import Any, Optional
 from motor.motor_asyncio import (
     AsyncIOMotorClient,
     AsyncIOMotorDatabase,
     AsyncIOMotorCollection,
+)
+
+from pymongo.results import (
+    InsertManyResult,
+    DeleteResult,
+    UpdateResult,
 )
 
 from utils.singleton_class import SingletonClass
@@ -18,6 +24,9 @@ class MongoDBConnection(metaclass=SingletonClass):
     @property
     def db_connection(self) -> AsyncIOMotorDatabase:
         return self.__db_connection[Env.DB_NAME]
+
+    def close_connection(self) -> None:
+        self.__db_connection.close()
 
 
 class MongoDBHelperClient:
@@ -52,7 +61,7 @@ class MongoDBHelperClient:
 
     async def query_document(
         self, payload: dict[str, Any]
-    ) -> dict[str, Any] | None:
+    ) -> Optional[dict[str, Any]]:
         """
         A CRUD method used to query a specific document from a collection using the payload given in arguments.
         Args:
@@ -62,18 +71,26 @@ class MongoDBHelperClient:
                 A list of documents fetched from the database. None if nothing is present.
         """
 
-        return await self._collection.findOne(payload, {"_id": 0, "__v": 0})
+        val: Optional[dict[str, Any]] = await self._collection.findOne(
+            payload, {"_id": 0, "__v": 0}
+        )
 
-    async def insert_into_collection(self, payload: list[dict]) -> None:
-        await self._collection.insert_many(payload)
+        return val
 
-    async def delete_from_collection(self, payload: dict) -> None:
-        await self._collection.delete_many(payload)
+    async def insert_into_collection(
+        self, payload: list[dict]
+    ) -> InsertManyResult:
+        return await self._collection.insert_many(payload)
+
+    async def delete_from_collection(self, payload: dict) -> DeleteResult:
+        return await self._collection.delete_many(payload)
 
     async def update_document(
         self,
         criteria: dict,
         payload: dict,
         upsert: bool = True,
-    ) -> None:
-        await self._collection.update_one(criteria, payload, upsert=upsert)
+    ) -> UpdateResult:
+        return await self._collection.update_one(
+            criteria, payload, upsert=upsert
+        )

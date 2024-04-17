@@ -33,7 +33,7 @@ loguru = "^0.7.2"
 pre-commit = "^3.7.0"
 black = "^24.3.0"
 isort = "^5.13.2"
-mypy = "^1.9.0"
+pylance = "^0.10.13"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^8.1.1"
@@ -56,11 +56,6 @@ force_grid_wrap = 0
 use_parentheses = true
 ensure_newline_before_comments = true
 line_length = 88
-
-[tool.mypy]
-disallow_untyped_defs = true
-show_error_context = true
-warn_return_any = true
 
 [tool.pytest]
 minversion = 6.0

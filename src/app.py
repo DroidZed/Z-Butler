@@ -1,42 +1,12 @@
-import os
+from bot import ZBot
+from utils import Env
 
-from discord import Intents, Game
-from discord.ext import commands
 
-from modules import LoggerHelper
-from utils import print_msg, Env
-from modules import ZedHelpCommand, MongoDBConnection
+def main() -> None:
+    bot: ZBot = ZBot()
 
-# Intents
-intents = Intents.all()
+    bot.run(Env.TOKEN)
 
-# The bot
-bot = commands.Bot(
-    command_prefix=commands.when_mentioned_or(Env.PREFIX),  # type: ignore
-    intents=intents,
-    owner_id=Env.OWNER_ID,
-    help_command=ZedHelpCommand(),
-)
 
-# Load cogs
 if __name__ == "__main__":
-    LoggerHelper()
-    for filename in os.listdir("./src/cogs"):
-        if filename.endswith(".py"):
-            bot.load_extension(f"cogs.{filename[:-3]}")
-
-
-@bot.event
-async def on_ready() -> None:
-    print_msg()
-
-    await bot.change_presence(
-        activity=Game(name=f"{Env.PREFIX}help - By DroidZed")
-    )
-
-    MongoDBConnection()
-
-    LoggerHelper().info("Bot started")
-
-
-bot.run(Env.TOKEN)
+    main()

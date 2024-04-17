@@ -56,7 +56,9 @@ def eight_ball_answers() -> str:
     return choice(answers[choice(["+", "-", "/"])])
 
 
-def extract_guild_data(roles: List[Role], members: List[Member]):
+def extract_guild_data(
+    roles: List[Role], members: List[Member]
+) -> tuple[int, int, int]:
     roles_count: int = len(roles) - 1
 
     online_users_count: int = len(
@@ -79,7 +81,7 @@ def extract_guild_data(roles: List[Role], members: List[Member]):
     )
 
 
-def print_msg():
+def print_msg() -> None:
     rch.print("/" * 39)
     rch.print(" ----------\\")
     rch.print(" |       [b cyan]*[/]  |         [white]/[/]\\")
@@ -103,7 +105,3 @@ def print_msg():
     )  # Don't remove the extra space added after the snake emoji, it was added so the bars will align in the console
     # of the hosting.
     rch.print("/" * 39)
-
-
-if __name__ == "__main__":
-    print_msg()
