@@ -14,3 +14,5 @@ from .haiku import *
 from .views import *
 from .paginator import *
 from .logging import *
+from .bot import ZBot
+from .voice import *

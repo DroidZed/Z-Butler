@@ -1,9 +1,9 @@
-from bot import ZBot
+from modules.bot import ZBot
 from utils import Env
 
 
 def main() -> None:
-    bot: ZBot = ZBot()
+    bot: Bot = ZBot()
 
     bot.run(Env.TOKEN)
 

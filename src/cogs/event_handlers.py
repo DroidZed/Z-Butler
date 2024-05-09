@@ -137,21 +137,18 @@ class EventHandlers(
                 return await ctx.reply(
                     "¯\\_(ツ)_/¯ The user provided could not be found, try again...",
                     mention_author=True,
-                    ephemeral=True,
                 )
 
             case CommandOnCooldown():
                 return await ctx.reply(
                     f"⏳ Hold your horses, this command is on cooldown, you can use it in {round(error.retry_after, 2)}s",
                     mention_author=True,
-                    ephemeral=True,
                 )
 
             case CommandNotFound():
                 return await ctx.reply(
                     "Nope, no such command was found *sight* 💨",
                     mention_author=True,
-                    ephemeral=True,
                 )
 
             case CommandInvokeError():
@@ -165,7 +162,6 @@ class EventHandlers(
                 return await ctx.reply(
                     "❌ Internal anomaly, I wasn't able to handle your request invoker. Sorry for my incompetence.",
                     mention_author=True,
-                    ephemeral=True,
                 )
 
             case MissingRequiredArgument():
@@ -179,7 +175,6 @@ class EventHandlers(
                 return await ctx.reply(
                     "Command timed out, please try again ❌",
                     mention_author=True,
-                    ephemeral=True,
                 )
 
             case _:

@@ -19,6 +19,7 @@
     "onduty",
     "pylint",
     "pymongo",
+    "pyttsx",
     "Quoty",
     "repchannel",
     "repteam",

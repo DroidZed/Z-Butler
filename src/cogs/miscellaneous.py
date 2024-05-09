@@ -1,3 +1,6 @@
+import asyncio
+from genericpath import isfile
+import os
 from re import compile
 
 from discord.ext.commands import (
@@ -9,9 +12,15 @@ from discord.ext.commands import (
     BucketType,
 )
 
+from discord import FFmpegPCMAudio, Forbidden, Member, HTTPException, VoiceState
+from gtts import gTTS
+
 from coinpaprika_async_client import ApiError
 
+from modules.embedder.embedder_machine import generate_embed
 from utils import Env
+from modules.views import LangSelect
+
 
 from modules.coinpaprika import CoinManager
 

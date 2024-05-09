@@ -8,6 +8,7 @@ from discord import (
     CustomActivity,
     Member,
     User,
+    http,
 )
 from discord.ext.commands import (
     Bot,
@@ -54,17 +55,56 @@ class UserCog(
         ctx: Context,
         member: User | Member | None = None,
     ):
-        member = member or ctx.author()
+        x = member or ctx.author
 
         await ctx.send(
             embed=generate_embed(
-                title=f"**{'Lord  👑 **𝕯𝖗𝖔𝖎𝖉𝖅𝖊𝖉** 👑' if member.id == Env.CROWN_ROLE_ID else f'{member.display_name}#{member.discriminator}'}**'s Profile Picture",
+                title=f"**{'Lord  👑 **𝕯𝖗𝖔𝖎𝖉𝖅𝖊𝖉** 👑' if x.id == Env.CROWN_ROLE_ID else f'{x.display_name}#{x.discriminator}'}**'s Profile Picture",
                 color=Env.BOT_COLOR,
-                image_url=f"{member.avatar.url if member.avatar else ''}",
+                image_url=f"{x.avatar.url if x.avatar else ''}",
                 footer_text=f"Requested by {ctx.message.author} 💙",
                 footer_icon=f"{ctx.message.author.avatar.url if ctx.message.author.avatar else ''}",
             )
         )
+
+    @command(
+        name="cover",
+        usage=f"{Env.PREFIX}cov `username`",
+        description="Display the requested user's cover picture.",
+        aliases=["cov"],
+    )
+    @cooldown(1, 5, BucketType.user)
+    async def cov(
+        self,
+        ctx: Context,
+        member: User | Member | None = None,
+    ):
+        x = member or ctx.author
+
+        req = await self.bot.http.request(
+            http.Route("GET", "/users/{uid}", uid=x.id)
+        )
+        banner_id = req["banner"]
+        if banner_id:
+            await ctx.send(
+                embed=generate_embed(
+                    title=f"**{'Lord  👑 **𝕯𝖗𝖔𝖎𝖉𝖅𝖊𝖉** 👑' if x.id == Env.CROWN_ROLE_ID else f'{x.display_name}#{x.discriminator}'}**'s Cover Picture",
+                    color=Env.BOT_COLOR,
+                    image_url=f"https://cdn.discordapp.com/banners/{x.id}/{banner_id}?size=1024",
+                    footer_text=f"Requested by {ctx.message.author} 💙",
+                    footer_icon=f"{ctx.message.author.avatar.url if ctx.message.author.avatar else ''}",
+                )
+            )
+        else:
+            await ctx.send(
+                embed=generate_embed(
+                    title=f"**{'Lord  👑 **𝕯𝖗𝖔𝖎𝖉𝖅𝖊𝖉** 👑' if x.id == Env.CROWN_ROLE_ID else f'{x.display_name}#{x.discriminator}'}**'s Cover Picture",
+                    color=Env.BOT_COLOR,
+                    description="User has not banner :P",
+                    footer_text=f"Requested by {ctx.message.author} 💙",
+                    footer_icon=f"{ctx.message.author.avatar.url if ctx.message.author.avatar else ''}",
+                )
+            )
 
     @command(
         name="greet",
@@ -79,7 +119,7 @@ class UserCog(
         *,
         member: User | Member | None = None,
     ):
-        member = member or ctx.author()
+        x = member or ctx.author
 
         await ctx.message.delete()
 
@@ -93,7 +133,7 @@ class UserCog(
             embed=generate_embed(
                 title="Z Butler's Greeting",
                 color=Env.BOT_COLOR,
-                description=f"Hello <@{member.id}>~ 👋🏻",
+                description=f"Hello <@{x.id}>~ 👋🏻",
                 image_url=link,
             )
         )
