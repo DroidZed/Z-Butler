@@ -1,7 +1,7 @@
-from typing import Callable, Dict, Optional, Any
+from typing import Any, Callable, Dict, Optional
+
 from httpx import AsyncClient, HTTPStatusError, Response
 
-from ..logging import LoggerHelper
 from .http_errors import RequestError
 from .models import Result
 

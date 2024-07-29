@@ -3,7 +3,7 @@ from utils import Env
 
 
 def main() -> None:
-    bot: Bot = ZBot()
+    bot: ZBot = ZBot()
 
     bot.run(Env.TOKEN)
 

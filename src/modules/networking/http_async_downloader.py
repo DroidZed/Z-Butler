@@ -1,7 +1,7 @@
 from typing import Any, Dict
+
 import aiofiles
 from httpx import AsyncClient
-from .http_async_client import HttpAsyncClient
 
 
 class HttpAsyncDownloader:
@@ -25,13 +25,9 @@ class HttpAsyncDownloader:
                 params=url_params,
             ) as response:
                 async with aiofiles.open(file_name, "wb") as f:
-                     async for chunk in response.aiter_bytes():
-                         if chunk:
+                    async for chunk in response.aiter_bytes():
+                        if chunk:
                             await f.write(chunk)
 
-    async def get_file_from_url(
-        self, url: str, file_path: str
-    ):
-        return await self.send_request(
-            "GET", url, file_path
-        )
+    async def get_file_from_url(self, url: str, file_path: str):
+        return await self.send_request("GET", url, file_path)

@@ -8,7 +8,7 @@ class LoggerHelper(metaclass=SingletonClass):
         self.log = logger
         self.log.remove(0)
         self.log.add(
-            "./logs/bot/file_{time}.log",
+            "./logs/file_{time}.log",
             enqueue=True,
             rotation="10 MB",
             backtrace=True,

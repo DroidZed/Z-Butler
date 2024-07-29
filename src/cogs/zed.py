@@ -45,7 +45,7 @@ class ZedCog(
             "I bet your parents aren't proud of you and your gf/bf thinks you're a boring little clamp !",
         )
 
-        if ctx.author().id == Env.OWNER_ID:
+        if ctx.author.id == Env.OWNER_ID:
             await ctx.message.reply("Hello master 😍", mention_author=True)
             return
 
@@ -142,9 +142,7 @@ class ZedCog(
             )
 
         else:
-            await ctx.reply(
-                "Check the command's help page for the correct syntax."
-            )
+            await ctx.reply("Check the command's help page for the correct syntax.")
 
 
 def setup(bot: Bot):

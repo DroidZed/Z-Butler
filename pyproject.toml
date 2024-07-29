@@ -18,7 +18,7 @@ numpy = "^1.26.4"
 beautifulsoup4 = "^4.12.3"
 rich = "^13.7.1"
 motor = "^3.4.0"
-py-cord = { extras = ["speed"], version = "^2.5.0" }
+py-cord = { extras = ["speed"], version = "^2.6.0" }
 orjson = "^3.10.0"
 pynacl = "^1.5.0"
 msgspec = "^0.18.6"
@@ -31,34 +31,18 @@ loguru = "^0.7.2"
 gtts = "^2.5.1"
 typing-extensions = "^4.11.0"
 pyttsx3 = "^2.90"
+baseconvert = "^1.0.0a4"
+litestar = {extras = ["standard"], version = "^2.9.1"}
+litestar-vite = "^0.1.22"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.7.0"
-black = "^24.3.0"
-isort = "^5.13.2"
-pylint = "^3.1.0"
+ruff = "^0.5.5"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^8.1.1"
 pytest-httpx = "^0.30.0"
 pytest-asyncio = "^0.23.6"
-
-[tool.black]
-line-length = 80
-target-version = ['py311']
-include = '\.pyi?$'
-extend-exclude = '''
-# A regex preceded with ^/ will apply only to files and directories
-# in the root of the project.
-^/src/test.py  # exclude a file named test.py in the root of the project (in addition to the defaults)
-'''
-[tool.isort]
-multi_line_output = 3
-include_trailing_comma = true
-force_grid_wrap = 0
-use_parentheses = true
-ensure_newline_before_comments = true
-line_length = 88
 
 [tool.pytest]
 minversion = 6.0
