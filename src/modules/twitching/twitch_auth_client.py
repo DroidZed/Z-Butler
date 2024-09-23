@@ -53,7 +53,5 @@ class TwitchAuthClient:
         )
 
         if result.Data:
-            self.__expiration_day = (
-                result.Data["expires_in"] // (60 * 60 * 24)
-            ) + 1
+            self.__expiration_day = (result.Data["expires_in"] // (60 * 60 * 24)) + 1
             self.__token = result.Data["access_token"]

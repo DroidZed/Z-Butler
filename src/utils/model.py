@@ -1,5 +1,4 @@
 class Model:
-
     def serialize(self):
         pass
 

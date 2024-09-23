@@ -1,6 +1,5 @@
 import pytest
-
-from modules.melody_wave import MelodyWave, Wave, Melody
+from modules.melody_wave import Melody, MelodyWave, Wave
 
 
 class TestMelodyWaveModule:
@@ -20,20 +19,16 @@ class TestMelodyWaveModule:
     async def test_should_consume_a_valid_song_data(
         self,
     ):
-        result = await self._client.search_song(
-            title="HOPE", artist="NF"
-        )
+        result = await self._client.search_song(title="HOPE", artist="NF")
 
-        assert result != None
+        assert result is not None
 
         assert isinstance(result, Melody)
 
     @pytest.mark.asyncio
     async def test_should_fetch_lyrics(self):
-        lyrics = await self._client.fetch_lyrics(
-            "HOPE", "NF"
-        )
+        lyrics = await self._client.fetch_lyrics("HOPE", "NF")
 
-        assert lyrics != None
+        assert lyrics is not None
 
         assert isinstance(lyrics, Wave)

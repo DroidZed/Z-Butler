@@ -20,9 +20,7 @@ class TestAnimalsAPI:
     async def test_should_fetch_dog_picture_successfully(
         self,
     ):
-        dog_pic = (
-            await AnimalsAPI().get_random_dog_picture()
-        )
+        dog_pic = await AnimalsAPI().get_random_dog_picture()
 
         assert isinstance(dog_pic, DocPicture)
 

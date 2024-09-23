@@ -1,38 +1,38 @@
 from io import BytesIO
+from random import choice
 from sys import stderr
 from traceback import print_exception
 from typing import Optional
-from random import choice
 
 from discord import (
     File,
-    Guild,
     Forbidden,
-    TextChannel,
+    Guild,
     Member,
     Role,
+    TextChannel,
 )
 from discord.ext.commands import Bot, Cog, Context
 from discord.ext.commands.errors import (
     CheckFailure,
     CommandError,
-    MemberNotFound,
+    CommandInvokeError,
     CommandNotFound,
     CommandOnCooldown,
+    MemberNotFound,
     MissingPermissions,
-    CommandInvokeError,
     MissingRequiredArgument,
 )
-
 from httpx import ReadTimeout
-
-
-from utils import Env
-from utils.helpers import get_server_image
-from modules.logging import LoggerHelper
 from modules.embedder import generate_embed
+from modules.logging import LoggerHelper
 from modules.mongo import MongoDBHelperClient
 from modules.welcome_image import create_welcome_image
+from utils import Env
+
+
+def get_server_image(g: Optional[Guild]) -> Optional[str]:
+    return g.icon.url if g and g.icon else None
 
 
 class EventHandlers(
@@ -178,9 +178,7 @@ class EventHandlers(
                 )
 
             case _:
-                LoggerHelper().exception(
-                    "Unexpected error occurred, logging..."
-                )
+                LoggerHelper().exception("Unexpected error occurred, logging...")
 
 
 def setup(bot: Bot):

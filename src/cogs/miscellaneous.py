@@ -1,28 +1,16 @@
-import asyncio
-from genericpath import isfile
-import os
 from re import compile
 
+from coinpaprika_async_client import ApiError
 from discord.ext.commands import (
     Bot,
+    BucketType,
     Cog,
     Context,
     command,
     cooldown,
-    BucketType,
 )
-
-from discord import FFmpegPCMAudio, Forbidden, Member, HTTPException, VoiceState
-from gtts import gTTS
-
-from coinpaprika_async_client import ApiError
-
-from modules.embedder.embedder_machine import generate_embed
-from utils import Env
-from modules.views import LangSelect
-
-
 from modules.coinpaprika import CoinManager
+from utils import Env
 
 
 class Miscellaneous(
@@ -68,9 +56,7 @@ class Miscellaneous(
         )
 
         if isinstance(res, ApiError):
-            return await ctx.send(
-                "An error occurrent when converting the coins!"
-            )
+            return await ctx.send("An error occurrent when converting the coins!")
 
         await ctx.send(
             f"You're converting {amount} {base}(s) into {target}(s).\nFinal value is {res.price}"

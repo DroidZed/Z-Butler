@@ -41,8 +41,4 @@ class TwitchClient(metaclass=SingletonClass):
             headers=headers,
         )
 
-        return (
-            query.Data["data"][0]["thumbnail_url"]
-            if query.Data
-            else query.Error
-        )
+        return query.Data["data"][0]["thumbnail_url"] if query.Data else query.Error

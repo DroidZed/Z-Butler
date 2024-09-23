@@ -8,9 +8,7 @@ CHOSEN_LANG = "./tts/chosen_lang.mp3"
 
 class LangSelect(View):
     @button(label="Arabic", style=ButtonStyle.primary, emoji="🇸🇦")
-    async def arabic_btn_callback(
-        self, button: Button, interaction: Interaction
-    ):
+    async def arabic_btn_callback(self, button: Button, interaction: Interaction):
         chosen_ar = gTTS(text="لقد اخترت اللغة العربية", lang="ar")
         chosen_ar.save(CHOSEN_LANG)
 

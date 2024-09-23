@@ -20,9 +20,7 @@ class AnimalsAPI(metaclass=SingletonClass):
             return result.Error
 
     async def get_random_dog_picture(self):
-        result = await self.client.get(
-            "https://dog.ceo/api/breeds/image/random"
-        )
+        result = await self.client.get("https://dog.ceo/api/breeds/image/random")
 
         if result.Data:
             data = result.Data
@@ -34,4 +32,3 @@ class AnimalsAPI(metaclass=SingletonClass):
 
         else:
             return result.Error
-

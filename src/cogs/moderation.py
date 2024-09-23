@@ -1,4 +1,5 @@
 from typing import Optional
+
 from discord import Member, Role
 from discord.ext.commands import Bot, Cog, Context, command
 from discord.ext.commands.core import has_guild_permissions
@@ -6,7 +7,6 @@ from discord.ext.commands.errors import (
     CommandError,
     MissingPermissions,
 )
-
 from modules.embedder import ZembedField, generate_embed
 from modules.mongo import MongoDBHelperClient
 from utils import Env
@@ -107,9 +107,7 @@ class ModerationCog(
 
         await member.send(embed=embed)
 
-        await ctx.send(
-            "The naughty user has been warned, hope he gets the message 😑"
-        )
+        await ctx.send("The naughty user has been warned, hope he gets the message 😑")
 
     @staticmethod
     async def __strike_ban_user(
@@ -255,9 +253,7 @@ class ModerationCog(
     )
     @has_guild_permissions(kick_members=True)
     async def strike(self, ctx: Context, member: Member, *reason: str):
-        await self.__strike_ban_user(
-            ctx, member, " ".join(reason), self.db_client
-        )
+        await self.__strike_ban_user(ctx, member, " ".join(reason), self.db_client)
 
     @command(
         name="purge",

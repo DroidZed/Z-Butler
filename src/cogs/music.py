@@ -37,9 +37,7 @@ class MusicCog(
             data = await self.melo.fetch_lyrics(title, artist)
 
         if not isinstance(data, Wave):
-            return await ctx.send(
-                "❌ Cannot find lyrics for the given song...."
-            )
+            return await ctx.send("❌ Cannot find lyrics for the given song....")
 
         else:
             try:

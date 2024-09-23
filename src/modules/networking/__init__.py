@@ -1,4 +1,6 @@
-from .http_async_client import *
-from .http_errors import *
-from .models import *
-from .http_async_downloader import *
+from .http_async_client import HttpAsyncClient
+from .http_async_downloader import HttpAsyncDownloader
+from .http_errors import RequestError
+from .models import Result
+
+__all__ = [Result, RequestError, HttpAsyncDownloader, HttpAsyncClient]

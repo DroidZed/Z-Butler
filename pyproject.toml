@@ -5,14 +5,14 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "z-butler"
-version = "3.17"
+version = "3.18"
 description = "Z butler bot for your server"
 authors = ["DroidZed <41507665+DroidZed@users.noreply.github.com>"]
 license = "GPL-3.0-or-later"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.12"
 httpx = { extras = ["http2"], version = "^0.27.0" }
 numpy = "^1.26.4"
 beautifulsoup4 = "^4.12.3"
@@ -32,8 +32,6 @@ gtts = "^2.5.1"
 typing-extensions = "^4.11.0"
 pyttsx3 = "^2.90"
 baseconvert = "^1.0.0a4"
-litestar = {extras = ["standard"], version = "^2.9.1"}
-litestar-vite = "^0.1.22"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.7.0"

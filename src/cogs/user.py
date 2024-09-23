@@ -81,9 +81,7 @@ class UserCog(
     ):
         x = member or ctx.author
 
-        req = await self.bot.http.request(
-            http.Route("GET", "/users/{uid}", uid=x.id)
-        )
+        req = await self.bot.http.request(http.Route("GET", "/users/{uid}", uid=x.id))
         banner_id = req["banner"]
         if banner_id:
             await ctx.send(
@@ -237,9 +235,7 @@ class UserCog(
 
             case Streaming():
                 async with ctx.typing():
-                    streamer_image_url = await self.twitch_client.get_pfp(
-                        act.url[22:]
-                    )
+                    streamer_image_url = await self.twitch_client.get_pfp(act.url[22:])
 
                     if not isinstance(
                         streamer_image_url, str
@@ -255,9 +251,7 @@ class UserCog(
                             f"{member.mention} is `streaming` ***this*** 👻",
                         ),
                         image_url=streamer_image_url,
-                        color=change_platform_color(
-                            act.platform  # type: ignore
-                        ),
+                        color=change_platform_color(act.platform),  # type: ignore
                         url=f"{act.url}",
                         footer_text=f"Requested by {ctx.author()} 💙",
                         footer_icon=f"{ctx.message.author.display_avatar.url}",

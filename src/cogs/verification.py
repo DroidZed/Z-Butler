@@ -1,20 +1,14 @@
 import asyncio
 import os
 
+from discord import FFmpegPCMAudio, Forbidden, HTTPException, Member, VoiceState
 from discord.ext.commands import (
     Bot,
     Cog,
 )
-
-from discord import FFmpegPCMAudio, Forbidden, Member, HTTPException, VoiceState
 from gtts import gTTS
-
-
 from modules.embedder.embedder_machine import generate_embed
 from modules.views import LangSelect
-
-
-from modules.coinpaprika import CoinManager
 
 WELCOME_MSG = "./tts/welcome_message.mp3"
 OPEN_DM = "./tts/open_dm.mp3"

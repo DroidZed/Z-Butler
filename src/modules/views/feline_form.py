@@ -1,7 +1,7 @@
 from discord import InputTextStyle, Interaction
 from discord.ui import Modal, InputText
 
-from modules.embedder import EmbedderMachine, Zembed, ZembedField
+from modules.embedder import EmbedderMachine, ZembedField
 
 
 class FelineForm(Modal):
@@ -10,9 +10,7 @@ class FelineForm(Modal):
 
         self.add_item(InputText(label="What's your name?"))
         self.add_item(
-            InputText(
-                label="What do you like about cats?", style=InputTextStyle.long
-            )
+            InputText(label="What do you like about cats?", style=InputTextStyle.long)
         )
 
     async def callback(self, interaction: Interaction):
@@ -20,12 +18,8 @@ class FelineForm(Modal):
         machine.set_embed_components("Survey Results, meow 😸")
         machine.add_fields(
             *[
-                ZembedField(
-                    name=self.children[0].label, value=self.children[0].value
-                ),
-                ZembedField(
-                    name=self.children[1].label, value=self.children[1].value
-                ),
+                ZembedField(name=self.children[0].label, value=self.children[0].value),
+                ZembedField(name=self.children[1].label, value=self.children[1].value),
             ]
         )
         await interaction.response.send_message(embeds=[machine.embed])

@@ -18,9 +18,7 @@ class ZedHelpCommand(HelpCommand):
         self._default_footer_text = "The power of The Z Butler 🔱"
         self._default_footer_img = "https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg"
 
-    async def send_bot_help(
-        self, mapping: Mapping[Optional[Cog], List[Command]]
-    ):
+    async def send_bot_help(self, mapping: Mapping[Optional[Cog], List[Command]]):
         commands = tuple(
             ZembedField(
                 rep.qualified_name,

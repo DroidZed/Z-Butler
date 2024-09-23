@@ -29,10 +29,16 @@
     "Quoty",
     "repchannel",
     "repteam",
+    "Sneep",
+    "sneeper",
+    "Sneeper",
+    "sneeps",
     "SPOTIPY",
     "verifychannel",
     "verifyteam",
     "Vite",
     "zembed"
-  ]
+  ],
+  "ruff.lineLength": 80,
+  "statusbarerror.wholeLine.show": true
 }

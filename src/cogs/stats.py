@@ -1,22 +1,42 @@
-from typing import Optional
+from typing import List, Optional
 
-from discord import Guild, Member, Status
+from discord import Guild, Member, Role, Status
 from discord.ext.commands import (
     Bot,
+    BucketType,
     Cog,
     Context,
     command,
     cooldown,
-    BucketType,
 )
-
-from utils import Env, extract_guild_data
-
 from modules.embedder import generate_embed
-
-from discord.ext.tasks import loop
-
 from modules.embedder.zembed_models import ZembedField
+from utils import Env
+
+
+def extract_guild_data(
+    roles: List[Role], members: List[Member]
+) -> tuple[int, int, int]:
+    roles_count: int = len(roles) - 1
+
+    online_users_count: int = len(
+        list(
+            filter(
+                lambda member: member.status != Status.offline
+                and member.status != Status.invisible
+                and not member.bot,
+                members,
+            )
+        )
+    )
+
+    machines_count: int = len(list(filter(lambda member: member.bot, members)))
+
+    return (
+        roles_count,
+        online_users_count,
+        machines_count,
+    )
 
 
 class StatsCog(Cog, name="Stats", description="Stats for nerds."):
@@ -61,15 +81,9 @@ class StatsCog(Cog, name="Stats", description="Stats for nerds."):
                         "\u200b     ",
                         f"🟢 ***Alive members*** {online_users_count} (**{round((online_users_count / guild.member_count * 100))}%**)",
                     ),
-                    ZembedField(
-                        "\u200b      ", f"***🤖 Machines*** {machines} "
-                    ),
-                    ZembedField(
-                        "\u200b       ", f"***🎖 Ranks*** {roles_count} "
-                    ),
-                    ZembedField(
-                        "\u200b", f"***😜 Emojis*** {len(self.bot.emojis)} "
-                    ),
+                    ZembedField("\u200b      ", f"***🤖 Machines*** {machines} "),
+                    ZembedField("\u200b       ", f"***🎖 Ranks*** {roles_count} "),
+                    ZembedField("\u200b", f"***😜 Emojis*** {len(self.bot.emojis)} "),
                 ]
 
                 await ctx.send(
@@ -96,9 +110,7 @@ class StatsCog(Cog, name="Stats", description="Stats for nerds."):
         aliases=["u?"],
     )
     @cooldown(1, 2, BucketType.user)
-    async def user_stats(
-        self, ctx: Context, member: Optional[Member] = None
-    ) -> None:
+    async def user_stats(self, ctx: Context, member: Optional[Member] = None) -> None:
         found = member or ctx.message.author
 
         data = [
@@ -118,8 +130,8 @@ class StatsCog(Cog, name="Stats", description="Stats for nerds."):
                 "Ranks",
                 " ".join(
                     r.mention
-                    for r in found.roles  # type: ignore
-                    if not r.is_default()
+                    for r in found.roles
+                    if not r.is_default()  # type: ignore
                 ),
             ),
         ]

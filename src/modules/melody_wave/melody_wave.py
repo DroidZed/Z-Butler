@@ -1,6 +1,6 @@
-from modules.networking import HttpAsyncClient, RequestError
+from utils import Env, SingletonClass, strToB64
 
-from utils import Env, strToB64, SingletonClass
+from modules.networking import HttpAsyncClient
 
 from .melody_models import Album, Melody, Wave
 
@@ -10,13 +10,10 @@ class MelodyWave(metaclass=SingletonClass):
         self,
         http: HttpAsyncClient = HttpAsyncClient(),
     ) -> None:
-        try:
-            self._token = ""
-            self._token_type = ""
-            self._expiry = 0
-            self._client = http
-        except:
-            return
+        self._token = ""
+        self._token_type = ""
+        self._expiry = 0
+        self._client = http
 
     async def search_song(self, title: str, artist: str):
         return await self.__search(
@@ -65,7 +62,7 @@ class MelodyWave(metaclass=SingletonClass):
         }
 
         params = {
-            "q": f"{query} aritst:{artist}",
+            "q": f"{query} artist:{artist}",
             "limit": limit,
             "type": " ".join(_ for _ in type),
         }

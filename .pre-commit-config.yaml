@@ -1,23 +1,13 @@
 repos:
-  - repo: https://github.com/psf/black
-    rev: 23.12.1
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.6.7
     hooks:
-      - id: black
-        args: [--target-version=py311]
-
-  # - repo: local
-  #   hooks:
-  #   - id: pylint
-  #     name: pylint
-  #     entry: pylint
-  #     language: system
-  #     types: [python]
-  #     args:
-  #       [
-  #         "-rn", # Only display messages
-  #         "-sn", # Don't display the score
-  #         "--rcfile=pylintrc", # Link to your config file
-  #       ]
+      # Run the linter.
+      - id: ruff
+        args: [ --fix ]
+      # Run the formatter.
+      - id: ruff-format
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
