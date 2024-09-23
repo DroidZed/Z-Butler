@@ -5,11 +5,11 @@ from .model import Model
 from .singleton_class import SingletonClass
 
 __all__ = [
-    Env,
-    Model,
-    SingletonClass,
-    strToB64,
-    b64ToStr,
-    SongArtistConverter,
-    SongNameConverter,
+    "Env",
+    "Model",
+    "SingletonClass",
+    "strToB64",
+    "b64ToStr",
+    "SongArtistConverter",
+    "SongNameConverter",
 ]

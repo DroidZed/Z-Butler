@@ -1,2 +1,4 @@
-from .anime_quoter import *
-from .models import *
+from .anime_quoter import AnimeQuoter
+from .models import AnimeQuote
+
+__all__ = ["AnimeQuote", "AnimeQuoter"]

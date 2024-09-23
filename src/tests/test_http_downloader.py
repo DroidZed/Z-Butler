@@ -13,4 +13,4 @@ class TestHttpDownloader:
         )
 
         with open("./db.json", "r") as f:
-            assert f != None
+            assert f is not None

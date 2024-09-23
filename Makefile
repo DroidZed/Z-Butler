@@ -2,23 +2,13 @@
 include .env
 
 install:
-	poetry install --no-root
+	uv sync
 
 bot:
 	py .\src\app.py
 
-module:
-	mkdir .\src\modules\${MODULE_NAME}
-
-	echo from .${MODULE_NAME}_api import * > ./src/modules/${MODULE_NAME}/__init__.py
-	echo print('hi') > ./src/modules/${MODULE_NAME}/${MODULE_NAME}_api.py
-	echo print('hi') > ./src/tests/test_${MODULE_NAME}_api.py
-	echo from .${MODULE_NAME} import * >> ./src/modules/__init__.py
-
-# Note: these ^^^ lines only work on windows !
-
 test:
-	py -m pytest -vs .
+	uv run pytest -vs .
 
 build:
 	docker build -t droidzed/z-butler:$(IMAGE_TAG) .
@@ -28,3 +18,11 @@ compose:
 
 decompose:
 	docker compose down
+
+module:
+	mkdir .\src\modules\${NAME}
+
+	echo "from .${NAME}_api import *" > ./src/modules/${NAME}/__init__.py
+	echo "print('hi')" > ./src/modules/${NAME}/${NAME}_api.py
+	echo "print('hi')" > ./src/tests/test_${NAME}_api.py
+	echo "from .${NAME} import *" >> ./src/modules/__init__.py

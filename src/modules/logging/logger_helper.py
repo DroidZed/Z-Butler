@@ -1,5 +1,5 @@
-from typing import Any
 from loguru import logger
+
 from utils.singleton_class import SingletonClass
 
 

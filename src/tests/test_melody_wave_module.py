@@ -1,4 +1,5 @@
 import pytest
+
 from modules.melody_wave import Melody, MelodyWave, Wave
 
 
