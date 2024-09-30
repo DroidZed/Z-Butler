@@ -26,8 +26,6 @@ dependencies = [
   "loguru >= 0.7.2",
   "gtts >= 2.5.3",
   "typing-extensions >= 4.12.2",
-  "baseconvert >= 2.0.4",
-
 ]
 
 
@@ -46,3 +44,6 @@ minversion = 6.0
 testpaths = ["tests"]
 asyncio_mode = "strict"
 addopts = ["--import-mode=importlib", "-ra -q"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F403"]

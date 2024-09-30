@@ -4,11 +4,11 @@ from platform import python_version
 import rich as rch
 from discord import Game, Intents, version_info
 from discord.ext.commands import Bot
-from utils import Env
 
 from modules import ZedHelpCommand
 from modules.logging import LoggerHelper
 from modules.mongo import MongoDBConnection
+from utils import Env
 
 
 class ZBot(Bot):

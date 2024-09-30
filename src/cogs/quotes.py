@@ -1,5 +1,4 @@
 from discord import TextChannel
-
 from discord.ext.commands import (
     Bot,
     BucketType,
@@ -9,17 +8,14 @@ from discord.ext.commands import (
     cooldown,
     is_owner,
 )
-
 from discord.ext.tasks import loop
 
-from modules.japan_heaven.anime_quoter import AnimeQuote
-from modules.networking.http_errors import RequestError
-
-from utils import Env
-from modules.japan_heaven import AnimeQuoter
 from modules.embedder import (
     generate_embed,
 )
+from modules.japan_heaven import AnimeQuote, AnimeQuoter
+from modules.networking import RequestError
+from utils import Env
 
 
 async def _grab_quote():
@@ -69,7 +65,7 @@ class QuotesCog(Cog, name="Quotes", description="💭 Quoty quotes !"):
                     return await ctx.send(
                         embed=generate_embed(
                             title="Quote - Error",
-                            description=f"No quotes for you...",
+                            description="No quotes for you...",
                             color=Env.BOT_COLOR,
                         )
                     )

@@ -5,14 +5,19 @@
 # }
 #
 
+
+# TODO: implement this !
 import math
-from baseconvert import base
 
 
 def get_token(twt_id: str) -> str:
-    transformation: float = float(twt_id) / 1e15 * math.pi
-    result: str = base(str(transformation), 10, 6**2, 1, string=True)  # type:ignore
-    return result.replace(".", "").lower()
+    return (
+        str((float(twt_id) / 1e15) * math.pi)
+        .to_bytes(6**2, "big")
+        .decode()
+        .replace("0", "")
+        .replace(".", "")
+    )
 
 
 if __name__ == "__main__":

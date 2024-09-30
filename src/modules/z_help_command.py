@@ -1,13 +1,12 @@
-from typing import Mapping, Optional, List
+from typing import List, Mapping, Optional
 
-from discord.ext.commands import HelpCommand, Cog, Command
-
-from utils import Env
+from discord.ext.commands import Cog, Command, HelpCommand
 
 from modules.embedder import (
     ZembedField,
     generate_embed,
 )
+from utils import Env
 
 
 class ZedHelpCommand(HelpCommand):

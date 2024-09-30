@@ -18,6 +18,7 @@
   "python.analysis.autoImportCompletions": true,
   "cSpell.words": [
     "Animechan",
+    "baseconvert",
     "coinpaprika",
     "cooldown",
     "embedder",
@@ -35,6 +36,7 @@
     "sneeps",
     "sneepy",
     "SPOTIPY",
+    "tweepy",
     "verifychannel",
     "verifyteam",
     "Vite",

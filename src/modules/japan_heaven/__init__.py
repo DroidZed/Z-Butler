@@ -1,3 +1,3 @@
-from .anime_quoter import anime_quoter, models
+from .anime_quoter import AnimeQuote, AnimeQuoter
 
-__all__ = ["anime_quoter", "models"]
+__all__ = ["AnimeQuoter", "AnimeQuote"]
