@@ -8,7 +8,6 @@ services:
     container_name: z-butler-bot
     environment:
       - API_TOKEN=${API_TOKEN}
-      - RAPID_API_KEY=${RAPID_API_KEY}
       - TENOR_API_KEY=${TENOR_API_KEY}
       - TWITTER_API_KEY=${TWITTER_API_KEY}
       - TWITTER_SECRET_KEY=${TWITTER_SECRET_KEY}

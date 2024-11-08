@@ -1,5 +1,6 @@
-from decouple import config
 from dataclasses import dataclass
+
+from decouple import config
 
 
 @dataclass
@@ -7,7 +8,6 @@ class Env:
     # Get tokens and keys from env.
     TOKEN = config("API_TOKEN")
     TENOR_KEY = config("TENOR_API_KEY")
-    RAPID_API_KEY = config("RAPID_API_KEY")
 
     # Spotify credentials
     SPOTIFY_CLIENT_SECRET = config("SPOTIPY_CLIENT_SECRET")

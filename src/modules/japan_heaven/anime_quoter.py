@@ -1,5 +1,6 @@
-from utils import SingletonClass
 from modules.networking import HttpAsyncClient
+from utils import SingletonClass
+
 from .models import AnimeQuote
 
 
@@ -8,7 +9,7 @@ class AnimeQuoter(metaclass=SingletonClass):
         self.client = HttpAsyncClient()
 
     async def random_anime_quote(self):
-        result = await self.client.get("https://animechan.xyz/api/random")
+        result = await self.client.get("https://animechan.io/api/v1/quotes/random")
 
         if result.Error:
             raise result.Error
