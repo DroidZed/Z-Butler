@@ -13,3 +13,8 @@
 </div>
 
 - Prefix: Z
+
+<!-- GitAds-Verify: IQADWGJ8WAMGUJAHH58ERLMSS6JGR7Z7 -->
+
+## GitAds Sponsored
+[![Sponsored by GitAds](https://gitads.dev/v1/ad-serve?source=droidzed/z-butler@github)](https://gitads.dev/v1/ad-track?source=droidzed/z-butler@github)
