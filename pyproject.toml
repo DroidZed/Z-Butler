@@ -30,14 +30,22 @@ dependencies = [
 
 
 [tool.uv]
-dev-dependencies = [
-  "pytest >=8.3.3",
-  "pytest-httpx >=0.31.2",
-  "pytest-asyncio >= 0.24.0",
-  "pre-commit >= 3.8.0",
-  "ruff >= 0.6.7",
+default-groups = ["dev", "lint", "test"]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.2.0",
 ]
 
+lint = [
+    "ruff>=0.11.10",
+]
+
+test = [
+    "pytest>=8.3.5",
+    "pytest-asyncio>=0.26.0",
+    "pytest-httpx>=0.34.0",
+]
 
 [tool.pytest]
 minversion = 6.0

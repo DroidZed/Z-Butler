@@ -7,7 +7,6 @@ from discord.ext.commands import Bot
 
 from modules import ZedHelpCommand
 from modules.logging import LoggerHelper
-from modules.mongo import MongoDBConnection
 from utils import Env
 
 
@@ -31,8 +30,6 @@ class ZBot(Bot):
         await self.change_presence(
             activity=Game(name=f"{Env.PREFIX}help - By DroidZed")
         )
-
-        MongoDBConnection()
 
         LoggerHelper().info("Bot started")
 

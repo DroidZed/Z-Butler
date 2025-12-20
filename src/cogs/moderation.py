@@ -7,9 +7,8 @@ from discord.ext.commands.errors import (
     CommandError,
     MissingPermissions,
 )
-from modules.embedder import ZembedField, generate_embed
-from modules.mongo import MongoDBHelperClient
-from utils import Env
+from ..modules.embedder import ZembedField, generate_embed
+from ..utils import Env
 
 
 class ModerationCog(
@@ -19,7 +18,6 @@ class ModerationCog(
 ):
     def __init__(self, bot: Bot):
         self.bot: Bot = bot
-        self.db_client = MongoDBHelperClient("users")
 
     # ban kick warn purge mute & unmute
 
@@ -27,34 +25,31 @@ class ModerationCog(
     async def __ban_user(
         ctx: Context,
         member: Member,
-        reason: str,
-        client: MongoDBHelperClient,
+        reason: str
     ):
         async with ctx.typing():
-            await client.delete_from_collection({"uid": member.id})
+            fields = [
+                ZembedField(
+                    name="Reason",
+                    value=reason or "3 Strikes",
+                    inline=True,
+                ),
+                ZembedField(name="Action", value="**BAN**", inline=True),
+            ]
 
-        fields = [
-            ZembedField(
-                name="Reason",
-                value=reason or "3 Strikes",
-                inline=True,
-            ),
-            ZembedField(name="Action", value="**BAN**", inline=True),
-        ]
+            embed = generate_embed(
+                title="YOU HAVE BEEN BANNED",
+                url="https://media1.tenor.com/images/0dcb84c900e10b6272152cd759eb1eab/tenor.gif",
+                description="After the actions you've done in my server the admin decided to ban you for the safety of our "
+                "community.",
+                color=Env.CROWN_COLOR,
+                image_url="https://media1.tenor.com/images/0dcb84c900e10b6272152cd759eb1eab/tenor.gif",
+                footer_icon="https://emoji.gg/assets/emoji/3886_BAN.gif",
+                footer_text="Next time think twice before making trouble in a server 😶",
+                *fields,
+            )
 
-        embed = generate_embed(
-            title="YOU HAVE BEEN BANNED",
-            url="https://media1.tenor.com/images/0dcb84c900e10b6272152cd759eb1eab/tenor.gif",
-            description="After the actions you've done in my server the admin decided to ban you for the safety of our "
-            "community.",
-            color=Env.CROWN_COLOR,
-            image_url="https://media1.tenor.com/images/0dcb84c900e10b6272152cd759eb1eab/tenor.gif",
-            footer_icon="https://emoji.gg/assets/emoji/3886_BAN.gif",
-            footer_text="Next time think twice before making trouble in a server 😶",
-            *fields,
-        )
-
-        await member.send(embed=embed)
+            await member.send(embed=embed)
 
         await ctx.send(
             f"User <@{member.id}> has been banned for {reason or '3 Strikes'} 🔨"
@@ -68,7 +63,6 @@ class ModerationCog(
         member: Member,
         reason: str,
         strikes: int,
-        client: MongoDBHelperClient,
     ):
         async with ctx.typing():
             await client.insert_into_collection(
@@ -114,7 +108,6 @@ class ModerationCog(
         ctx: Context,
         member: Member,
         reason: str,
-        client: MongoDBHelperClient,
     ):
         user_query = await client.query_collection({"uid": member.id})
 
@@ -146,9 +139,7 @@ class ModerationCog(
                 else:
                     nb_strikes = query[0]["strike_count"]
 
-            await ModerationCog.__strike_user(
-                ctx, member, reason, nb_strikes - 1, client
-            )
+            await ModerationCog.__strike_user(ctx, member, reason, nb_strikes - 1)
 
     @staticmethod
     async def invalid_perms_embed(ctx: Context, action: str) -> None:
@@ -230,7 +221,6 @@ class ModerationCog(
             await ctx.guild.kick(member, reason=res)
 
             embed = generate_embed(
-                title=None,
                 description=msg,
                 color=Env.CROWN_COLOR,
                 author_icon=None,
