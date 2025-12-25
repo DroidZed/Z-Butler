@@ -1,0 +1,185 @@
+from io import BytesIO
+from random import choice
+from sys import stderr
+from traceback import print_exception
+from typing import Optional
+
+from discord import (
+    File,
+    Forbidden,
+    Guild,
+    Member,
+    Role,
+    TextChannel,
+)
+from discord.ext.commands import Bot, Cog, Context
+from discord.ext.commands.errors import (
+    CheckFailure,
+    CommandError,
+    CommandInvokeError,
+    CommandNotFound,
+    CommandOnCooldown,
+    MemberNotFound,
+    MissingPermissions,
+    MissingRequiredArgument,
+)
+from httpx import ReadTimeout
+from modules.embedder import generate_embed
+from modules.logging import LoggerHelper
+from modules.mongo import MongoDBHelperClient
+from modules.welcome_image import create_welcome_image
+from utils import Env
+
+
+def get_server_image(g: Optional[Guild]) -> Optional[str]:
+    return g.icon.url if g and g.icon else None
+
+
+class EventHandlers(
+    Cog,
+    name="Event Handlers",
+    description="Events fired when something kicks in the server.",
+):
+    def __init__(self, bot: Bot):
+        self.bot = bot
+        self.out_channel = 1005545745291681873
+
+    @staticmethod
+    def __get_initial_roles(
+        guild: Optional[Guild],
+    ) -> list[Role]:
+        lRoles = []
+
+        if guild:
+            lRoles.append(guild.get_role(1071798806275969086))  # Lost Soul
+
+        return lRoles
+
+    @Cog.listener()
+    async def on_member_join(self, member: Member):
+        guild = self.bot.get_guild(Env.GUILD_ID)
+
+        channel = guild.get_channel(self.out_channel) if guild else None
+
+        try:
+            await member.add_roles(
+                *self.__get_initial_roles(guild),
+                reason="Starter roles",
+                atomic=True,
+            )
+        except Forbidden as e:
+            LoggerHelper().exception(
+                f"Got forbidden for adding roles, because:\n{e.text}"
+            )
+
+        if channel and isinstance(channel, TextChannel):
+            with BytesIO() as image_binary:
+                create_welcome_image(username=f"{member.name}").save(
+                    image_binary, "PNG"
+                )
+
+                image_binary.seek(0)
+
+                await channel.send(
+                    content=f"👋🏻 <@{member.id}> a new recruit has joined the guild !! Bring the beer 🍻",
+                    file=File(
+                        fp=image_binary,
+                        filename=f"{member.name}-welcome.png",
+                    ),
+                )
+
+    @Cog.listener()
+    async def on_member_remove(self, member: Member):
+        guild = self.bot.get_guild(Env.GUILD_ID)
+
+        channel = guild.get_channel(self.out_channel) if guild else None
+
+        client = MongoDBHelperClient("users")
+
+        if not (channel and isinstance(channel, TextChannel)):
+            return
+
+        if await client.query_collection({"uid": member.id}):
+            await client.delete_from_collection({"uid": member.id})
+
+        await channel.send(
+            embed=generate_embed(
+                title=f"{member.name} Left us.",
+                description=f"<@{member.id}> got sucked into a black hole <a:black_hole:1071059323482021929>, long forgotten.",
+                thumbnail_url=get_server_image(guild),
+                footer_icon="https://cdn.discordapp.com/avatars/759844892443672586/bb7df4730c048faacd8db6dd99291cdb.jpg",
+                footer_text="We shall never remember those who left our cause.",
+            )
+        )
+
+    @Cog.listener()
+    async def on_command_error(self, ctx: Context, error: CommandError):
+        match error:
+            case MissingPermissions():
+                return await ctx.reply(
+                    "You're not allowed to send invoke this command.",
+                    mention_author=True,
+                )
+
+            case CheckFailure():
+                return await ctx.reply(
+                    choice(
+                        [
+                            "Failing like the weak you are, go find a gf or do some training.",
+                            "Get a life you stupid fat fuck, talk to real life people instead of wasting my time, "
+                            "You're parents ain't proud of you.",
+                        ]
+                    ),
+                    mention_author=True,
+                )
+
+            case MemberNotFound():
+                return await ctx.reply(
+                    "¯\\_(ツ)_/¯ The user provided could not be found, try again...",
+                    mention_author=True,
+                )
+
+            case CommandOnCooldown():
+                return await ctx.reply(
+                    f"⏳ Hold your horses, this command is on cooldown, you can use it in {round(error.retry_after, 2)}s",
+                    mention_author=True,
+                )
+
+            case CommandNotFound():
+                return await ctx.reply(
+                    "Nope, no such command was found *sight* 💨",
+                    mention_author=True,
+                )
+
+            case CommandInvokeError():
+                print_exception(
+                    type(error),
+                    error,
+                    error.__traceback__,
+                    file=stderr,
+                )
+
+                return await ctx.reply(
+                    "❌ Internal anomaly, I wasn't able to handle your request invoker. Sorry for my incompetence.",
+                    mention_author=True,
+                )
+
+            case MissingRequiredArgument():
+                return await ctx.reply(
+                    "You __***IDIOT***__ !! Don't you know when typing this command, YOU **MUST** provide "
+                    "ARGUMENTS ? I think you should go back to elementary school and learn how to read 🙄",
+                    mention_author=True,
+                )
+
+            case ReadTimeout():
+                return await ctx.reply(
+                    "Command timed out, please try again ❌",
+                    mention_author=True,
+                )
+
+            case _:
+                LoggerHelper().exception("Unexpected error occurred, logging...")
+
+
+def setup(bot: Bot):
+    bot.add_cog(EventHandlers(bot))
